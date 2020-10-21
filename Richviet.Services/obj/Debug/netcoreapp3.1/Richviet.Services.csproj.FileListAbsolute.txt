@@ -1,0 +1,14 @@
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\bin\Debug\netcoreapp3.1\Richviet.API.Common.dll
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\obj\Debug\netcoreapp3.1\Richviet.Services.csprojAssemblyReference.cache
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\obj\Debug\netcoreapp3.1\Richviet.Services.AssemblyInfoInputs.cache
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\obj\Debug\netcoreapp3.1\Richviet.Services.AssemblyInfo.cs
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\bin\Debug\netcoreapp3.1\Richviet.Services.deps.json
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\bin\Debug\netcoreapp3.1\Richviet.Services.dll
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\bin\Debug\netcoreapp3.1\Richviet.Services.pdb
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\bin\Debug\netcoreapp3.1\Richviet.API.Common.pdb
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\obj\Debug\netcoreapp3.1\Richviet.Services.csproj.CopyComplete
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\obj\Debug\netcoreapp3.1\Richviet.Services.dll
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\obj\Debug\netcoreapp3.1\Richviet.Services.pdb
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\obj\Debug\netcoreapp3.1\Richviet.Services.csproj.CoreCompileInputs.cache
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\bin\Debug\netcoreapp3.1\Richviet.Tools.dll
+C:\Users\tony2\Source\Repos\Richviet\Richviet.Services\bin\Debug\netcoreapp3.1\Richviet.Tools.pdb

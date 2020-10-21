@@ -1,0 +1,90 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.API", "1.API", "{B5DA07C3-76DB-42DF-B2BC-D4D0FE81F5F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.API", "Richviet.API\Richviet.API.csproj", "{E5E7406F-6DEC-4CAC-B271-F888740E634F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.API.Common", "Richviet.API.Common\Richviet.API.Common.csproj", "{C700C39D-9945-48E6-AED1-359F05BDCF92}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.API.DataContracts", "Richviet.API.DataContracts\Richviet.API.DataContracts.csproj", "{1855FBA5-7260-48A8-80B2-ED83C7DD0B00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00.Tests", "00.Tests", "{2A0C6FDB-204C-4271-AA7B-1A1C4ECD0441}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.API.Tests.Controllers", "Richviet.API.Tests.Controllers\Richviet.API.Tests.Controllers.csproj", "{912AB9D3-9024-49C8-8D5B-FA72229CAA17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.API.Tests.REST", "Richviet.API.Tests.REST\Richviet.API.Tests.REST.csproj", "{471E9B57-82DB-4B35-A496-37CECD7674AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01.Common", "01.Common", "{4F36A84F-48CC-44E5-BDD4-C51525E1CF00}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.IoC.Configuration", "Richviet.IoC.Configuration\Richviet.IoC.Configuration.csproj", "{862649D4-24D4-4329-B614-C4690416287C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.Tools", "Richviet.Tools\Richviet.Tools.csproj", "{1560AADF-FB9D-4943-83EC-8B955294695A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Services", "2.Services", "{9D1A5FBB-23AF-4224-88C7-DF7BA85354B1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.Services", "Richviet.Services\Richviet.Services.csproj", "{31AA5218-BF7B-47CD-AF70-6240DE8A2AA9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1560AADF-FB9D-4943-83EC-8B955294695A} = {1560AADF-FB9D-4943-83EC-8B955294695A}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Repositories", "3.Repositories", "{983CD406-4452-4C97-83EB-A6AA849A7881}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5E7406F-6DEC-4CAC-B271-F888740E634F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5E7406F-6DEC-4CAC-B271-F888740E634F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5E7406F-6DEC-4CAC-B271-F888740E634F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5E7406F-6DEC-4CAC-B271-F888740E634F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C700C39D-9945-48E6-AED1-359F05BDCF92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C700C39D-9945-48E6-AED1-359F05BDCF92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C700C39D-9945-48E6-AED1-359F05BDCF92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C700C39D-9945-48E6-AED1-359F05BDCF92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1855FBA5-7260-48A8-80B2-ED83C7DD0B00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1855FBA5-7260-48A8-80B2-ED83C7DD0B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1855FBA5-7260-48A8-80B2-ED83C7DD0B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1855FBA5-7260-48A8-80B2-ED83C7DD0B00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{912AB9D3-9024-49C8-8D5B-FA72229CAA17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{912AB9D3-9024-49C8-8D5B-FA72229CAA17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{912AB9D3-9024-49C8-8D5B-FA72229CAA17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{912AB9D3-9024-49C8-8D5B-FA72229CAA17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{471E9B57-82DB-4B35-A496-37CECD7674AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{471E9B57-82DB-4B35-A496-37CECD7674AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{471E9B57-82DB-4B35-A496-37CECD7674AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{471E9B57-82DB-4B35-A496-37CECD7674AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{862649D4-24D4-4329-B614-C4690416287C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{862649D4-24D4-4329-B614-C4690416287C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{862649D4-24D4-4329-B614-C4690416287C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{862649D4-24D4-4329-B614-C4690416287C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1560AADF-FB9D-4943-83EC-8B955294695A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1560AADF-FB9D-4943-83EC-8B955294695A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1560AADF-FB9D-4943-83EC-8B955294695A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1560AADF-FB9D-4943-83EC-8B955294695A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31AA5218-BF7B-47CD-AF70-6240DE8A2AA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31AA5218-BF7B-47CD-AF70-6240DE8A2AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31AA5218-BF7B-47CD-AF70-6240DE8A2AA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31AA5218-BF7B-47CD-AF70-6240DE8A2AA9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E5E7406F-6DEC-4CAC-B271-F888740E634F} = {B5DA07C3-76DB-42DF-B2BC-D4D0FE81F5F1}
+		{C700C39D-9945-48E6-AED1-359F05BDCF92} = {B5DA07C3-76DB-42DF-B2BC-D4D0FE81F5F1}
+		{1855FBA5-7260-48A8-80B2-ED83C7DD0B00} = {B5DA07C3-76DB-42DF-B2BC-D4D0FE81F5F1}
+		{912AB9D3-9024-49C8-8D5B-FA72229CAA17} = {2A0C6FDB-204C-4271-AA7B-1A1C4ECD0441}
+		{471E9B57-82DB-4B35-A496-37CECD7674AE} = {2A0C6FDB-204C-4271-AA7B-1A1C4ECD0441}
+		{862649D4-24D4-4329-B614-C4690416287C} = {4F36A84F-48CC-44E5-BDD4-C51525E1CF00}
+		{1560AADF-FB9D-4943-83EC-8B955294695A} = {4F36A84F-48CC-44E5-BDD4-C51525E1CF00}
+		{31AA5218-BF7B-47CD-AF70-6240DE8A2AA9} = {9D1A5FBB-23AF-4224-88C7-DF7BA85354B1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {756538D4-5347-479B-8083-19EF5CC5850C}
+	EndGlobalSection
+EndGlobal

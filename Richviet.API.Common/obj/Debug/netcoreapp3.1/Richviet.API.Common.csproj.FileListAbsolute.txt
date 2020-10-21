@@ -1,0 +1,8 @@
+C:\Users\tony2\Source\Repos\Richviet\Richviet.API.Common\bin\Debug\netcoreapp3.1\Richviet.API.Common.deps.json
+C:\Users\tony2\Source\Repos\Richviet\Richviet.API.Common\bin\Debug\netcoreapp3.1\Richviet.API.Common.dll
+C:\Users\tony2\Source\Repos\Richviet\Richviet.API.Common\bin\Debug\netcoreapp3.1\Richviet.API.Common.pdb
+C:\Users\tony2\Source\Repos\Richviet\Richviet.API.Common\obj\Debug\netcoreapp3.1\Richviet.API.Common.AssemblyInfoInputs.cache
+C:\Users\tony2\Source\Repos\Richviet\Richviet.API.Common\obj\Debug\netcoreapp3.1\Richviet.API.Common.AssemblyInfo.cs
+C:\Users\tony2\Source\Repos\Richviet\Richviet.API.Common\obj\Debug\netcoreapp3.1\Richviet.API.Common.csproj.CoreCompileInputs.cache
+C:\Users\tony2\Source\Repos\Richviet\Richviet.API.Common\obj\Debug\netcoreapp3.1\Richviet.API.Common.dll
+C:\Users\tony2\Source\Repos\Richviet\Richviet.API.Common\obj\Debug\netcoreapp3.1\Richviet.API.Common.pdb
