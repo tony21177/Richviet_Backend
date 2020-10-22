@@ -1,9 +1,0 @@
-C:\Users\tony2\Source\Repos\Richviet\Richviet.Tools\bin\Debug\netcoreapp3.1\Richviet.Tools.deps.json
-C:\Users\tony2\Source\Repos\Richviet\Richviet.Tools\bin\Debug\netcoreapp3.1\Richviet.Tools.dll
-C:\Users\tony2\Source\Repos\Richviet\Richviet.Tools\bin\Debug\netcoreapp3.1\Richviet.Tools.pdb
-C:\Users\tony2\Source\Repos\Richviet\Richviet.Tools\obj\Debug\netcoreapp3.1\Richviet.Tools.AssemblyInfoInputs.cache
-C:\Users\tony2\Source\Repos\Richviet\Richviet.Tools\obj\Debug\netcoreapp3.1\Richviet.Tools.AssemblyInfo.cs
-C:\Users\tony2\Source\Repos\Richviet\Richviet.Tools\obj\Debug\netcoreapp3.1\Richviet.Tools.dll
-C:\Users\tony2\Source\Repos\Richviet\Richviet.Tools\obj\Debug\netcoreapp3.1\Richviet.Tools.pdb
-C:\Users\tony2\Source\Repos\Richviet\Richviet.Tools\obj\Debug\netcoreapp3.1\Richviet.Tools.csproj.CoreCompileInputs.cache
-C:\Users\tony2\Source\Repos\richviet\Richviet.Tools\obj\Debug\netcoreapp3.1\Richviet.Tools.csprojAssemblyReference.cache

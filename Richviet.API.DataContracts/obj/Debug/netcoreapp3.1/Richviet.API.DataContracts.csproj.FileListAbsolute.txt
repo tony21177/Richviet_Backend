@@ -1,9 +1,0 @@
-C:\Users\tony2\Source\Repos\Richviet\Richviet.API.DataContracts\bin\Debug\netcoreapp3.1\Richviet.API.DataContracts.deps.json
-C:\Users\tony2\Source\Repos\Richviet\Richviet.API.DataContracts\bin\Debug\netcoreapp3.1\Richviet.API.DataContracts.dll
-C:\Users\tony2\Source\Repos\Richviet\Richviet.API.DataContracts\bin\Debug\netcoreapp3.1\Richviet.API.DataContracts.pdb
-C:\Users\tony2\Source\Repos\Richviet\Richviet.API.DataContracts\obj\Debug\netcoreapp3.1\Richviet.API.DataContracts.AssemblyInfoInputs.cache
-C:\Users\tony2\Source\Repos\Richviet\Richviet.API.DataContracts\obj\Debug\netcoreapp3.1\Richviet.API.DataContracts.AssemblyInfo.cs
-C:\Users\tony2\Source\Repos\Richviet\Richviet.API.DataContracts\obj\Debug\netcoreapp3.1\Richviet.API.DataContracts.csproj.CoreCompileInputs.cache
-C:\Users\tony2\Source\Repos\Richviet\Richviet.API.DataContracts\obj\Debug\netcoreapp3.1\Richviet.API.DataContracts.dll
-C:\Users\tony2\Source\Repos\Richviet\Richviet.API.DataContracts\obj\Debug\netcoreapp3.1\Richviet.API.DataContracts.pdb
-C:\Users\tony2\Source\Repos\richviet\Richviet.API.DataContracts\obj\Debug\netcoreapp3.1\Richviet.API.DataContracts.csprojAssemblyReference.cache
