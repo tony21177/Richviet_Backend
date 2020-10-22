@@ -22,9 +22,6 @@ namespace Richviet.Tools.Utility
             var now = DateTimeOffset.UtcNow;
             var iatString = now.ToUnixTimeSeconds().ToString();
             var expString = now.AddMinutes(int.Parse(_configuration["Tokens:AccessExpireMinutes"])).ToUnixTimeSeconds().ToString();
-            Console.WriteLine(int.Parse(_configuration["Tokens:AccessExpireMinutes"]));
-            Console.WriteLine(iatString);
-            Console.WriteLine(expString);
             var claims = new Claim[]
             {
             new Claim("id", userId.ToString()),

@@ -27,6 +27,9 @@ using System.Text.Json;
 using MySql.Data.EntityFrameworkCore.Extensions;
 using Richviet.Services.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 #pragma warning disable CS1591
 namespace Richviet.API
@@ -85,6 +88,21 @@ namespace Richviet.API
                             opt.Filters.Add(new ProducesAttribute("application/json"));
                         }
                         ).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+                    // authentication
+                    services
+                    // 檢查 HTTP Header 的 Authorization 是否有 JWT Bearer Token
+                    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    // 設定 JWT Bearer Token 的檢查選項
+                    .AddJwtBearer(options =>
+                        {
+                            options.TokenValidationParameters = new TokenValidationParameters
+                            {
+                                ValidateLifetime = true,
+                                ValidateIssuerSigningKey = true,
+                                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                            };
+                        });
 
                     //API versioning
                     services.AddApiVersioning(

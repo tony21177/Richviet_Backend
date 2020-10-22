@@ -11,7 +11,6 @@ using System.Net;
 namespace Richviet.API.Controllers.V1
 {
     [ApiVersion("1.0")]
-    [Route("api/login")]//required for default versioning
     [Route("api/v{version:apiVersion}/login")]
     [ApiController]
     public class LoginController : Controller
@@ -65,7 +64,7 @@ namespace Richviet.API.Controllers.V1
             {
                 Data = new 
                 {
-                    AccessToken = accessToken
+                    AccessToken = accessToken.Token
                 }
             });
         }
