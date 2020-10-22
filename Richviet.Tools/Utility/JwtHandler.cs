@@ -32,14 +32,13 @@ namespace Richviet.Tools.Utility
             new Claim("name", name),
             
             new Claim(JwtRegisteredClaimNames.Iat, iatString),
-            new Claim(JwtRegisteredClaimNames.Exp, expString),
             new Claim("country", countryForApp)
             };
 
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"])),
                 SecurityAlgorithms.HmacSha256);
-            //var expiry = now.AddMinutes(double.Parse(_configuration["Tokens:AccessExpireMinutes"]));
-            var jwt = CreateSecurityToken(claims, now.DateTime, signingCredentials);
+            var expiry = now.AddMinutes(double.Parse(_configuration["tokens:accessexpireminutes"]));
+            var jwt = CreateSecurityToken(claims, now.DateTime, expiry.DateTime, signingCredentials);
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return CreateTokenResource(token);
@@ -58,14 +57,15 @@ namespace Richviet.Tools.Utility
 
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"])),
                 SecurityAlgorithms.HmacSha256);
-            var jwt = CreateSecurityToken(claims, now.DateTime, signingCredentials);
+            var expiry = now.AddMinutes(double.Parse(_configuration["tokens:accessexpireminutes"]));
+            var jwt = CreateSecurityToken(claims, now.DateTime, expiry.DateTime, signingCredentials);
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return CreateTokenResource(token);
         }
 
-        private JwtSecurityToken CreateSecurityToken(IEnumerable<Claim> claims, DateTime now, SigningCredentials credentials)
-            => new JwtSecurityToken(claims: claims, notBefore: now, signingCredentials: credentials);
+        private JwtSecurityToken CreateSecurityToken(IEnumerable<Claim> claims, DateTime now, DateTime expiry, SigningCredentials credentials)
+            => new JwtSecurityToken(claims: claims, notBefore: now,expires: expiry, signingCredentials: credentials);
 
         private static TokenResource CreateTokenResource(string token)
             => new TokenResource { Token = token };
