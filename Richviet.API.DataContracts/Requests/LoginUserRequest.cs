@@ -16,7 +16,6 @@ namespace Richviet.API.DataContracts.Requests
         public string linkURL { get; set; }
         public long refreshDate { get; set; }
         public string imageURL { get; set; }
-        public string appCountry { get; set; }
         public string gender { get; set; }
         [Required]
         public string accessToken { get; set; }
