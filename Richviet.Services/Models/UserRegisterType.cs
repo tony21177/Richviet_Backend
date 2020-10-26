@@ -14,5 +14,7 @@ namespace Richviet.Services.Models
         public DateTimeOffset? RegisterTime { get; set; }
         public DateTimeOffset? CreateTime { get; set; }
         public DateTimeOffset? UpdateTime { get; set; }
+
+        public virtual User User { get; set; }
     }
 }

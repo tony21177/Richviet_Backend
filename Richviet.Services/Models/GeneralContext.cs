@@ -17,6 +17,7 @@ namespace Richviet.Services.Models
 
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
         public virtual DbSet<OftenBeneficiar> OftenBeneficiar { get; set; }
+        public virtual DbSet<PayeeRelationType> PayeeRelationType { get; set; }
         public virtual DbSet<PayeeType> PayeeType { get; set; }
         public virtual DbSet<ReceiveBank> ReceiveBank { get; set; }
         public virtual DbSet<RemitRecord> RemitRecord { get; set; }
@@ -47,6 +48,10 @@ namespace Richviet.Services.Models
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.CommisionRate)
+                    .HasColumnName("commision_rate")
+                    .HasComment("收款幣種為此幣別時收的手續費(以匯出幣種為計價單位)");
+
                 entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
@@ -60,6 +65,11 @@ namespace Richviet.Services.Models
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasComment("貨幣名稱");
+
+                entity.Property(e => e.Rate)
+                    .HasColumnName("rate")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("台幣匯率");
             });
 
             modelBuilder.Entity<OftenBeneficiar>(entity =>
@@ -71,11 +81,11 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("常用收款人");
 
+                entity.HasIndex(e => e.PayeeRelationId)
+                    .HasName("fk_often_beneficiar_payee_relation_idx");
+
                 entity.HasIndex(e => e.PayeeTypeId)
                     .HasName("fk_often_beneficiar_payee_type1_idx");
-
-                entity.HasIndex(e => e.ReceiveBankId)
-                    .HasName("fk_often_beneficiar_receive_bank1_idx");
 
                 entity.HasIndex(e => e.UserId)
                     .HasName("fk_often_beneficiar_user1_idx");
@@ -116,43 +126,74 @@ namespace Richviet.Services.Models
                     .HasComment(@"根據type有不同格式
 ");
 
+                entity.Property(e => e.PayeeId)
+                    .IsRequired()
+                    .HasColumnName("payee_id")
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("''")
+                    .HasComment("收款人的ID");
+
+                entity.Property(e => e.PayeeRelationId)
+                    .HasColumnName("payee_relation_id")
+                    .HasColumnType("int(11)")
+                    .HasComment(@"對應payee_relation_type的pk(與收款人的關係)
+");
+
                 entity.Property(e => e.PayeeTypeId)
                     .HasColumnName("payee_type_id")
-                    .HasColumnType("int(11)");
+                    .HasColumnType("int(11)")
+                    .HasComment("對照payee_type的pk(收款方式)");
 
                 entity.Property(e => e.ReceiveBankId)
                     .HasColumnName("receive_bank_id")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.Type)
-                    .HasColumnName("type")
-                    .HasColumnType("tinyint(4)")
-                    .HasComment(@"收款方式
-對應payee_type
-");
+                    .HasColumnType("int(11)")
+                    .HasComment("對應receive_bank的pk(收款方銀行代號)\\n");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
+                entity.HasOne(d => d.PayeeRelation)
+                    .WithMany(p => p.OftenBeneficiar)
+                    .HasForeignKey(d => d.PayeeRelationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_often_beneficiar_payee_relation");
+
                 entity.HasOne(d => d.PayeeType)
                     .WithMany(p => p.OftenBeneficiar)
                     .HasForeignKey(d => d.PayeeTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_often_beneficiar_payee_type1");
-
-                entity.HasOne(d => d.ReceiveBank)
-                    .WithMany(p => p.OftenBeneficiar)
-                    .HasForeignKey(d => d.ReceiveBankId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_often_beneficiar_receive_bank1");
+                    .HasConstraintName("fk_often_beneficiar_payee_type");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.OftenBeneficiar)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_often_beneficiar_user");
+            });
+
+            modelBuilder.Entity<PayeeRelationType>(entity =>
+            {
+                entity.ToTable("payee_relation_type");
+
+                entity.HasComment("收款人關係");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasColumnName("description")
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("''");
+
+                entity.Property(e => e.Type)
+                    .HasColumnName("type")
+                    .HasColumnType("tinyint(2)");
             });
 
             modelBuilder.Entity<PayeeType>(entity =>
@@ -402,6 +443,10 @@ namespace Richviet.Services.Models
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.Birthday)
+                    .HasColumnName("birthday")
+                    .HasColumnType("date");
+
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -413,6 +458,11 @@ namespace Richviet.Services.Models
                     .IsUnicode(false)
                     .HasDefaultValueSql("''")
                     .HasComment("信箱");
+
+                entity.Property(e => e.Gender)
+                    .HasColumnName("gender")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("0:其他(包括未填)\\n1:男\\n2:女\\n");
 
                 entity.Property(e => e.Password)
                     .HasColumnName("password")
@@ -427,6 +477,11 @@ namespace Richviet.Services.Models
                     .IsUnicode(false)
                     .HasDefaultValueSql("''")
                     .HasComment("手機號碼");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("會員狀態\\\\n0:草稿會員\\\\n1:正式會員");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -449,6 +504,11 @@ namespace Richviet.Services.Models
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.ArcIssueDate)
+                    .HasColumnName("arc_issue_date")
+                    .HasColumnType("date")
+                    .HasComment("發證日期");
+
                 entity.Property(e => e.ArcName)
                     .IsRequired()
                     .HasColumnName("arc_name")
@@ -464,6 +524,14 @@ namespace Richviet.Services.Models
                     .IsUnicode(false)
                     .HasDefaultValueSql("''")
                     .HasComment("ARC ID");
+
+                entity.Property(e => e.BackSequence)
+                    .IsRequired()
+                    .HasColumnName("back_sequence")
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("''")
+                    .HasComment("背面序號");
 
                 entity.Property(e => e.Country)
                     .IsRequired()
@@ -503,13 +571,21 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.KycStatus)
                     .HasColumnName("kyc_status")
-                    .HasColumnType("int(11)")
+                    .HasColumnType("tinyint(2)")
                     .HasDefaultValueSql("'0'")
-                    .HasComment("KYC審核狀態, \\r\\n-1:未通過, \\r\\n0:未認證,\\r\\n1:待審核,\\r\\n2:審核通過;");
+                    .HasComment("KYC審核狀態, \\\\r\\\\n-1:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
                     .HasComment("LV2审核通过时间");
+
+                entity.Property(e => e.PassportId)
+                    .IsRequired()
+                    .HasColumnName("passport_id")
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("''")
+                    .HasComment("護照號碼");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -521,6 +597,12 @@ namespace Richviet.Services.Models
                     .HasColumnName("user_id")
                     .HasColumnType("int(11)")
                     .HasComment("對應user的pk");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.UserArc)
+                    .HasForeignKey<UserArc>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_user_arc");
             });
 
             modelBuilder.Entity<UserInfoView>(entity =>
@@ -606,9 +688,9 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.KycStatus)
                     .HasColumnName("kyc_status")
-                    .HasColumnType("int(11)")
+                    .HasColumnType("tinyint(2)")
                     .HasDefaultValueSql("'0'")
-                    .HasComment("KYC審核狀態, \\r\\n-1:未通過, \\r\\n0:未認證,\\r\\n1:待審核,\\r\\n2:審核通過;");
+                    .HasComment("KYC審核狀態, \\\\r\\\\n-1:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
@@ -633,7 +715,8 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.RegisterType)
                     .HasColumnName("register_type")
                     .HasColumnType("tinyint(2)")
-                    .HasComment("登入方式\\n0:FB");
+                    .HasComment(@"註冊方式\\n0:平台本身\n1:FB\n2:apple\n3:google\n4:zalo
+");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -681,6 +764,11 @@ namespace Richviet.Services.Models
                     .HasColumnName("login_time")
                     .HasComment("登入時間");
 
+                entity.Property(e => e.LoginType)
+                    .HasColumnName("login_type")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("0:平台本身\\n1:FB\\n2:apple\\n3:google\\n4:zalo");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserLoginLog)
                     .HasForeignKey(d => d.UserId)
@@ -694,8 +782,8 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("使用者註冊的方式");
 
-                entity.HasIndex(e => e.UserId)
-                    .HasName("user_id_UNIQUE")
+                entity.HasIndex(e => new { e.UserId, e.AuthPlatformId })
+                    .HasName("uni_user_id_platform_id")
                     .IsUnique();
 
                 entity.Property(e => e.Id)
@@ -734,7 +822,8 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.RegisterType)
                     .HasColumnName("register_type")
                     .HasColumnType("tinyint(2)")
-                    .HasComment("登入方式\\n0:FB");
+                    .HasComment(@"註冊方式\\n0:平台本身\n1:FB\n2:apple\n3:google\n4:zalo
+");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -746,6 +835,12 @@ namespace Richviet.Services.Models
                     .HasColumnName("user_id")
                     .HasColumnType("int(11)")
                     .HasComment("對應user的pk");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserRegisterType)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_user_register");
             });
 
             OnModelCreatingPartial(modelBuilder);

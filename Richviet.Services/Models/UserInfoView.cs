@@ -16,7 +16,7 @@ namespace Richviet.Services.Models
         public string IdImageA { get; set; }
         public string IdImageB { get; set; }
         public string IdImageC { get; set; }
-        public int? KycStatus { get; set; }
+        public byte? KycStatus { get; set; }
         public DateTimeOffset? KycStatusUpdateTime { get; set; }
         public string AuthPlatformId { get; set; }
         public byte RegisterType { get; set; }
