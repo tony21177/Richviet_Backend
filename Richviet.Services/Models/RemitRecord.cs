@@ -17,8 +17,6 @@ namespace Richviet.Services.Models
         public string ESignature { get; set; }
         public DateTimeOffset? CreateTime { get; set; }
         public DateTimeOffset? UpdateTime { get; set; }
-        public string PayeeAddress { get; set; }
-        public int ReceiveBankId { get; set; }
         public int FromCurrencyId { get; set; }
         public int ToCurrencyId { get; set; }
         public double FromAmount { get; set; }
@@ -29,6 +27,7 @@ namespace Richviet.Services.Models
         public int? DiscountId { get; set; }
         public double? DiscountAmount { get; set; }
         public byte TransactionStatus { get; set; }
+        public int? BeneficiarId { get; set; }
 
         public virtual User User { get; set; }
     }

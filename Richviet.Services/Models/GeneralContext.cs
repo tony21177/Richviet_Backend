@@ -290,6 +290,9 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("匯款紀錄");
 
+                entity.HasIndex(e => e.BeneficiarId)
+                    .HasName("fk_remit_record_beneficiar_idx");
+
                 entity.HasIndex(e => e.UserId)
                     .HasName("fk_remit_record_user1_idx");
 
@@ -318,6 +321,10 @@ namespace Richviet.Services.Models
                     .HasColumnName("arc_no")
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.Property(e => e.BeneficiarId)
+                    .HasColumnName("beneficiar_id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
@@ -377,14 +384,6 @@ namespace Richviet.Services.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PayeeAddress)
-                    .IsRequired()
-                    .HasColumnName("payee_address")
-                    .HasMaxLength(45)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("根據payee_type此欄位有不同格式\\n若payee_type為銀行匯款方式\\n則此欄位即為銀行帳號");
-
                 entity.Property(e => e.PayeeType)
                     .HasColumnName("payee_type")
                     .HasColumnType("tinyint(4)")
@@ -397,10 +396,6 @@ namespace Richviet.Services.Models
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasComment("即時拍照");
-
-                entity.Property(e => e.ReceiveBankId)
-                    .HasColumnName("receive_bank_id")
-                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ToCurrencyId)
                     .HasColumnName("to_currency_id")

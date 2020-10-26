@@ -30,6 +30,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 #pragma warning disable CS1591
 namespace Richviet.API
@@ -140,6 +141,13 @@ namespace Richviet.API
                         {
                             options.OperationFilter<SwaggerDefaultValues>();
                             options.IncludeXmlComments(XmlCommentsFilePath);
+                            options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+                            {
+                                Type = SecuritySchemeType.Http,
+                                BearerFormat = "JWT",
+                                In = ParameterLocation.Header,
+                                Scheme = "bearer"
+                            });
                             options.OperationFilter<AddRequiredHeaderParameter>();
                         });
                     }
