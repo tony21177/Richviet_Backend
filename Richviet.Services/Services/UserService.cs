@@ -76,6 +76,11 @@ namespace Richviet.Services
             return loggedingUser;
         }
 
+        public UserInfoView GetUserById(int id)
+        {
+            return dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
+        }
+
         public async Task<bool> VerifyUserInfo(string accessToken,UserRegisterType loginUser)
         {
 

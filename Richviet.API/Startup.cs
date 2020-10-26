@@ -96,10 +96,13 @@ namespace Richviet.API
                     // 設定 JWT Bearer Token 的檢查選項
                     .AddJwtBearer(options =>
                         {
+                            options.IncludeErrorDetails = true;
                             options.TokenValidationParameters = new TokenValidationParameters
                             {
+                                ValidateIssuer = false,
+                                ValidateAudience = false,
                                 ValidateLifetime = true,
-                                ValidateIssuerSigningKey = true,
+                                ValidateIssuerSigningKey = false,
                                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
                             };
                         });
@@ -137,6 +140,7 @@ namespace Richviet.API
                         {
                             options.OperationFilter<SwaggerDefaultValues>();
                             options.IncludeXmlComments(XmlCommentsFilePath);
+                            options.OperationFilter<AddRequiredHeaderParameter>();
                         });
                     }
 
@@ -202,6 +206,7 @@ namespace Richviet.API
                 }
 
                 //app.UseHttpsRedirection();
+                app.UseAuthentication();
                 app.UseRouting();
                 app.UseAuthorization();
                 app.UseEndpoints(endpoints =>

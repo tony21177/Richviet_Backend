@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Richviet.Services.Models
+namespace Richviet.API.DataContracts
 {
-    public partial class UserInfoView
+    public partial class UserInfoDTO
     {
         public int Id { get; set; }
         public string Phone { get; set; }
@@ -11,8 +11,6 @@ namespace Richviet.Services.Models
         public byte Gender { get; set; }
         public DateTime? Birthday { get; set; }
         public byte Status { get; set; }
-        public DateTimeOffset? CreateTime { get; set; }
-        public DateTimeOffset? UpdateTime { get; set; }
         public string Country { get; set; }
         public string ArcName { get; set; }
         public string ArcNo { get; set; }

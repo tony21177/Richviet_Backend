@@ -14,5 +14,7 @@ namespace Richviet.Services.Contracts
         Task<bool> AddNewUser(UserRegisterType loginUser);
 
         Task<UserInfoView> GetUser(UserRegisterType loginUser);
+
+        UserInfoView GetUserById(int id);
     }
 }

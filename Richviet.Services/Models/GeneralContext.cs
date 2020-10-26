@@ -634,6 +634,18 @@ namespace Richviet.Services.Models
                     .IsUnicode(false)
                     .HasComment("不同平台(FB,Apple...)的id");
 
+                entity.Property(e => e.BackSequence)
+                    .IsRequired()
+                    .HasColumnName("back_sequence")
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("''")
+                    .HasComment("背面序號");
+
+                entity.Property(e => e.Birthday)
+                    .HasColumnName("birthday")
+                    .HasColumnType("date");
+
                 entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
@@ -652,11 +664,10 @@ namespace Richviet.Services.Models
                     .HasDefaultValueSql("''")
                     .HasComment("信箱");
 
-                entity.Property(e => e.FbEmal)
-                    .HasColumnName("fb_emal")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''");
+                entity.Property(e => e.Gender)
+                    .HasColumnName("gender")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("0:其他(包括未填)\\n1:男\\n2:女\\n");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -696,6 +707,12 @@ namespace Richviet.Services.Models
                     .HasColumnName("kyc_status_update_time")
                     .HasComment("LV2审核通过时间");
 
+                entity.Property(e => e.LoginPlatformEmal)
+                    .HasColumnName("login_platform_emal")
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("''");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
@@ -703,6 +720,14 @@ namespace Richviet.Services.Models
                     .IsUnicode(false)
                     .HasDefaultValueSql("''")
                     .HasComment("平台的名字");
+
+                entity.Property(e => e.PassportId)
+                    .IsRequired()
+                    .HasColumnName("passport_id")
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("''")
+                    .HasComment("護照號碼");
 
                 entity.Property(e => e.Phone)
                     .IsRequired()
@@ -712,11 +737,20 @@ namespace Richviet.Services.Models
                     .HasDefaultValueSql("''")
                     .HasComment("手機號碼");
 
+                entity.Property(e => e.RegisterTime)
+                    .HasColumnName("register_time")
+                    .HasComment("注册时间");
+
                 entity.Property(e => e.RegisterType)
                     .HasColumnName("register_type")
                     .HasColumnType("tinyint(2)")
                     .HasComment(@"註冊方式\\n0:平台本身\n1:FB\n2:apple\n3:google\n4:zalo
 ");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("會員狀態\\\\n0:草稿會員\\\\n1:正式會員");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")

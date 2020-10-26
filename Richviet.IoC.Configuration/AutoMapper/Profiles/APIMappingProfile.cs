@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using DC = Richviet.API.DataContracts;
-using S = Richviet.Services.Models;
+using C = Richviet.API.DataContracts;
+using M = Richviet.Services.Models;
 
 namespace Richviet.IoC.Configuration.AutoMapper.Profiles
 {
@@ -8,8 +8,7 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
     {
         public APIMappingProfile()
         {
-            //CreateMap<DC.User, S.User>().ReverseMap();
-            //CreateMap<DC.Address, S.Address>().ReverseMap();
+            CreateMap<M.UserInfoView, C.UserInfoDTO>().ReverseMap();
         }
     }
 }

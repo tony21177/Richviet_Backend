@@ -27,6 +27,7 @@ namespace Richviet.API.Controllers.V1
         [HttpPost]
         public ActionResult<MessageModel<Object>> Login([FromBody] LoginUserRequest loginRequest)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest();
