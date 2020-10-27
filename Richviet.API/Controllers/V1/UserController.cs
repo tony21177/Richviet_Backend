@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Richviet.API.DataContracts;
+using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
 using Richviet.Services.Models;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Constants;
@@ -24,7 +25,11 @@ namespace Richviet.API.Controllers.V1
             this._jwtHandler = jwtHandler;
         }
 
+        /// <summary>
+        /// 第三方oauth登入後,此API提供我們自己的accessToken做為authetication
+        /// </summary>
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult<MessageModel<Object>> Login([FromBody] LoginUserRequest loginRequest)
         {
 

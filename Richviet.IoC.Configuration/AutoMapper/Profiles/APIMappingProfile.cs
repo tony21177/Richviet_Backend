@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using C = Richviet.API.DataContracts;
+using C = Richviet.API.DataContracts.Dto;
 using M = Richviet.Services.Models;
 
 namespace Richviet.IoC.Configuration.AutoMapper.Profiles
