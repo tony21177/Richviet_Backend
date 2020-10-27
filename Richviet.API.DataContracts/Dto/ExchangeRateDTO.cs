@@ -6,8 +6,15 @@ namespace Richviet.API.DataContracts.Dto
 {
     public class ExchangeRateDTO
     {
-        public String currencyName { get; set; }
+        public CurrencyRate[] exchangeRates { get; set; }
 
-        public double rate { get; set; }
+        public class CurrencyRate
+        {
+            public String currencyName { get; set; }
+
+            public double rate { get; set; }
+        }
     }
+
+    
 }

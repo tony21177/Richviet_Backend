@@ -149,6 +149,7 @@ namespace Richviet.API
                                 Scheme = "bearer"
                             });
                             options.OperationFilter<AddRequiredHeaderParameter>();
+                            options.EnableAnnotations();
                         });
                     }
 

@@ -48,10 +48,6 @@ namespace Richviet.Services.Models
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.CommisionRate)
-                    .HasColumnName("commision_rate")
-                    .HasComment("收款幣種為此幣別時收的手續費(以匯出幣種為計價單位)");
-
                 entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
@@ -65,6 +61,15 @@ namespace Richviet.Services.Models
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasComment("貨幣名稱");
+
+                entity.Property(e => e.Fee)
+                    .HasColumnName("fee")
+                    .HasComment("收款幣種為此幣別時收的手續費(以匯出幣種為計價單位)");
+
+                entity.Property(e => e.FeeType)
+                    .HasColumnName("fee_type")
+                    .HasColumnType("tinyint(1)")
+                    .HasComment("手續費計算方式\\n0:數量\\n1:百分比");
 
                 entity.Property(e => e.Rate)
                     .HasColumnName("rate")
