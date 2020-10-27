@@ -15,6 +15,7 @@ namespace Richviet.Services.Models
         {
         }
 
+        public virtual DbSet<BussinessUnitRemitSetting> BussinessUnitRemitSetting { get; set; }
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
         public virtual DbSet<OftenBeneficiar> OftenBeneficiar { get; set; }
         public virtual DbSet<PayeeRelationType> PayeeRelationType { get; set; }
@@ -29,15 +30,41 @@ namespace Richviet.Services.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=root;database=general");
-            }
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<BussinessUnitRemitSetting>(entity =>
+            {
+                entity.ToTable("bussiness_unit_remit_setting");
+
+                entity.HasComment("服務所在國家的匯款相關設定");
+
+                entity.HasIndex(e => e.Country)
+                    .HasName("country_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Country)
+                    .IsRequired()
+                    .HasColumnName("country")
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasComment("服務所在國家");
+
+                entity.Property(e => e.RemitMax)
+                    .HasColumnName("remit_max")
+                    .HasComment("匯款最高金額");
+
+                entity.Property(e => e.RemitMin)
+                    .HasColumnName("remit_min")
+                    .HasComment("匯款最低金額");
+            });
+
             modelBuilder.Entity<CurrencyCode>(entity =>
             {
                 entity.ToTable("currency_code");

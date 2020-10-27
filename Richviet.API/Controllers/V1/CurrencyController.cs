@@ -26,7 +26,7 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpGet("{country}")]
         [AllowAnonymous]
-        public MessageModel<CurrencyInfoDTO []> getCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. VN ", Required = true)] string country)
+        public MessageModel<CurrencyInfoDTO []> GetCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. VN ", Required = true)] string country)
         {
             Logger.LogInformation(country);
             
@@ -56,7 +56,7 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpGet("exchangeRate")]
         [AllowAnonymous]
-        public MessageModel<ExchangeRateDTO []> getExchangeRate()
+        public MessageModel<ExchangeRateDTO []> GetExchangeRate()
         {
             
             return new MessageModel<ExchangeRateDTO []>
