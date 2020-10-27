@@ -22,21 +22,30 @@ namespace Richviet.API.Controllers.V1
         }
 
         /// <summary>
-        /// 取得指定收款幣別的手續費
+        /// 取得收款國家可選擇幣別和其手續費資料
         /// </summary>
-        [HttpGet("fee/{currencyName}")]
+        [HttpGet("{country}")]
         [AllowAnonymous]
-        public MessageModel<CurrencyFeeDTO> getCurrencyFee([FromRoute, SwaggerParameter("幣別 e.g. VND ", Required = true)] string currencyName)
+        public MessageModel<CurrencyInfoDTO []> getCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. VN ", Required = true)] string country)
         {
-            Logger.LogInformation(currencyName);
+            Logger.LogInformation(country);
             
-            return new MessageModel<CurrencyFeeDTO>
+            return new MessageModel<CurrencyInfoDTO []>
             {
-                Data = new CurrencyFeeDTO
-                {
-                    currencyName = "VND",
-                    feeType = 0,
-                    fee = 100
+                Data = new CurrencyInfoDTO[2]{
+                    new CurrencyInfoDTO
+                    {
+                        currencyName = "VND",
+                        country = "VN",
+                        feeType = 0,
+                        fee = 100
+                    },new CurrencyInfoDTO
+                    {
+                        currencyName = "USD",
+                        country = "VN",
+                        feeType = 0,
+                        fee = 100
+                    }
                 }
             };
 
@@ -47,24 +56,22 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpGet("exchangeRate")]
         [AllowAnonymous]
-        public MessageModel<ExchangeRateDTO> getExchangeRate()
+        public MessageModel<ExchangeRateDTO []> getExchangeRate()
         {
             
-            return new MessageModel<ExchangeRateDTO>
+            return new MessageModel<ExchangeRateDTO []>
             {
-                Data = new ExchangeRateDTO()
-                {
-                    exchangeRates = new ExchangeRateDTO.CurrencyRate[2]
+                    Data = new ExchangeRateDTO[2]
                     {
-                        new ExchangeRateDTO.CurrencyRate{
+                        new ExchangeRateDTO{
                             currencyName = "USD",
                             rate = 30
-                        },new ExchangeRateDTO.CurrencyRate{
+                        },new ExchangeRateDTO{
                             currencyName = "VND",
                             rate = 800
                         }
                     }
-                }
+             
             };
         }
 
