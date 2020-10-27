@@ -1,9 +1,9 @@
 ﻿
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Any;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Richviet.API.Swagger
 {
@@ -15,11 +15,16 @@ namespace Richviet.API.Swagger
             if (operation.Security == null)
                 operation.Security = new List<OpenApiSecurityRequirement>();
 
-            var scheme = new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearer" } };
-            operation.Security.Add(new OpenApiSecurityRequirement
+            if (!context.MethodInfo.GetCustomAttributes(true)
+              .Any(_ => _ is AllowAnonymousAttribute))
             {
-                [scheme] = new List<string>()
-            });
+
+                var scheme = new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearer" } };
+                operation.Security.Add(new OpenApiSecurityRequirement
+                {
+                    [scheme] = new List<string>()
+                });
+            }
 
 
             // Swagger UI不再支援此種方式

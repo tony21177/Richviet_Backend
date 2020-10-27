@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Richviet.API.DataContracts
+namespace Richviet.API.DataContracts.Dto
+
 {
     public partial class UserInfoDTO
     {
