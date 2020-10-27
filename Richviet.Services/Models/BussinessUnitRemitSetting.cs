@@ -9,5 +9,6 @@ namespace Richviet.Services.Models
         public string Country { get; set; }
         public double RemitMin { get; set; }
         public double RemitMax { get; set; }
+        public DateTimeOffset UpdateTime { get; set; }
     }
 }

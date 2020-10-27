@@ -41,7 +41,38 @@ namespace Richviet.API.Controllers.V1
 
         }
 
+        /// <summary>
+        /// 取得使用者擁有的優惠券
+        /// </summary>
+        [HttpGet("discount")]
+        [AllowAnonymous]
+        public MessageModel<UserRemitDiscountDTO []> GetUserDiscount()
+        {
 
+            return new MessageModel<UserRemitDiscountDTO []>
+            {
+                Data = new UserRemitDiscountDTO[2]
+                {
+                    new UserRemitDiscountDTO()
+                    {
+                        Id=2,
+                        UserId=10,
+                        EffectiveDate=new DateTime(2020,11,1),
+                        ExpireDate=new DateTime(2021,3,31),
+                        Value=50
+                    },
+                    new UserRemitDiscountDTO()
+                    {
+                        Id=3,
+                        UserId=10,
+                        EffectiveDate=new DateTime(2020,11,1),
+                        ExpireDate=new DateTime(2021,3,31),
+                        Value=100
+                    }
+                }
+            };
+
+        }
 
 
     }

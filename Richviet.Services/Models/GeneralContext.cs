@@ -17,6 +17,7 @@ namespace Richviet.Services.Models
 
         public virtual DbSet<BussinessUnitRemitSetting> BussinessUnitRemitSetting { get; set; }
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
+        public virtual DbSet<Discount> Discount { get; set; }
         public virtual DbSet<OftenBeneficiar> OftenBeneficiar { get; set; }
         public virtual DbSet<PayeeRelationType> PayeeRelationType { get; set; }
         public virtual DbSet<PayeeType> PayeeType { get; set; }
@@ -30,7 +31,7 @@ namespace Richviet.Services.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+         
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,6 +64,11 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.RemitMin)
                     .HasColumnName("remit_min")
                     .HasComment("匯款最低金額");
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnName("update_time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
             });
 
             modelBuilder.Entity<CurrencyCode>(entity =>
@@ -104,11 +110,51 @@ namespace Richviet.Services.Models
                     .HasComment("台幣匯率");
             });
 
+            modelBuilder.Entity<Discount>(entity =>
+            {
+                entity.ToTable("discount");
+
+                entity.HasComment("優惠券");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("fk_discount_user_idx");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("create_time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.EffectiveDate)
+                    .HasColumnName("effective_date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ExpireDate)
+                    .HasColumnName("expire_date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnName("update_time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Value).HasColumnName("value");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Discount)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_discount_user");
+            });
+
             modelBuilder.Entity<OftenBeneficiar>(entity =>
             {
-                entity.HasKey(e => new { e.Id, e.UserId })
-                    .HasName("PRIMARY");
-
                 entity.ToTable("often_beneficiar");
 
                 entity.HasComment("常用收款人");
@@ -124,11 +170,6 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.CreateTime)
@@ -186,6 +227,10 @@ namespace Richviet.Services.Models
                     .HasColumnName("update_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.PayeeRelation)
                     .WithMany(p => p.OftenBeneficiar)
@@ -315,9 +360,6 @@ namespace Richviet.Services.Models
 
             modelBuilder.Entity<RemitRecord>(entity =>
             {
-                entity.HasKey(e => new { e.Id, e.UserId })
-                    .HasName("PRIMARY");
-
                 entity.ToTable("remit_record");
 
                 entity.HasComment("匯款紀錄");
@@ -330,11 +372,6 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.ApplyExchangeRate)
@@ -452,6 +489,15 @@ namespace Richviet.Services.Models
                     .HasColumnName("update_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasColumnType("int(11)");
+
+                entity.HasOne(d => d.Beneficiar)
+                    .WithMany(p => p.RemitRecord)
+                    .HasForeignKey(d => d.BeneficiarId)
+                    .HasConstraintName("fk_remit_record_beneficiar");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RemitRecord)
