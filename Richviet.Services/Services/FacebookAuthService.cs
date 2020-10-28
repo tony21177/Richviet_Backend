@@ -6,6 +6,7 @@ using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using System;
+using System.Collections;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,28 +17,26 @@ namespace Richviet.Services
 {
     public class FacebookAuthService : IAuthService
     {
-        private readonly ILogger Logger;
-
-        private readonly IConfiguration _configuration;
-
+        private readonly ILogger logger;
+        private readonly IConfiguration configuration;
+        private readonly HttpClient httpClient;
         public LoginType LoginType { get; } = LoginType.FB;
-        private readonly HttpClient _httpClient;
 
         public FacebookAuthService(ILogger<FacebookAuthService> logger, IConfiguration configuration)
         {
-            this._configuration = configuration;
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _httpClient = new HttpClient
+            this.configuration = configuration;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            httpClient = new HttpClient
             {
-                BaseAddress = new Uri(_configuration["Facebook:ApiBaseUrl"])
+                BaseAddress = new Uri(this.configuration["Facebook:ApiBaseUrl"])
             };
-            _httpClient.DefaultRequestHeaders
+            httpClient.DefaultRequestHeaders
                 .Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
 
-        public async Task<bool> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser)
+        public async Task<dynamic> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser)
         {
             //debug token
             var isTokenValid = await VerifyAccessToken(accessToken);
@@ -48,7 +47,7 @@ namespace Richviet.Services
             
             if (result.GetValue("error") != null)
             {
-                return false;
+                return null;
             }
 
             if (result == null)
@@ -60,26 +59,26 @@ namespace Richviet.Services
             var id = result.GetValue("id").ToString();
             if (loginUser.AuthPlatformId.Equals(id))
             {
-                return true;
+                return result;
             }
 
-            return false;
+            return null;
         }
 
         private async Task<bool> VerifyAccessToken(string accessToken)
         {
-            var response = await _httpClient.GetAsync($"debug_token?input_token={accessToken}&access_token={accessToken}");
+            var response = await httpClient.GetAsync($"debug_token?input_token={accessToken}&access_token={accessToken}");
             if (!response.IsSuccessStatusCode)
             {
                 var errorResult = await response.Content.ReadAsStringAsync();
-                Logger.LogError(errorResult);
+                logger.LogError(errorResult);
                 return false;
             }
 
             var result = await response.Content.ReadAsStringAsync();
             dynamic resultObj = JsonConvert.DeserializeObject(result);
             string appId = resultObj["data"]["app_id"];
-            var allowAppIdArray = _configuration.GetSection("Facebook:ApiKey").Get<string[]>();
+            var allowAppIdArray = configuration.GetSection("Facebook:ApiKey").Get<string[]>();
             if (Array.IndexOf(allowAppIdArray, appId)>-1)
             {
                 return true;
@@ -90,11 +89,11 @@ namespace Richviet.Services
 
         private async Task<dynamic> GetAsync<T>(string accessToken, string endpoint, string args = null)
         {
-            var response = await _httpClient.GetAsync($"{endpoint}?access_token={accessToken}&{args}");
+            var response = await httpClient.GetAsync($"{endpoint}?access_token={accessToken}&{args}");
             if (response.StatusCode == HttpStatusCode.BadRequest)
             {
                 var errorResult = await response.Content.ReadAsStringAsync();
-                Logger.LogError(errorResult);
+                logger.LogError(errorResult);
                 return JsonConvert.DeserializeObject<T>(errorResult);
             }
             if (!response.IsSuccessStatusCode)

@@ -7,6 +7,6 @@ namespace Richviet.Services.Contracts
     public interface IAuthService
     {
         LoginType LoginType { get; }
-        Task<bool> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser);
+        Task<dynamic> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser);
     }
 }

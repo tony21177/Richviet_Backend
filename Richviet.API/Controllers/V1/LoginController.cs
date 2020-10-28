@@ -17,12 +17,12 @@ namespace Richviet.API.Controllers.V1
     public class LoginController : Controller
     {
         private readonly IUserService userService;
-        private readonly JwtHandler _jwtHandler;
+        private readonly JwtHandler jwtHandler;
 
         public LoginController(IUserService userService, JwtHandler jwtHandler)
         {
             this.userService = userService;
-            this._jwtHandler = jwtHandler;
+            this.jwtHandler = jwtHandler;
         }
 
         /// <summary>
@@ -32,13 +32,7 @@ namespace Richviet.API.Controllers.V1
         [AllowAnonymous]
         public ActionResult<MessageModel<Object>> Login([FromBody] LoginUserRequest loginRequest)
         {
-
             if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            LoginType loginType;
-            if(!Enum.TryParse(loginRequest.loginType,false,out loginType))
             {
                 return BadRequest();
             }
@@ -46,12 +40,12 @@ namespace Richviet.API.Controllers.V1
             var loginUserRegistger = new UserRegisterType()
             {
                 AuthPlatformId = loginRequest.userId,
-                Email = loginRequest.email,
-                RegisterType = (byte)loginType,
-                Name = loginRequest.name
+                RegisterType = (byte)loginRequest.loginType
             };
-            bool isVerified = userService.VerifyUserInfo(loginRequest.accessToken, loginRequest.permissions, loginUserRegistger).Result;
-            if (!isVerified)
+
+            dynamic verifiedData = userService.VerifyUserInfo(loginRequest.accessToken, loginRequest.permissions, loginUserRegistger).Result;
+
+            if (verifiedData == null)
                 return Unauthorized(new MessageModel<Object>
                 {
                     Status = (int)HttpStatusCode.Unauthorized,
@@ -59,13 +53,17 @@ namespace Richviet.API.Controllers.V1
                     Msg = "Unauthorized",
                     Data = null
                 }); ;
+
+            loginUserRegistger.Name = verifiedData["name"].ToString();
+            loginUserRegistger.Email = verifiedData["email"].ToString();
+
             if (userService.GetUser(loginUserRegistger).Result == null)
             {
                 userService.AddNewUser(loginUserRegistger).Wait();
             }
             var loginUser = userService.GetUser(loginUserRegistger).Result;
 
-            var accessToken = _jwtHandler.CreateAccessToken(loginUser.Id, loginUser.Email, loginUser.Name, loginRequest.countryOfApp);
+            var accessToken = this.jwtHandler.CreateAccessToken(loginUser.Id, loginUser.Email, loginUser.Name);
             return Ok(new MessageModel<Object>
             {
                 Data = new 

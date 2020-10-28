@@ -1,7 +1,4 @@
-﻿
-
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
 using Richviet.Services.Models;
@@ -79,7 +76,7 @@ namespace Richviet.Services
             return dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
         }
 
-        public async Task<bool> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser)
+        public async Task<dynamic> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser)
         {
 
             switch ((LoginType)loginUser.RegisterType)

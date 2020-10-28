@@ -17,14 +17,13 @@ namespace Richviet.Tools.Utility
             _configuration = configuration;
         }
 
-        public TokenResource CreateAccessToken(int userId, string email,string name,string countryForApp)
+        public TokenResource CreateAccessToken(int userId, string email,string name)
         {
             var claims = new Claim[]
             {
             new Claim("id", userId.ToString()),
             new Claim("email", email),
-            new Claim("name", name),
-            new Claim("country", countryForApp)
+            new Claim("name", name)
             };
             var userClaimIdentity = new ClaimsIdentity(claims);
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"])),

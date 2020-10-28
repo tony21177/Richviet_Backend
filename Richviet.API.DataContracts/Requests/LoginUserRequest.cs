@@ -11,18 +11,11 @@ namespace Richviet.API.DataContracts.Requests
         [Required]
         public string userId { get; set; }
         [Required]
-        public string name { get; set; }
-        public string email { get; set; }
-        public string linkURL { get; set; }
-        public long refreshDate { get; set; }
-        public string imageURL { get; set; }
-        public string gender { get; set; }
-        [Required]
         public string accessToken { get; set; }
         [Required]
         public string permissions { get; set; }
         [Required]
-        public string loginType { get; set; }
+        public int loginType { get; set; }
         [Required]
         public string countryOfApp { get; set; }
         public TokenResource refreshToken { get; set; }

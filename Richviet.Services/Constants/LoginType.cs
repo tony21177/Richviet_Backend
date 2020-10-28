@@ -7,7 +7,8 @@ namespace Richviet.Services.Constants
 {
     public enum LoginType
     {
-        FB=0,
-        Zalo=1
+        Platplatform = 0,
+        FB = 1,
+        Zalo = 2
     }
 }
