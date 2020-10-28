@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Richviet.API.DataContracts.Converter;
 
 #pragma warning disable CS1591
 namespace Richviet.API
@@ -88,7 +89,11 @@ namespace Richviet.API
                             //opt.Filters.Add(typeof(CustomFilterAttribute));
                             opt.Filters.Add(new ProducesAttribute("application/json"));
                         }
-                        ).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                        ).SetCompatibilityVersion(CompatibilityVersion.Version_3_0).AddJsonOptions(options =>
+                        {
+                            // Configure a custom converter.
+                            options.JsonSerializerOptions.Converters.Add(new CustomDateConverter());
+                        });
 
                     // authentication
                     services
