@@ -6,12 +6,16 @@ using Richviet.API.DataContracts.Responses;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 
+#pragma warning disable    1591
 namespace Richviet.API.Controllers.V1
 {
 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/remit")]
     [ApiController]
+    /// <summary>
+    /// 匯款流程相關API
+    /// </summary>
     public class RemitController : Controller
     {
         private readonly ILogger Logger;
