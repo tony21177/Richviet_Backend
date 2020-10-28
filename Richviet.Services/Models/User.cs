@@ -7,6 +7,7 @@ namespace Richviet.Services.Models
     {
         public User()
         {
+            Discount = new HashSet<Discount>();
             OftenBeneficiar = new HashSet<OftenBeneficiar>();
             RemitRecord = new HashSet<RemitRecord>();
             UserLoginLog = new HashSet<UserLoginLog>();
@@ -24,6 +25,7 @@ namespace Richviet.Services.Models
         public byte Status { get; set; }
 
         public virtual UserArc UserArc { get; set; }
+        public virtual ICollection<Discount> Discount { get; set; }
         public virtual ICollection<OftenBeneficiar> OftenBeneficiar { get; set; }
         public virtual ICollection<RemitRecord> RemitRecord { get; set; }
         public virtual ICollection<UserLoginLog> UserLoginLog { get; set; }

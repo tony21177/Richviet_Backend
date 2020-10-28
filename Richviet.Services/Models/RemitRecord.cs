@@ -29,6 +29,7 @@ namespace Richviet.Services.Models
         public byte TransactionStatus { get; set; }
         public int? BeneficiarId { get; set; }
 
+        public virtual OftenBeneficiar Beneficiar { get; set; }
         public virtual User User { get; set; }
     }
 }

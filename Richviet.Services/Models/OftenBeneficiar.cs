@@ -5,6 +5,11 @@ namespace Richviet.Services.Models
 {
     public partial class OftenBeneficiar
     {
+        public OftenBeneficiar()
+        {
+            RemitRecord = new HashSet<RemitRecord>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string PayeeAddress { get; set; }
@@ -20,5 +25,6 @@ namespace Richviet.Services.Models
         public virtual PayeeRelationType PayeeRelation { get; set; }
         public virtual PayeeType PayeeType { get; set; }
         public virtual User User { get; set; }
+        public virtual ICollection<RemitRecord> RemitRecord { get; set; }
     }
 }

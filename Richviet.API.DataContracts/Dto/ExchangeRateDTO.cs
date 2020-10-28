@@ -10,4 +10,6 @@ namespace Richviet.API.DataContracts.Dto
 
         public double rate { get; set; }
     }
+
+    
 }
