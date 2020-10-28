@@ -9,7 +9,7 @@ namespace Richviet.Services.Contracts
 {
     public interface IUserService
     {
-        Task<bool> VerifyUserInfo(string accessToken,UserRegisterType loginUser);
+        Task<bool> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser);
 
         Task<bool> AddNewUser(UserRegisterType loginUser);
 

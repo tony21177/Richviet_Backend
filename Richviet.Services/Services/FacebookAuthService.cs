@@ -37,14 +37,14 @@ namespace Richviet.Services
         }
 
 
-        public async Task<bool> VerifyUserInfo(string accessToken,UserRegisterType loginUser)
+        public async Task<bool> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser)
         {
             //debug token
             var isTokenValid = await VerifyAccessToken(accessToken);
             if (!isTokenValid) return false;
 
             // verify user info
-            dynamic result =  await GetAsync<dynamic>(accessToken, "me", "fields=name,email,picture,birthday,gender");
+            dynamic result =  await GetAsync<dynamic>(accessToken, "me", $"fields={permissions}");
             
             if (result.GetValue("error") != null)
             {

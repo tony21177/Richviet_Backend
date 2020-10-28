@@ -50,7 +50,7 @@ namespace Richviet.API.Controllers.V1
                 RegisterType = (byte)loginType,
                 Name = loginRequest.name
             };
-            bool isVerified = userService.VerifyUserInfo(loginRequest.accessToken, loginUserRegistger).Result;
+            bool isVerified = userService.VerifyUserInfo(loginRequest.accessToken, loginRequest.permissions, loginUserRegistger).Result;
             if (!isVerified)
                 return Unauthorized(new MessageModel<Object>
                 {

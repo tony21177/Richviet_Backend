@@ -11,7 +11,6 @@ namespace Richviet.Services.Models
         public string AuthPlatformId { get; set; }
         public byte RegisterType { get; set; }
         public string Email { get; set; }
-        public string Permissions { get; set; }
         public DateTimeOffset? RegisterTime { get; set; }
         public DateTimeOffset? CreateTime { get; set; }
         public DateTimeOffset? UpdateTime { get; set; }

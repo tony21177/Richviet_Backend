@@ -20,6 +20,8 @@ namespace Richviet.API.DataContracts.Requests
         [Required]
         public string accessToken { get; set; }
         [Required]
+        public string permissions { get; set; }
+        [Required]
         public string loginType { get; set; }
         [Required]
         public string countryOfApp { get; set; }

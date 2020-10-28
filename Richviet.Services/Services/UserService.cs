@@ -17,14 +17,12 @@ namespace Richviet.Services
     public class UserService: IUserService
     {
         private readonly IEnumerable<IAuthService> authServices;
-        private readonly JwtHandler jwtHandler;
         private readonly GeneralContext dbContext;
 
 
-        public UserService(IEnumerable<IAuthService> authServices, JwtHandler jwtHandler, GeneralContext dbContext)
+        public UserService(IEnumerable<IAuthService> authServices, GeneralContext dbContext)
         {
             this.authServices = authServices;
-            this.jwtHandler = jwtHandler;
             this.dbContext = dbContext;
         }
 
@@ -81,14 +79,14 @@ namespace Richviet.Services
             return dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
         }
 
-        public async Task<bool> VerifyUserInfo(string accessToken,UserRegisterType loginUser)
+        public async Task<bool> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser)
         {
 
             switch ((LoginType)loginUser.RegisterType)
             {
                 case LoginType.FB:
                     IAuthService authService = authServices.Single(service => service.LoginType == LoginType.FB);
-                    return await authService.VerifyUserInfo(accessToken,loginUser);
+                    return await authService.VerifyUserInfo(accessToken, permissions, loginUser);
                 default:
                     return false;
             }
