@@ -30,9 +30,6 @@ namespace Richviet.Services
             {
                 BaseAddress = new Uri(this.configuration["Facebook:ApiBaseUrl"])
             };
-            httpClient.DefaultRequestHeaders
-                .Accept
-                .Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
 
