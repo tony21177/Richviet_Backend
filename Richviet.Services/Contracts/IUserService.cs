@@ -1,4 +1,5 @@
 ﻿
+using Richviet.API.DataContracts.Requests;
 using Richviet.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,7 @@ namespace Richviet.Services.Contracts
         Task<UserInfoView> GetUser(UserRegisterType loginUser);
 
         UserInfoView GetUserById(int id);
+
+        Task<bool> ReigsterUserByID(int id, UserRegisterType loginUser, User user, UserArc userArc);
     }
 }

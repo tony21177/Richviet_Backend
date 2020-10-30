@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Richviet.API.DataContracts;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
 using System.Collections;
+using AutoMapper;
+using Richviet.API.DataContracts.Requests;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -24,10 +23,12 @@ namespace Richviet.API.Controllers.V1
     public class UserController : Controller
     {
         private readonly IUserService userService;
+        private IMapper mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IMapper mapper)
         {
             this.userService = userService;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -36,20 +37,24 @@ namespace Richviet.API.Controllers.V1
         [HttpGet("info")]
         public MessageModel<UserInfoDTO> getOwnUserInfo()
         {
-            IEnumerable claims = User.Claims;
-            //int id = User.Claims
-            //UserInfoView userInfo = userService.GetUserById();
+            //IEnumerable claims = User.Claims;
+
+            UserInfoDTO userModel = null;
 
             //解JWT
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity != null)
             {
-                Console.WriteLine(identity.FindFirst("exp").Value);
+                var userID = identity.FindFirst("id").Value;
+                Console.WriteLine(identity.FindFirst("id").Value);
+                UserInfoView userInfo = userService.GetUserById(Int32.Parse(userID));
+                // 將 user 置換成 ViewModel
+                userModel = mapper.Map<UserInfoDTO>(userInfo);
             }
 
             return new MessageModel<UserInfoDTO>
             {
-                Data = new UserInfoDTO()
+                Data = userModel
             };
         }
 

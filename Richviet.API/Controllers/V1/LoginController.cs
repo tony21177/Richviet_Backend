@@ -77,7 +77,8 @@ namespace Richviet.API.Controllers.V1
                 Data = new 
                 {
                     AccessToken = accessToken.Token,
-                    isFullUser = fullUserStatus
+                    isFullUser = fullUserStatus,
+                    KYCStatus = loginUser.KycStatus
                 }
             });
         }

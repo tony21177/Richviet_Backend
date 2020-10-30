@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Richviet.Tools.Utility;
-
+using Richviet.API.DataContracts.Requests;
 
 namespace Richviet.Services
 {
@@ -38,7 +38,7 @@ namespace Richviet.Services
                 await dbContext.UserArc.AddAsync(userArc);
                 dbContext.SaveChanges();
 
-                
+
                 var userRegisterType = new UserRegisterType()
                 {
                     UserId = user.Id,
@@ -74,6 +74,11 @@ namespace Richviet.Services
         public UserInfoView GetUserById(int id)
         {
             return dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
+        }
+
+        public Task<bool> ReigsterUserByID(int id, UserRegisterType loginUser, User user, UserArc userArc)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<dynamic> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser)

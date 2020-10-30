@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Richviet.API.Common\Richviet.API.Common.csproj" />
     <ProjectReference Include="..\Richviet.Tools\Richviet.Tools.csproj" />
+    <ProjectReference Include="..\Richviet.API.DataContracts\Richviet.API.DataContracts.csproj" />
   </ItemGroup>
 
 </Project>
