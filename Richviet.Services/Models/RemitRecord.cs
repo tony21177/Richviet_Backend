@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Richviet.Services.Models
 {
-    public partial class RemitRecord
+    public  class RemitRecord
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -26,8 +26,11 @@ namespace Richviet.Services.Models
         public byte FeeType { get; set; }
         public int? DiscountId { get; set; }
         public double? DiscountAmount { get; set; }
-        public byte TransactionStatus { get; set; }
         public int? BeneficiarId { get; set; }
+        public byte TransactionStatus { get; set; }
+        public byte? ArcStatus { get; set; }
+        public DateTimeOffset? ArcVerifyTime { get; set; }
+        public DateTimeOffset? PaymentTime { get; set; }
 
         public virtual OftenBeneficiar Beneficiar { get; set; }
         public virtual User User { get; set; }

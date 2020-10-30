@@ -113,7 +113,7 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpGet("beneficiars")]
         [AllowAnonymous]
-        public MessageModel<UserBeneficiarsDTO []> getOwnBeneficiarsInfo()
+        public MessageModel<UserBeneficiarsDTO []> GetOwnBeneficiarsInfo()
         {
             
             return new MessageModel<UserBeneficiarsDTO []>

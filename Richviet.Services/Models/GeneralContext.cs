@@ -31,7 +31,6 @@ namespace Richviet.Services.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -396,6 +395,16 @@ namespace Richviet.Services.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ArcStatus)
+                    .HasColumnName("arc_status")
+                    .HasColumnType("tinyint(2)")
+                    .HasDefaultValueSql("'0'")
+                    .HasComment("0:arc未審核,1:系統自動審核arc成功");
+
+                entity.Property(e => e.ArcVerifyTime)
+                    .HasColumnName("arc_verify_time")
+                    .HasComment("系統自動審核移名屬ARC時間");
+
                 entity.Property(e => e.BeneficiarId)
                     .HasColumnName("beneficiar_id")
                     .HasColumnType("int(11)");
@@ -464,6 +473,10 @@ namespace Richviet.Services.Models
                     .HasComment(@"收款方式,對應table:payee_type
 ");
 
+                entity.Property(e => e.PaymentTime)
+                    .HasColumnName("payment_time")
+                    .HasComment("會員繳款時間");
+
                 entity.Property(e => e.RealTimePic)
                     .IsRequired()
                     .HasColumnName("real_time_pic")
@@ -484,11 +497,7 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.TransactionStatus)
                     .HasColumnName("transaction_status")
                     .HasColumnType("tinyint(4)")
-                    .HasComment(@"-9:其他錯誤
--1: 拒絕
-0: 待繳款
-1: 已繳款
-2: 已匯款");
+                    .HasComment("-9:其他錯誤\\\\n-1: 審核失敗\\\\n0: 待審核(系統進入arc_status流程)\\\\n1: 待繳款\\\\n2: 已繳款\\\\n3:處理完成");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")

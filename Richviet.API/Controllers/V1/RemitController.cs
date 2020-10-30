@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Responses;
+using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 
@@ -33,10 +34,10 @@ namespace Richviet.API.Controllers.V1
         public MessageModel<RemitSettingDTO> GetCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. TW ", Required = true)] string country)
         {
             Logger.LogInformation(country);
-            
+
             return new MessageModel<RemitSettingDTO>
             {
-                Data = new RemitSettingDTO{
+                Data = new RemitSettingDTO {
                     country = "TW",
                     remitMin = 1000,
                     remitMax = 30000
@@ -46,14 +47,14 @@ namespace Richviet.API.Controllers.V1
         }
 
         /// <summary>
-        /// 取得使用者擁有的優惠券
+        /// 使用者擁有的優惠券
         /// </summary>
         [HttpGet("discount")]
         [AllowAnonymous]
-        public MessageModel<UserRemitDiscountDTO []> GetUserDiscount()
+        public MessageModel<UserRemitDiscountDTO[]> GetUserDiscount()
         {
 
-            return new MessageModel<UserRemitDiscountDTO []>
+            return new MessageModel<UserRemitDiscountDTO[]>
             {
                 Data = new UserRemitDiscountDTO[2]
                 {
@@ -76,6 +77,85 @@ namespace Richviet.API.Controllers.V1
                 }
             };
 
+        }
+
+        /// <summary>
+        /// 使用者送出匯款申請
+        /// </summary>
+        /// 
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult<MessageModel<RemitRecordDTO>> ApplyRemitRecord([FromBody] RemitRequest remitRequest)
+        {
+            return Ok(new MessageModel<RemitRecordDTO>
+            {
+                Data = new RemitRecordDTO() {
+                    Id = 101,
+                    CreateTime = DateTimeOffset.Now,
+                    ToCurrency = "VND",
+                    FromAmount = 10000,
+                    ToAmount = 7960000,
+                    TransactionExchangeRate = 800,
+                    Fee = 150,
+                    DiscountAmount = 100,
+                    Name = "爸爸",
+                    PayeeAddress = "XXXXXXXXXX456",
+                    Type = 0,
+                    TransactionStatus = 0
+                }
+            });
+        }
+        [HttpGet("payment/{id}")]
+        [AllowAnonymous]
+        public ActionResult<MessageModel<PaymentCodeDTO>> GetPaymentCode([FromRoute, SwaggerParameter("交易紀錄id", Required = true)] int id)
+        {
+            return Ok(new MessageModel<PaymentCodeDTO>()
+            {
+                Data = new PaymentCodeDTO()
+                {
+                    Code = "WEFQEWFEFQEQGRGRG009233"
+                }
+            });
+        }
+
+        [HttpGet("remitRecords/{arcNo}")]
+        [AllowAnonymous]
+        public ActionResult<MessageModel<RemitRecordDTO []>> GetRemitRecords([FromRoute, SwaggerParameter("ARC No.", Required = true)] string arcNo)
+        {
+            return Ok(new MessageModel<RemitRecordDTO[]>
+            {
+                Data =  new RemitRecordDTO[] {
+                    new RemitRecordDTO()
+                    {
+                        Id = 101,
+                        CreateTime = DateTimeOffset.Now,
+                        ToCurrency = "VND",
+                        FromAmount = 10000,
+                        ToAmount = 7960000,
+                        TransactionExchangeRate = 800,
+                        Fee = 150,
+                        DiscountAmount = 100,
+                        Name = "爸爸",
+                        PayeeAddress = "XXXXXXXXXX456",
+                        Type = 0,
+                        TransactionStatus = 0
+                    }, new RemitRecordDTO()
+                    {
+                        Id = 102,
+                        CreateTime = DateTimeOffset.Now,
+                        ToCurrency = "USD",
+                        FromAmount = 10000,
+                        ToAmount = 348.25,
+                        TransactionExchangeRate = 0.035,
+                        Fee = 150,
+                        DiscountAmount = 100,
+                        Name = "爸爸",
+                        PayeeAddress = "XXXXXXXXXX456",
+                        Type = 0,
+                        TransactionStatus = 1
+                    }
+                }
+            });
         }
 
 
