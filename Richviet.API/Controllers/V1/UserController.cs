@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Richviet.API.DataContracts;
 using Richviet.API.DataContracts.Dto;
@@ -32,6 +35,14 @@ namespace Richviet.API.Controllers.V1
         {
             //int id = User.Claims
             //UserInfoView userInfo = userService.GetUserById();
+
+            //解JWT
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                Console.WriteLine(identity.FindFirst("exp").Value);
+            }
+
             return new MessageModel<UserInfoDTO>
             {
                 Data = new UserInfoDTO()
