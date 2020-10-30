@@ -105,6 +105,11 @@ namespace Richviet.API.Controllers.V1
                 }
             });
         }
+
+        /// <summary>
+        /// 取得該筆匯款紀錄的繳款碼
+        /// </summary>
+        /// 
         [HttpGet("payment/{id}")]
         [AllowAnonymous]
         public ActionResult<MessageModel<PaymentCodeDTO>> GetPaymentCode([FromRoute, SwaggerParameter("交易紀錄id", Required = true)] int id)
@@ -117,6 +122,11 @@ namespace Richviet.API.Controllers.V1
                 }
             });
         }
+
+        /// <summary>
+        /// 該會員的交易紀錄
+        /// </summary>
+        /// 
 
         [HttpGet("remitRecords/{arcNo}")]
         [AllowAnonymous]
