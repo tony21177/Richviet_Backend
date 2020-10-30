@@ -24,8 +24,8 @@ namespace Richviet.Services.Models
         [SwaggerSchema("收款銀行名-台灣名稱")]
         public string TwName { get; set; }
 
-        [SwaggerSchema("收款人帳號(arc_no)")]
-        public string ArcNo { get; set; }
+        [SwaggerSchema("會員id")]
+        public int UserId { get; set; }
         [SwaggerSchema("收款人關係0:父母,1:兄弟,2:子女")]
         public byte Type { get; set; }
         public DateTimeOffset? CreateTime { get; set; }

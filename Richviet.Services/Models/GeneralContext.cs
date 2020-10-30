@@ -31,7 +31,7 @@ namespace Richviet.Services.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-         
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -139,6 +139,11 @@ namespace Richviet.Services.Models
                     .HasColumnName("update_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.UseStatus)
+                    .HasColumnName("use_status")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("0:可使用,1:已使用,2:無效");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")

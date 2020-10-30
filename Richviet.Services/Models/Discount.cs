@@ -10,6 +10,7 @@ namespace Richviet.Services.Models
         public double Value { get; set; }
         public DateTime? EffectiveDate { get; set; }
         public DateTime? ExpireDate { get; set; }
+        public byte UseStatus { get; set; }
         public DateTimeOffset CreateTime { get; set; }
         public DateTimeOffset UpdateTime { get; set; }
 
