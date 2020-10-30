@@ -11,12 +11,12 @@ using System;
 namespace Richviet.API.Controllers.V1
 {
 
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/remit")]
-    [ApiController]
     /// <summary>
     /// 匯款流程相關API
     /// </summary>
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/remit")]
+    [ApiController]
     public class RemitController : Controller
     {
         private readonly ILogger Logger;
@@ -82,7 +82,6 @@ namespace Richviet.API.Controllers.V1
         /// <summary>
         /// 使用者送出匯款申請
         /// </summary>
-        /// 
         [HttpPost]
         [AllowAnonymous]
         public ActionResult<MessageModel<RemitRecordDTO>> ApplyRemitRecord([FromBody] RemitRequest remitRequest)
@@ -127,7 +126,6 @@ namespace Richviet.API.Controllers.V1
         /// 該會員的交易紀錄
         /// </summary>
         /// 
-
         [HttpGet("remitRecords/{arcNo}")]
         [AllowAnonymous]
         public ActionResult<MessageModel<RemitRecordDTO []>> GetRemitRecords([FromRoute, SwaggerParameter("ARC No.", Required = true)] string arcNo)
