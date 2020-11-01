@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace Richviet.Services.Models
+namespace Richviet.API.DataContracts.Dto
 {
     [SwaggerSchema(Required = new[] { "Description" })]
-    public class UserBeneficiarsDTO
+    public class UserBeneficiarDTO
     {
         [SwaggerSchema("主鍵")]
         public int Id { get; set; }

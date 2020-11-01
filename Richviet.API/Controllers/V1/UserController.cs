@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Richviet.API.DataContracts;
 using Richviet.API.DataContracts.Dto;
+using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
+using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections;
+using System.Security.Claims;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -21,10 +22,16 @@ namespace Richviet.API.Controllers.V1
     public class UserController : Controller
     {
         private readonly IUserService userService;
+        private readonly IBeneficiarService beneficiarService;
+        private readonly IPayeeTypeService payeeTypeService;
+        private readonly IMapper mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IBeneficiarService beneficiarService, IPayeeTypeService payeeTypeService, IMapper mapper)
         {
             this.userService = userService;
+            this.beneficiarService = beneficiarService;
+            this.payeeTypeService = payeeTypeService;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -33,8 +40,8 @@ namespace Richviet.API.Controllers.V1
         [HttpGet("info")]
         public MessageModel<UserInfoDTO> getOwnUserInfo()
         {
-            IEnumerable claims = User.Claims;
-            //int id = User.Claims
+
+            var userId = User.FindFirstValue("id");
             //UserInfoView userInfo = userService.GetUserById();
             return new MessageModel<UserInfoDTO>
             {
@@ -46,26 +53,22 @@ namespace Richviet.API.Controllers.V1
         /// 新增使用者的常用收款人資訊
         /// </summary>
         [HttpPost("beneficiars")]
-        [AllowAnonymous]
-        public MessageModel<UserBeneficiarsDTO> AddOwnBeneficiarsInfo([FromBody]OftenBeneficiarRequest oftenBeneficiarRequest)
+        //[AllowAnonymous]
+        public MessageModel<UserBeneficiarDTO> AddOwnBeneficiarsInfo([FromBody]OftenBeneficiarRequest oftenBeneficiarRequest)
         {
+            var userId = int.Parse(User.FindFirstValue("id"));
+            OftenBeneficiar oftenBeneficiar = mapper.Map<OftenBeneficiar>(oftenBeneficiarRequest);
+            oftenBeneficiar.UserId = userId;
+            var payeeType = payeeTypeService.GetPayeeType((PayeeTypeEnum)oftenBeneficiarRequest.PayeeType);
+            oftenBeneficiar.PayeeTypeId = payeeType.Id;
+            beneficiarService.AddBeneficiar(oftenBeneficiar);
+            UserBeneficiarDTO userBeneficiarDTO = mapper.Map<UserBeneficiarDTO>(oftenBeneficiar);
 
-            return new MessageModel<UserBeneficiarsDTO>
+
+
+            return new MessageModel<UserBeneficiarDTO>
             {
-                Data = 
-                    new UserBeneficiarsDTO
-                    {
-                        Id = 1,
-                        Name = "爸爸",
-                        PayeeAddress = "***************932",
-                        PayeeId = "",
-                        Note = "爸爸帳號",
-                        VietName = "第一銀行",
-                        EnName = "First Bank",
-                        TwName = "第一銀行",
-                        UserId = 5,
-                        Type = 0
-                    }
+                Data = userBeneficiarDTO
             };
         }
 
@@ -74,13 +77,13 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpPut("beneficiars/{id}")]
         [AllowAnonymous]
-        public MessageModel<UserBeneficiarsDTO> ModifyOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id,[FromBody]OftenBeneficiarRequest oftenBeneficiarRequest)
+        public MessageModel<UserBeneficiarDTO> ModifyOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id,[FromBody]OftenBeneficiarRequest oftenBeneficiarRequest)
         {
 
-            return new MessageModel<UserBeneficiarsDTO>
+            return new MessageModel<UserBeneficiarDTO>
             {
                 Data =
-                    new UserBeneficiarsDTO
+                    new UserBeneficiarDTO
                     {
                         Id = 1,
                         Name = "爸爸",
@@ -101,10 +104,10 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpDelete("beneficiars/{id}")]
         [AllowAnonymous]
-        public MessageModel<UserBeneficiarsDTO> DeleteOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id)
+        public MessageModel<UserBeneficiarDTO> DeleteOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id)
         {
 
-            return new MessageModel<UserBeneficiarsDTO>() { Data = null};
+            return new MessageModel<UserBeneficiarDTO>() { Data = null};
             
         }
 
@@ -113,14 +116,14 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpGet("beneficiars")]
         [AllowAnonymous]
-        public MessageModel<UserBeneficiarsDTO []> GetOwnBeneficiarsInfo()
+        public MessageModel<UserBeneficiarDTO []> GetOwnBeneficiarsInfo()
         {
             
-            return new MessageModel<UserBeneficiarsDTO []>
+            return new MessageModel<UserBeneficiarDTO []>
             {
-                Data = new UserBeneficiarsDTO[2]
+                Data = new UserBeneficiarDTO[2]
                 {
-                    new UserBeneficiarsDTO
+                    new UserBeneficiarDTO
                     {
                         Id = 1,
                         Name = "爸爸",
@@ -133,7 +136,7 @@ namespace Richviet.API.Controllers.V1
                         UserId = 5,
                         Type = 0
                     },
-                    new UserBeneficiarsDTO
+                    new UserBeneficiarDTO
                     {
                         Id = 1,
                         Name = "媽",

@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Responses;
+using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -16,10 +19,14 @@ namespace Richviet.API.Controllers.V1
     public class BankController : Controller
     {
         private readonly ILogger Logger;
+        private readonly IMapper _mapper;
+        private readonly IBankService _bankService;
 
-        public BankController(ILogger<BankController> logger)
+        public BankController(ILogger<BankController> logger, IMapper mapper, IBankService bankService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._mapper = mapper;
+            this._bankService = bankService;
         }
 
         /// <summary>
@@ -27,24 +34,16 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpGet]
         [AllowAnonymous]
-        public MessageModel<BankDTO[]> GetReceiveBanks()
+        public MessageModel<List<BankDTO>> GetReceiveBanks()
         {
-            
-            
-            return new MessageModel<BankDTO[]>
-            {
-                Data = new BankDTO[]{
-                    new BankDTO
-                    {
-                        Id = 1,
-                        SwiftCode = "UWCBTWTP006",
-                        Code = "013",
-                        VietName = "國泰銀行",
-                        EnName = "國泰銀行",
-                        TwName = "國泰銀行"
 
-                    }
-                }
+            List<ReceiveBank> receiveBanks = _bankService.GetReceiveBanks();
+            List<BankDTO> bankDTOs =  _mapper.Map<List<BankDTO>>(receiveBanks);
+
+
+            return new MessageModel<List<BankDTO>>
+            {
+                Data = bankDTOs
             };
         }
 

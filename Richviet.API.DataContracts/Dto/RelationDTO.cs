@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Richviet.Services.Models
+namespace Richviet.API.DataContracts.Dto
 {
     [SwaggerSchema(Required = new[] { "Description" })]
     public class RelationDTO
