@@ -59,11 +59,11 @@ namespace Richviet.API.Controllers.V1
 
             Console.WriteLine($"aaaaa:{loginUserRegistger.Email}");
 
-            if (userService.GetUser(loginUserRegistger).Result == null)
+            if (userService.GetUserInfo(loginUserRegistger).Result == null)
             {
-                userService.AddNewUser(loginUserRegistger).Wait();
+                userService.AddNewUserInfo(loginUserRegistger).Wait();
             }
-            var loginUser = userService.GetUser(loginUserRegistger).Result;
+            var loginUser = userService.GetUserInfo(loginUserRegistger).Result;
             bool fullUserStatus = false;
 
             if (loginUser.Status == 1)

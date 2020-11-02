@@ -37,5 +37,11 @@ namespace Richviet.API.DataContracts.Requests
         [Required]
         [SwaggerSchema("背面序號")]
         public string backCode { get; set; }
+        [Required]
+        [SwaggerSchema("證件正面URL")]
+        public string certificateA { get; set; }
+        [Required]
+        [SwaggerSchema("證件反面URL")]
+        public string certificateB { get; set; }
     }
 }

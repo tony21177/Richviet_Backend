@@ -31,11 +31,9 @@ namespace Richviet.API.Controllers.V1
         /// <summary>
         /// 註冊使用者相關資訊
         /// </summary>
-        [HttpPut("Register/{id}")]
+        [HttpPut("Register")]
         public ActionResult<MessageModel<Object>> ModifyOwnUserInfo([FromBody] RegisterRequest registerReq)
         {
-            IEnumerable claims = User.Claims;
-
             UserInfoDTO userModel = null;
 
             //解JWT
@@ -44,13 +42,23 @@ namespace Richviet.API.Controllers.V1
             {
                 var userID = identity.FindFirst("id").Value;
                 Console.WriteLine(identity.FindFirst("id").Value);
-                UserInfoView userInfo = userService.GetUserById(Int32.Parse(userID));
+
+                bool isRegister = userService.ReigsterUserById(int.Parse(userID), registerReq).Result;
+
+                if (isRegister == false)
+                {
+                    return BadRequest();
+                }
+
+                UserInfoView userInfo = userService.GetUserInfoById(int.Parse(userID));
                 // 將 user 置換成 ViewModel
-                userModel = this.mapper.Map<UserInfoDTO>(userInfo);
+                userModel = mapper.Map<UserInfoDTO>(userInfo);
             }
 
-            return Ok(new MessageModel<Object>
-            {});
+            return Ok(new MessageModel<UserInfoDTO>
+            {
+                Data = userModel
+            });
         }
     }
 }

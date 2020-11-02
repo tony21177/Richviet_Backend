@@ -23,7 +23,7 @@ namespace Richviet.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<bool> AddNewUser(UserRegisterType loginUser)
+        public async Task<bool> AddNewUserInfo(UserRegisterType loginUser)
         {
             using var transaction = dbContext.Database.BeginTransaction();
             try
@@ -62,7 +62,17 @@ namespace Richviet.Services
             }
         }
 
-        public async Task<UserInfoView> GetUser(UserRegisterType loginUser)
+        public User GetUserById(int id)
+        {
+            return dbContext.User.Where(user => user.Id == id).FirstOrDefault();
+        }
+
+        public UserArc GetUserArcById(int userId)
+        {
+            return dbContext.UserArc.Where(userArc => userArc.UserId == userId).FirstOrDefault();
+        }
+
+        public async Task<UserInfoView> GetUserInfo(UserRegisterType loginUser)
         {
 
             var list = await dbContext.UserInfoView.Where(user => user.AuthPlatformId == loginUser.AuthPlatformId && user.RegisterType == loginUser.RegisterType).ToListAsync();
@@ -71,14 +81,41 @@ namespace Richviet.Services
             return loggedingUser;
         }
 
-        public UserInfoView GetUserById(int id)
+        public UserInfoView GetUserInfoById(int id)
         {
             return dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
         }
 
-        public Task<bool> ReigsterUserByID(int id, UserRegisterType loginUser, User user, UserArc userArc)
+        public async Task<bool> ReigsterUserById(int id, RegisterRequest registerReq)
         {
-            throw new NotImplementedException();
+            User user = dbContext.User.Where(user => user.Id == id).FirstOrDefault();
+            UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == id).FirstOrDefault();
+            UserInfoView userInfo = dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
+
+            if (user == null || userArc == null || userInfo == null)
+            {
+                return false;
+            }
+
+            //update user data
+            user.Phone = registerReq.phone;
+            user.Email = userInfo.LoginPlatformEmal;
+            user.Gender = (byte)registerReq.gender;
+            user.Birthday = registerReq.birthday;
+
+            //update userArc data
+            userArc.ArcName = registerReq.name;
+            userArc.Country = registerReq.country;
+            userArc.ArcNo = registerReq.personalID;
+            userArc.PassportId = registerReq.passportNumber;
+            userArc.BackSequence = registerReq.backCode;
+            userArc.ArcIssueDate = registerReq.issue;
+            userArc.IdImageA = registerReq.certificateA;
+            userArc.IdImageB = registerReq.certificateB;
+
+            dbContext.SaveChanges();
+
+            return true;
         }
 
         public async Task<dynamic> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser)
@@ -93,7 +130,5 @@ namespace Richviet.Services
                     return false;
             }
         }
-
-        
     }
 }

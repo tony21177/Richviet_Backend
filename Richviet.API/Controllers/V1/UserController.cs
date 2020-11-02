@@ -37,8 +37,6 @@ namespace Richviet.API.Controllers.V1
         [HttpGet("info")]
         public MessageModel<UserInfoDTO> getOwnUserInfo()
         {
-            //IEnumerable claims = User.Claims;
-
             UserInfoDTO userModel = null;
 
             //解JWT
@@ -47,7 +45,7 @@ namespace Richviet.API.Controllers.V1
             {
                 var userID = identity.FindFirst("id").Value;
                 Console.WriteLine(identity.FindFirst("id").Value);
-                UserInfoView userInfo = userService.GetUserById(Int32.Parse(userID));
+                UserInfoView userInfo = userService.GetUserInfoById(int.Parse(userID));
                 // 將 user 置換成 ViewModel
                 userModel = mapper.Map<UserInfoDTO>(userInfo);
             }
