@@ -57,18 +57,28 @@ namespace Richviet.API.Controllers.V1
             loginUserRegistger.Name = verifiedData["name"].ToString();
             loginUserRegistger.Email = verifiedData["email"].ToString();
 
-            if (userService.GetUser(loginUserRegistger).Result == null)
+            Console.WriteLine($"aaaaa:{loginUserRegistger.Email}");
+
+            if (userService.GetUserInfo(loginUserRegistger).Result == null)
             {
-                userService.AddNewUser(loginUserRegistger).Wait();
+                userService.AddNewUserInfo(loginUserRegistger).Wait();
             }
-            var loginUser = userService.GetUser(loginUserRegistger).Result;
+            var loginUser = userService.GetUserInfo(loginUserRegistger).Result;
+            bool fullUserStatus = false;
+
+            if (loginUser.Status == 1)
+            {
+                fullUserStatus = true;
+            }
 
             var accessToken = this.jwtHandler.CreateAccessToken(loginUser.Id, loginUser.Email, loginUser.Name);
             return Ok(new MessageModel<Object>
             {
                 Data = new 
                 {
-                    AccessToken = accessToken.Token
+                    AccessToken = accessToken.Token,
+                    isFullUser = fullUserStatus,
+                    KYCStatus = loginUser.KycStatus
                 }
             });
         }

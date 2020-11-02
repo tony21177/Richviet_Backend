@@ -5,6 +5,8 @@ namespace Richviet.Services.Models
 {
     public partial class User
     {
+        internal int id;
+
         public User()
         {
             Discount = new HashSet<Discount>();

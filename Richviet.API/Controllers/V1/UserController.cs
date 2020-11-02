@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+
+using System;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Richviet.API.DataContracts.Dto;
@@ -9,7 +11,8 @@ using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
-using System.Security.Claims;
+using System.Collections;
+using AutoMapper;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -41,12 +44,21 @@ namespace Richviet.API.Controllers.V1
         [HttpGet("info")]
         public MessageModel<UserInfoDTO> getOwnUserInfo()
         {
+            UserInfoDTO userModel = null;
 
-            var userId = User.FindFirstValue("id");
-            //UserInfoView userInfo = userService.GetUserById();
+            //解JWT
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var userID = identity.FindFirst("id").Value;
+                Console.WriteLine(identity.FindFirst("id").Value);
+                UserInfoView userInfo = userService.GetUserInfoById(int.Parse(userID));
+                // 將 user 置換成 ViewModel
+                userModel = mapper.Map<UserInfoDTO>(userInfo);
+            }
             return new MessageModel<UserInfoDTO>
             {
-                Data = new UserInfoDTO()
+                Data = userModel
             };
         }
 

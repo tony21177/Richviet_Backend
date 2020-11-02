@@ -1,4 +1,5 @@
 ﻿
+using Richviet.API.DataContracts.Requests;
 using Richviet.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,16 @@ namespace Richviet.Services.Contracts
     {
         Task<dynamic> VerifyUserInfo(string accessToken, string permissions, UserRegisterType loginUser);
 
-        Task<bool> AddNewUser(UserRegisterType loginUser);
+        Task<bool> AddNewUserInfo(UserRegisterType loginUser);
 
-        Task<UserInfoView> GetUser(UserRegisterType loginUser);
+        Task<UserInfoView> GetUserInfo(UserRegisterType loginUser);
 
-        UserInfoView GetUserById(int id);
+        UserInfoView GetUserInfoById(int id);
+
+        User GetUserById(int id);
+
+        UserArc GetUserArcById(int userId);
+
+        bool ReigsterUserById(int id, RegisterRequest registerReq);
     }
 }
