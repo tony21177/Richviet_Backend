@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Richviet.Services.Models
+namespace Richviet.API.DataContracts.Requests
 {
     [SwaggerSchema(Required = new[] { "Description" })]
 

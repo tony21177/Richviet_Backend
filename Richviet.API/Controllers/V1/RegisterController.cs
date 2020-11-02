@@ -43,7 +43,7 @@ namespace Richviet.API.Controllers.V1
                 var userID = identity.FindFirst("id").Value;
                 Console.WriteLine(identity.FindFirst("id").Value);
 
-                bool isRegister = userService.ReigsterUserById(int.Parse(userID), registerReq).Result;
+                bool isRegister = userService.ReigsterUserById(int.Parse(userID), registerReq);
 
                 if (isRegister == false)
                 {

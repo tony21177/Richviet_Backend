@@ -22,6 +22,6 @@ namespace Richviet.Services.Contracts
 
         UserArc GetUserArcById(int userId);
 
-        Task<bool> ReigsterUserById(int id, RegisterRequest registerReq);
+        bool ReigsterUserById(int id, RegisterRequest registerReq);
     }
 }

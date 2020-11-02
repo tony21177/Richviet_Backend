@@ -14,9 +14,15 @@ namespace Richviet.IoC.Configuration.DI
         {
             if (services != null)
             {
+                services.AddSingleton(new JwtHandler(configuration));
                 services.AddScoped<IUserService, UserService>();
                 services.AddScoped<IAuthService, FacebookAuthService>();
-                services.AddSingleton(new JwtHandler(configuration));
+                services.AddScoped<IBankService, BankService>();
+                services.AddScoped<IPayeeRelationService, PayeeRalationService>();
+                services.AddScoped<IBeneficiarService, BeneficiarService>();
+                services.AddScoped<IPayeeTypeService, PayeeTypeService>();
+
+
             }
         }
 

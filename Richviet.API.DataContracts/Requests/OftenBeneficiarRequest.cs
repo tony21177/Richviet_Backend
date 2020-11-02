@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace Richviet.Services.Models
+namespace Richviet.API.DataContracts.Requests
 {
     [SwaggerSchema(Required = new[] { "Description" })]
 
@@ -21,14 +22,14 @@ namespace Richviet.Services.Models
         [SwaggerSchema("備註")]
         public string Note { get; set; }
         [Required]
-        [SwaggerSchema("會員id,可以由/user/info取得")]
-        public int UserId { get; set; }
-        [Required]
         [SwaggerSchema("收款銀行id,可以由/banks取得")]
         public int? ReceiveBankId { get; set; }
         [Required]
         [SwaggerSchema("收款方式,0:銀行")]
         public int PayeeType { get; set; }
+        //[JsonIgnore]
+        //public int PayeeTypeId { get; set; }
+
         [SwaggerSchema("與收款人關係id,可以由/relations取得")]
         public int PayeeRelationId { get; set; }
     }

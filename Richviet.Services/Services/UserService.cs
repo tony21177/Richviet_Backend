@@ -86,7 +86,7 @@ namespace Richviet.Services
             return dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
         }
 
-        public async Task<bool> ReigsterUserById(int id, RegisterRequest registerReq)
+        public bool ReigsterUserById(int id, RegisterRequest registerReq)
         {
             User user = dbContext.User.Where(user => user.Id == id).FirstOrDefault();
             UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == id).FirstOrDefault();
