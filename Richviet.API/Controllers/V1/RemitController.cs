@@ -127,9 +127,9 @@ namespace Richviet.API.Controllers.V1
         /// 該會員的交易紀錄
         /// </summary>
         /// 
-        [HttpGet("remitRecords/{arcNo}")]
+        [HttpGet("remitRecords")]
         [AllowAnonymous]
-        public ActionResult<MessageModel<RemitRecordDTO []>> GetRemitRecords([FromRoute, SwaggerParameter("ARC No.", Required = true)] string arcNo)
+        public ActionResult<MessageModel<RemitRecordDTO []>> GetRemitRecords()
         {
             return Ok(new MessageModel<RemitRecordDTO[]>
             {

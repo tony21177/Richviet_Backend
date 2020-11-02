@@ -8,6 +8,8 @@ namespace Richviet.Services.Contracts
 {
     public interface IPayeeTypeService
     {
-        PayeeType GetPayeeType(PayeeTypeEnum payeeType);
+        PayeeType GetPayeeTypeByType(PayeeTypeEnum payeeType);
+
+        PayeeType GetPayeeTypeById(int id);
     }
 }

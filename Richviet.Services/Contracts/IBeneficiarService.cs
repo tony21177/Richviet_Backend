@@ -11,5 +11,13 @@ namespace Richviet.Services.Contracts
     {
         OftenBeneficiar AddBeneficiar(OftenBeneficiar beneficiar);
 
+        OftenBeneficiar GetBeneficiarById(int id);
+
+        List<OftenBeneficiar> GetAllBeneficiars(int userId);
+
+        OftenBeneficiar ModifyBeneficiar(OftenBeneficiar modifyBeneficiar, OftenBeneficiar originalBeneficiar);
+
+        void DeleteBeneficiar(OftenBeneficiar deleteBeneficiar);
+
     }
 }
