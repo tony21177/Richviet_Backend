@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Richviet.Tools.Utility;
+using Richviet.Services.Services;
 
 namespace Richviet.IoC.Configuration.DI
 {
@@ -22,7 +23,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IBeneficiarService, BeneficiarService>();
                 services.AddScoped<IPayeeTypeService, PayeeTypeService>();
                 services.AddSingleton(new FolderHandler(configuration));
-
+                services.AddSingleton<IUploadPic, UploadPicToLocalService>();
             }
         }
 
