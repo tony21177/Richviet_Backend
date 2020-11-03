@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +11,9 @@ using Microsoft.Extensions.Logging;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
+using Richviet.Services.Contracts;
+using Richviet.Services.Models;
+using Richviet.Tools.Utility;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -18,26 +23,35 @@ namespace Richviet.API.Controllers.V1
     public class UploadPictureController : ControllerBase
     {
         private readonly ILogger logger;
+        private readonly FolderHandler folderHandler;
+        private readonly IUserService userService;
+        private readonly IUploadPic uploadPic;
 
-        public UploadPictureController(ILogger<UploadPictureController> logger)
+        public UploadPictureController(IUserService userService,ILogger<UploadPictureController> logger, FolderHandler folderHandler, IUploadPic uploadPic)
         {
             this.logger = logger;
+            this.folderHandler = folderHandler;
+            this.userService = userService;
+            this.uploadPic = uploadPic;
         }
 
 
         /// <summary>
-        /// 上傳照片 content-type為multipart/formdata且body的ImageType為0:及時照,1:簽名照
+        /// 上傳照片 content-type為multipart/formdata且body的ImageType為0:及時照,1:簽名照,2:證件正面照,3:證件反面照
         /// </summary>
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<MessageModel<UploadedFileDTO>>> UploadPicture([FromForm] CommonFileRequest file) {
             //Logger.LogInformation(file.ImageType.ToString());
-
+            var userId = int.Parse(User.FindFirstValue("id"));
+            UserArc userArc = userService.GetUserArcById(userId);
+            String fileName = await uploadPic.SavePic(userArc,file.ImageType,file.Image);
+            
             return Ok(new MessageModel<Object>
             {
                 Data = new UploadedFileDTO
                 {
-                    FileName = "0" +"_"+ "ARC0000001" +"_"+ DateTimeOffset.Now.ToUnixTimeSeconds().ToString()
+                    FileName = fileName
                 }
         
             });

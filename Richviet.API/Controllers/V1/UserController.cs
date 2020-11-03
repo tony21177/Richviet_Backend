@@ -13,6 +13,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Collections;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -29,8 +30,9 @@ namespace Richviet.API.Controllers.V1
         private readonly IBeneficiarService beneficiarService;
         private readonly IPayeeTypeService payeeTypeService;
         private readonly IMapper mapper;
+        private readonly ILogger logger;
 
-        public UserController(IUserService userService, IBeneficiarService beneficiarService, IPayeeTypeService payeeTypeService, IMapper mapper)
+        public UserController(IUserService userService, IBeneficiarService beneficiarService, IPayeeTypeService payeeTypeService, IMapper mapper, ILogger<UserController> logger)
         {
             this.userService = userService;
             this.beneficiarService = beneficiarService;

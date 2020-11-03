@@ -21,7 +21,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IPayeeRelationService, PayeeRalationService>();
                 services.AddScoped<IBeneficiarService, BeneficiarService>();
                 services.AddScoped<IPayeeTypeService, PayeeTypeService>();
-
+                services.AddSingleton(new FolderHandler(configuration));
 
             }
         }
