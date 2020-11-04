@@ -27,10 +27,10 @@ namespace Richviet.API.DataContracts.Dto
         public string IdImageB { get; set; }
         [SwaggerSchema("手持證件")]
         public string IdImageC { get; set; }
-        [SwaggerSchema("-1:未通過, 0:未認證,1:待審核,2:審核通過")]
+        [SwaggerSchema("9:未通過, 0:未認證,1:待審核,2:審核通過")]
         public byte? KycStatus { get; set; }
-        public DateTimeOffset? KycStatusUpdateTime { get; set; }
-        public DateTimeOffset? RegisterTime { get; set; }
+        public long? KycStatusUpdateTime { get; set; }
+        public long? RegisterTime { get; set; }
         [SwaggerSchema("第三方登入平台ID")]
         public string AuthPlatformId { get; set; }
         [SwaggerSchema("註冊方式,0:平台本身,1:FB,2:apple,3:google,4:zalo")]

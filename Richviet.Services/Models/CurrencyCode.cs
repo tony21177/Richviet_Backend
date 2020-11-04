@@ -8,7 +8,6 @@ namespace Richviet.Services.Models
         public int Id { get; set; }
         public string CurrencyName { get; set; }
         public string Country { get; set; }
-        public double Rate { get; set; }
         public double Fee { get; set; }
         public byte FeeType { get; set; }
     }

@@ -54,8 +54,8 @@ namespace Richviet.API.Controllers.V1
                     Data = null
                 }); ;
 
-            loginUserRegistger.Name = verifiedData["name"].ToString();
-            loginUserRegistger.Email = verifiedData["email"].ToString();
+            loginUserRegistger.Name = verifiedData["name"] == null ? "" : verifiedData["name"].ToString();
+            loginUserRegistger.Email = verifiedData["email"]==null?"":verifiedData["email"].ToString();
 
             Console.WriteLine($"aaaaa:{loginUserRegistger.Email}");
 
