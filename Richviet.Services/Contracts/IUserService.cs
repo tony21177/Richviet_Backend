@@ -23,5 +23,7 @@ namespace Richviet.Services.Contracts
         UserArc GetUserArcById(int userId);
 
         bool ReigsterUserById(int id, RegisterRequest registerReq);
+
+        bool ChangeKycStatusById(KycRequest kycReq);
     }
 }

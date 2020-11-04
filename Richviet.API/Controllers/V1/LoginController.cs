@@ -45,7 +45,7 @@ namespace Richviet.API.Controllers.V1
 
             dynamic verifiedData = userService.VerifyUserInfo(loginRequest.accessToken, loginRequest.permissions, loginUserRegistger).Result;
 
-            if (verifiedData == null)
+            if (verifiedData == null || verifiedData["name"] == null || verifiedData["email"] == null)
                 return Unauthorized(new MessageModel<Object>
                 {
                     Status = (int)HttpStatusCode.Unauthorized,
@@ -64,12 +64,6 @@ namespace Richviet.API.Controllers.V1
                 userService.AddNewUserInfo(loginUserRegistger).Wait();
             }
             var loginUser = userService.GetUserInfo(loginUserRegistger).Result;
-            bool fullUserStatus = false;
-
-            if (loginUser.Status == 1)
-            {
-                fullUserStatus = true;
-            }
 
             var accessToken = this.jwtHandler.CreateAccessToken(loginUser.Id, loginUser.Email, loginUser.Name);
             return Ok(new MessageModel<Object>
@@ -77,7 +71,7 @@ namespace Richviet.API.Controllers.V1
                 Data = new 
                 {
                     AccessToken = accessToken.Token,
-                    isFullUser = fullUserStatus,
+                    loginUser.Status,
                     KYCStatus = loginUser.KycStatus
                 }
             });
