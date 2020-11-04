@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using AutoMapper;
 using Richviet.API.DataContracts.Requests;
+using Richviet.Tools.Utility;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -20,11 +21,13 @@ namespace Richviet.API.Controllers.V1
     public class RegisterController : Controller
     {
         private readonly IUserService userService;
+        private readonly JwtHandler jwtHandler;
         private IMapper mapper;
 
-        public RegisterController(IUserService userService, IMapper mapper)
+        public RegisterController(IUserService userService, JwtHandler jwtHandler, IMapper mapper)
         {
             this.userService = userService;
+            this.jwtHandler = jwtHandler;
             this.mapper = mapper;
         }
 
@@ -35,6 +38,8 @@ namespace Richviet.API.Controllers.V1
         public ActionResult<MessageModel<Object>> ModifyOwnUserInfo([FromBody] RegisterRequest registerReq)
         {
             UserInfoDTO userModel = null;
+            bool fullUserStatus = false;
+            Tools.Utility.TokenResource accessToken = null;
 
             //解JWT
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -51,13 +56,30 @@ namespace Richviet.API.Controllers.V1
                 }
 
                 UserInfoView userInfo = userService.GetUserInfoById(int.Parse(userID));
-                // 將 user 置換成 ViewModel
+                //// 將 user 置換成 ViewModel
                 userModel = mapper.Map<UserInfoDTO>(userInfo);
+
+                accessToken = jwtHandler.CreateAccessToken(userModel.Id, userModel.Email, userModel.ArcName);
+
+                if (userModel.Status == 1)
+                {
+                    fullUserStatus = true;
+                }
             }
 
-            return Ok(new MessageModel<UserInfoDTO>
+            //return Ok(new MessageModel<UserInfoDTO>
+            //{
+            //    Data = userModel
+            //});
+
+            return Ok(new MessageModel<Object>
             {
-                Data = userModel
+                Data = new
+                {
+                    AccessToken = accessToken.Token,
+                    isFullUser = fullUserStatus,
+                    KYCStatus = userModel.KycStatus
+                }
             });
         }
     }

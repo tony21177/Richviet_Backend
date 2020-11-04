@@ -91,6 +91,7 @@ namespace Richviet.Services
             User user = dbContext.User.Where(user => user.Id == id).FirstOrDefault();
             UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == id).FirstOrDefault();
             UserInfoView userInfo = dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
+            UserRegisterType userRegisterType = dbContext.UserRegisterType.Where(userRegisterType => userRegisterType.UserId == id).FirstOrDefault();
 
             if (user == null || userArc == null || userInfo == null)
             {
@@ -112,6 +113,14 @@ namespace Richviet.Services
             userArc.ArcIssueDate = registerReq.issue;
             userArc.IdImageA = registerReq.certificateA;
             userArc.IdImageB = registerReq.certificateB;
+            userArc.KycStatus = 1;
+            userArc.KycStatusUpdateTime = DateTime.Now;
+
+            //update UserRegisterType data
+            if (userRegisterType.RegisterTime == null)
+            {
+                userRegisterType.RegisterTime = DateTime.Now;
+            }
 
             dbContext.SaveChanges();
 
