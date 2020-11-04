@@ -38,7 +38,6 @@ namespace Richviet.API.Controllers.V1
         public ActionResult<MessageModel<Object>> ModifyOwnUserInfo([FromBody] RegisterRequest registerReq)
         {
             UserInfoDTO userModel = null;
-            bool fullUserStatus = false;
             Tools.Utility.TokenResource accessToken = null;
 
             //解JWT
@@ -60,11 +59,6 @@ namespace Richviet.API.Controllers.V1
                 userModel = mapper.Map<UserInfoDTO>(userInfo);
 
                 accessToken = jwtHandler.CreateAccessToken(userModel.Id, userModel.Email, userModel.ArcName);
-
-                if (userModel.Status == 1)
-                {
-                    fullUserStatus = true;
-                }
             }
 
             //return Ok(new MessageModel<UserInfoDTO>
@@ -77,7 +71,7 @@ namespace Richviet.API.Controllers.V1
                 Data = new
                 {
                     AccessToken = accessToken.Token,
-                    isFullUser = fullUserStatus,
+                    userModel.Status,
                     KYCStatus = userModel.KycStatus
                 }
             });
