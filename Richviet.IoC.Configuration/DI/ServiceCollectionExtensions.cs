@@ -22,8 +22,10 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IPayeeRelationService, PayeeRalationService>();
                 services.AddScoped<IBeneficiarService, BeneficiarService>();
                 services.AddScoped<IPayeeTypeService, PayeeTypeService>();
-                services.AddSingleton(new FolderHandler(configuration));
+                services.AddSingleton(typeof(FolderHandler));
                 services.AddSingleton<IUploadPic, UploadPicToLocalService>();
+                services.AddScoped<ICurrencyService,CurrencyService>();
+                services.AddScoped<IExchangeRateService, DBExchangeRateService>();
             }
         }
 

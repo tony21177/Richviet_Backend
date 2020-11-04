@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Richviet.API.DataContracts.Dto;
 using Richviet.Services.Models;
 using C = Richviet.API.DataContracts.Dto;
 using M = Richviet.Services.Models;
@@ -24,6 +25,9 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<M.OftenBeneficiar, M.OftenBeneficiar>()
                 .ForMember(x => x.Id, opt => opt.Ignore())
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<CurrencyCode, CurrencyInfoDTO>().ReverseMap();
+            CreateMap<ExchangeRate,ExchangeRateDTO>().ReverseMap();
+
         }
     }
 }

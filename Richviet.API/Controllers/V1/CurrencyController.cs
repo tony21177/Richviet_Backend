@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Responses;
+using Richviet.Services.Contracts;
+using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -15,10 +19,16 @@ namespace Richviet.API.Controllers.V1
     public class CurrencyController : Controller
     {
         private readonly ILogger Logger;
+        private readonly ICurrencyService currencyService;
+        private readonly IExchangeRateService exchangeRateService;
+        private readonly IMapper mapper;
 
-        public CurrencyController(ILogger<CurrencyController> logger)
+        public CurrencyController(ILogger<CurrencyController> logger,ICurrencyService currencyService, IExchangeRateService exchangeRateService, IMapper mapper)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.currencyService = currencyService;
+            this.exchangeRateService = exchangeRateService;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -26,27 +36,17 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpGet("{country}")]
         [AllowAnonymous]
-        public MessageModel<CurrencyInfoDTO []> GetCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. VN ", Required = true)] string country)
+        public MessageModel<List<CurrencyInfoDTO>> GetCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. VN ", Required = true)] string country)
         {
             Logger.LogInformation(country);
-            
-            return new MessageModel<CurrencyInfoDTO []>
+            List<CurrencyCode> currencyCodes = currencyService.GetCureencyByCountry(country.ToUpper());
+            List<CurrencyInfoDTO> currencyInfoDTOs = mapper.Map<List<CurrencyInfoDTO>>(currencyCodes);
+
+
+
+            return new MessageModel<List<CurrencyInfoDTO>>
             {
-                Data = new CurrencyInfoDTO[2]{
-                    new CurrencyInfoDTO
-                    {
-                        currencyName = "VND",
-                        country = "VN",
-                        feeType = 0,
-                        fee = 100
-                    },new CurrencyInfoDTO
-                    {
-                        currencyName = "USD",
-                        country = "VN",
-                        feeType = 0,
-                        fee = 100
-                    }
-                }
+                Data = currencyInfoDTOs
             };
 
         }
@@ -56,23 +56,20 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpGet("exchangeRate")]
         [AllowAnonymous]
-        public MessageModel<ExchangeRateDTO []> GetExchangeRate()
+        public MessageModel<List<ExchangeRateDTO>> GetExchangeRate()
         {
-            
-            return new MessageModel<ExchangeRateDTO []>
+            List<ExchangeRate> exchangeRates = exchangeRateService.GetExchangeRate();
+            List<ExchangeRateDTO> exchangeRateDTOs = mapper.Map<List<ExchangeRateDTO>>(exchangeRates);
+
+
+
+            return new MessageModel<List<ExchangeRateDTO>>
             {
-                    Data = new ExchangeRateDTO[2]
-                    {
-                        new ExchangeRateDTO{
-                            currencyName = "USD",
-                            rate = 30
-                        },new ExchangeRateDTO{
-                            currencyName = "VND",
-                            rate = 800
-                        }
-                    }
-             
+                Data = exchangeRateDTOs
             };
+
+
+
         }
 
 
