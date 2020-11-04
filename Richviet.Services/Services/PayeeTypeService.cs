@@ -18,9 +18,15 @@ namespace Richviet.Services
             this.dbContext = dbContext;
         }
 
-        public PayeeType GetPayeeType(PayeeTypeEnum type)
+        public PayeeType GetPayeeTypeByType(PayeeTypeEnum type)
         {
             return dbContext.PayeeType.First<PayeeType>(payeeType => payeeType.Type == (int)type);
         }
+
+        public PayeeType GetPayeeTypeById(int id)
+        {
+            return dbContext.PayeeType.Find(id);
+        }
+
     }
 }

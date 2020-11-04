@@ -10,10 +10,10 @@ using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Collections;
 using AutoMapper;
-using Richviet.API.DataContracts.Requests;
-using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -30,8 +30,9 @@ namespace Richviet.API.Controllers.V1
         private readonly IBeneficiarService beneficiarService;
         private readonly IPayeeTypeService payeeTypeService;
         private readonly IMapper mapper;
+        private readonly ILogger logger;
 
-        public UserController(IUserService userService, IBeneficiarService beneficiarService, IPayeeTypeService payeeTypeService, IMapper mapper)
+        public UserController(IUserService userService, IBeneficiarService beneficiarService, IPayeeTypeService payeeTypeService, IMapper mapper, ILogger<UserController> logger)
         {
             this.userService = userService;
             this.beneficiarService = beneficiarService;
@@ -73,7 +74,7 @@ namespace Richviet.API.Controllers.V1
             var userId = int.Parse(User.FindFirstValue("id"));
             OftenBeneficiar oftenBeneficiar = mapper.Map<OftenBeneficiar>(oftenBeneficiarRequest);
             oftenBeneficiar.UserId = userId;
-            var payeeType = payeeTypeService.GetPayeeType((PayeeTypeEnum)oftenBeneficiarRequest.PayeeType);
+            var payeeType = payeeTypeService.GetPayeeTypeByType((PayeeTypeEnum)oftenBeneficiarRequest.PayeeType);
             oftenBeneficiar.PayeeTypeId = payeeType.Id;
             beneficiarService.AddBeneficiar(oftenBeneficiar);
             UserBeneficiarDTO userBeneficiarDTO = mapper.Map<UserBeneficiarDTO>(oftenBeneficiar);
@@ -90,26 +91,38 @@ namespace Richviet.API.Controllers.V1
         /// 修改使用者的常用收款人資訊
         /// </summary>
         [HttpPut("beneficiars/{id}")]
-        [AllowAnonymous]
-        public MessageModel<UserBeneficiarDTO> ModifyOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id,[FromBody]OftenBeneficiarRequest oftenBeneficiarRequest)
+        [Authorize]
+        public ActionResult<MessageModel<UserBeneficiarDTO>> ModifyOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id,[FromBody]OftenBeneficiarRequest oftenBeneficiarRequest)
         {
+            var userId = int.Parse(User.FindFirstValue("id"));
+            OftenBeneficiar beneficiar = beneficiarService.GetBeneficiarById(id);
+            if (beneficiar == null)
+            {
+                return NotFound();
+            }
+            if (userId != beneficiar.UserId)
+            {
+                return Unauthorized(new MessageModel<UserBeneficiarDTO>()
+                {
+                    Success = false,
+                    Msg = "Unauthorized"
+                });
+                
+            }
+
+            OftenBeneficiar modifiedBeneficiar = mapper.Map<OftenBeneficiar>(oftenBeneficiarRequest);
+            modifiedBeneficiar.Id = id;
+            var payeeType = payeeTypeService.GetPayeeTypeByType((PayeeTypeEnum)oftenBeneficiarRequest.PayeeType);
+            modifiedBeneficiar.PayeeTypeId = payeeType.Id;
+            
+            beneficiarService.ModifyBeneficiar(modifiedBeneficiar, beneficiar);
+            UserBeneficiarDTO userBeneficiarDTO = mapper.Map<UserBeneficiarDTO>(beneficiar);
+
+
 
             return new MessageModel<UserBeneficiarDTO>
             {
-                Data =
-                    new UserBeneficiarDTO
-                    {
-                        Id = 1,
-                        Name = "爸爸",
-                        PayeeAddress = "***************932",
-                        PayeeId = "",
-                        Note = "爸爸帳號",
-                        VietName = "第一銀行",
-                        EnName = "First Bank",
-                        TwName = "第一銀行",
-                        UserId = 5,
-                        Type = 0
-                    }
+                Data = userBeneficiarDTO
             };
         }
 
@@ -117,11 +130,27 @@ namespace Richviet.API.Controllers.V1
         /// 刪除使用者的常用收款人資訊
         /// </summary>
         [HttpDelete("beneficiars/{id}")]
-        [AllowAnonymous]
-        public MessageModel<UserBeneficiarDTO> DeleteOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id)
+        [Authorize]
+        public ActionResult<MessageModel<UserBeneficiarDTO>> DeleteOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id)
         {
+            var userId = int.Parse(User.FindFirstValue("id"));
+            OftenBeneficiar beneficiar = beneficiarService.GetBeneficiarById(id);
+            if(beneficiar == null)
+            {
+                return NotFound();
+            }
+            if (userId != beneficiar.UserId)
+            {
+                return Unauthorized(new MessageModel<UserBeneficiarDTO>()
+                {
+                    Success = false,
+                    Msg = "Unauthorized"
+                });
 
-            return new MessageModel<UserBeneficiarDTO>() { Data = null};
+            }
+            beneficiarService.DeleteBeneficiar(beneficiar);
+
+            return new MessageModel<UserBeneficiarDTO>() {  };
             
         }
 
@@ -129,41 +158,17 @@ namespace Richviet.API.Controllers.V1
         /// 取得使用者的常用收款人資訊
         /// </summary>
         [HttpGet("beneficiars")]
-        [AllowAnonymous]
-        public MessageModel<UserBeneficiarDTO []> GetOwnBeneficiarsInfo()
+        [Authorize]
+        public MessageModel<List<UserBeneficiarDTO>> GetOwnBeneficiarsInfo()
         {
-            
-            return new MessageModel<UserBeneficiarDTO []>
+            var userId = int.Parse(User.FindFirstValue("id"));
+            List<OftenBeneficiar> oftenBeneficiars = beneficiarService.GetAllBeneficiars(userId);
+            List<UserBeneficiarDTO> userBeneficiarDTOs = mapper.Map<List<UserBeneficiarDTO>>(oftenBeneficiars);
+
+
+            return new MessageModel<List<UserBeneficiarDTO>>
             {
-                Data = new UserBeneficiarDTO[2]
-                {
-                    new UserBeneficiarDTO
-                    {
-                        Id = 1,
-                        Name = "爸爸",
-                        PayeeAddress = "***************932",
-                        PayeeId = "",
-                        Note = "爸爸帳號",
-                        VietName = "第一銀行",
-                        EnName = "First Bank",
-                        TwName = "第一銀行",
-                        UserId = 5,
-                        Type = 0
-                    },
-                    new UserBeneficiarDTO
-                    {
-                        Id = 1,
-                        Name = "媽",
-                        PayeeAddress = "***************552",
-                        PayeeId = "",
-                        Note = "媽的帳號",
-                        VietName = "國泰銀行",
-                        EnName = "Guo Tai Bank",
-                        TwName = "國泰銀行",
-                        UserId = 5,
-                        Type = 0
-                    }
-                }
+                Data = userBeneficiarDTOs
             };
         }
 

@@ -14,7 +14,16 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<M.ReceiveBank, C.BankDTO>().ReverseMap();
             CreateMap<M.PayeeRelationType, C.RelationDTO>().ReverseMap();
             CreateMap<R.OftenBeneficiarRequest, M.OftenBeneficiar>().ForMember(x => x.PayeeType, opt => opt.Ignore()).ReverseMap();
-            CreateMap<M.OftenBeneficiar, C.UserBeneficiarDTO>().ReverseMap();
+            CreateMap<M.OftenBeneficiar, C.UserBeneficiarDTO>().ForMember(
+              dest => dest.PayeeType
+              , opt => opt.MapFrom(src => src.PayeeType.Type)
+            ).ForMember(
+              dest => dest.PayeeRelationType
+              , opt => opt.MapFrom(src => src.PayeeRelation.Type)
+            ).ReverseMap();
+            CreateMap<M.OftenBeneficiar, M.OftenBeneficiar>()
+                .ForMember(x => x.Id, opt => opt.Ignore())
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }
