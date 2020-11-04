@@ -34,7 +34,7 @@ namespace Richviet.API.Controllers.V1
         /// <summary>
         /// 註冊使用者相關資訊
         /// </summary>
-        [HttpPut("Register")]
+        [HttpPut("register")]
         public ActionResult<MessageModel<Object>> ModifyOwnUserInfo([FromBody] RegisterRequest registerReq)
         {
             UserInfoDTO userModel = null;

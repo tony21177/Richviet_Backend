@@ -139,5 +139,28 @@ namespace Richviet.Services
                     return false;
             }
         }
+
+        public bool ChangeKycStatusById(KycRequest kycReq)
+        {
+            User user = dbContext.User.Where(user => user.Id == kycReq.Id).FirstOrDefault();
+            UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == kycReq.Id).FirstOrDefault();
+
+            if (user == null || userArc == null)
+            {
+                return false;
+            }
+
+            if (kycReq.kycStatus == 2)
+            {
+                user.Status = 1;
+            }
+
+            userArc.KycStatus = kycReq.kycStatus;
+            userArc.KycStatusUpdateTime = DateTime.Now;
+
+            dbContext.SaveChanges();
+
+            return true;
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Richviet.API.DataContracts.Dto
         public string IdImageB { get; set; }
         [SwaggerSchema("手持證件")]
         public string IdImageC { get; set; }
-        [SwaggerSchema("-1:未通過, 0:未認證,1:待審核,2:審核通過")]
+        [SwaggerSchema("0:未認證,1:待審核,2:審核通過,9:未通過")]
         public byte? KycStatus { get; set; }
         public DateTimeOffset? KycStatusUpdateTime { get; set; }
         public DateTimeOffset? RegisterTime { get; set; }

@@ -45,7 +45,7 @@ namespace Richviet.API.Controllers.V1
 
             dynamic verifiedData = userService.VerifyUserInfo(loginRequest.accessToken, loginRequest.permissions, loginUserRegistger).Result;
 
-            if (verifiedData == null)
+            if (verifiedData == null || verifiedData["name"] == null || verifiedData["email"] == null)
                 return Unauthorized(new MessageModel<Object>
                 {
                     Status = (int)HttpStatusCode.Unauthorized,
