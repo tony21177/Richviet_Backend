@@ -219,8 +219,8 @@ namespace Richviet.API
                 }
 
                 //app.UseHttpsRedirection();
-                app.UseAuthentication();
                 app.UseRouting();
+                app.UseAuthentication();
                 app.UseAuthorization();
                 app.UseEndpoints(endpoints =>
                 {
