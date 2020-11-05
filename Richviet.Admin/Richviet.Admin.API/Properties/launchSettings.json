@@ -19,7 +19,7 @@
     "Richviet.Admin.API": {
       "commandName": "Project",
       "launchBrowser": false,
-      "applicationUrl": "https://localhost:6001;http://localhost:6000",
+      "applicationUrl": "https://localhost:10001;http://localhost:10000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

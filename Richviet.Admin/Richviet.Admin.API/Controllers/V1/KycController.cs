@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Richviet.Admin.API.DataContracts.Responses;
 using Swashbuckle.AspNetCore.Annotations;
 using Richviet.Services.Constants;
+using System.Net;
 
 namespace Richviet.Admin.API.Controllers.V1
 {
@@ -28,7 +29,7 @@ namespace Richviet.Admin.API.Controllers.V1
         /// <summary>
         /// 審核通過會員的註冊KYC
         /// </summary>
-        [HttpGet("kycStatus/{userId}")]
+        [HttpGet("{userId}/pass")]
         [AllowAnonymous]
 
         public ActionResult<MessageModel<Object>> PassUserKyc([FromRoute, SwaggerParameter("使用者ID", Required = true)] int userId)
@@ -39,15 +40,17 @@ namespace Richviet.Admin.API.Controllers.V1
             {
                 return BadRequest(new MessageModel<Object>
                 {
+                    Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
                     Msg = "User does not exist"
-                });
+                }); ;
             }
 
             if (userArc.KycStatus != (byte)KycStatusEnum.WAITING_VERIFIED_KYC)
             {
                 return BadRequest(new MessageModel<Object>
                 {
+                    Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
                     Msg = "Invalid Operation"
                 });
@@ -55,12 +58,14 @@ namespace Richviet.Admin.API.Controllers.V1
             }
             var result = new MessageModel<Object>
             {
+                Status = (int)HttpStatusCode.BadRequest,
                 Success = false,
                 Msg = "Fail to Operate"
             };
 
             if (userService.ChangeKycStatusByUserId(KycStatusEnum.PASSED_KYC, userId))
             {
+                result.Status = (int)HttpStatusCode.OK;
                 result.Success = true;
                 result.Msg = "Successful Operation";
                 return Ok(result);
