@@ -18,6 +18,7 @@ namespace Richviet.Services.Models
         public virtual DbSet<BussinessUnitRemitSetting> BussinessUnitRemitSetting { get; set; }
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
         public virtual DbSet<Discount> Discount { get; set; }
+        public virtual DbSet<ExchangeRate> ExchangeRate { get; set; }
         public virtual DbSet<OftenBeneficiar> OftenBeneficiar { get; set; }
         public virtual DbSet<PayeeRelationType> PayeeRelationType { get; set; }
         public virtual DbSet<PayeeType> PayeeType { get; set; }
@@ -31,6 +32,7 @@ namespace Richviet.Services.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -102,11 +104,6 @@ namespace Richviet.Services.Models
                     .HasColumnName("fee_type")
                     .HasColumnType("tinyint(1)")
                     .HasComment("手續費計算方式\\n0:數量\\n1:百分比");
-
-                entity.Property(e => e.Rate)
-                    .HasColumnName("rate")
-                    .HasDefaultValueSql("'1'")
-                    .HasComment("台幣匯率");
             });
 
             modelBuilder.Entity<Discount>(entity =>
@@ -155,6 +152,28 @@ namespace Richviet.Services.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_discount_user");
+            });
+
+            modelBuilder.Entity<ExchangeRate>(entity =>
+            {
+                entity.ToTable("exchange_rate");
+
+                entity.HasComment("台幣對幣別匯率");
+
+                entity.HasIndex(e => e.CurrencyName)
+                    .HasName("currency_name_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.CurrencyName)
+                    .HasColumnName("currency_name")
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Rate).HasColumnName("rate");
             });
 
             modelBuilder.Entity<OftenBeneficiar>(entity =>
@@ -473,6 +492,12 @@ namespace Richviet.Services.Models
                     .HasComment(@"收款方式,對應table:payee_type
 ");
 
+                entity.Property(e => e.PaymentCode)
+                    .HasColumnName("payment_code")
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasComment("繳款碼,給前端產生QR CODE用");
+
                 entity.Property(e => e.PaymentTime)
                     .HasColumnName("payment_time")
                     .HasComment("會員繳款時間");
@@ -497,7 +522,7 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.TransactionStatus)
                     .HasColumnName("transaction_status")
                     .HasColumnType("tinyint(4)")
-                    .HasComment("-9:其他錯誤\\\\n-1: 審核失敗\\\\n0: 待審核(系統進入arc_status流程)\\\\n1: 待繳款\\\\n2: 已繳款\\\\n3:處理完成");
+                    .HasComment("99:其他錯誤\\\\n9: 審核失敗\\\\n0: 待審核(系統進入arc_status流程)\\\\n1: 待繳款\\\\n2: 已繳款\\\\n3:處理完成");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -660,7 +685,7 @@ namespace Richviet.Services.Models
                     .HasColumnName("kyc_status")
                     .HasColumnType("tinyint(2)")
                     .HasDefaultValueSql("'0'")
-                    .HasComment("KYC審核狀態, \\\\r\\\\n-1:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
+                    .HasComment("KYC審核狀態, \\\\r\\\\n9:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
@@ -788,7 +813,7 @@ namespace Richviet.Services.Models
                     .HasColumnName("kyc_status")
                     .HasColumnType("tinyint(2)")
                     .HasDefaultValueSql("'0'")
-                    .HasComment("KYC審核狀態, \\\\r\\\\n-1:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
+                    .HasComment("KYC審核狀態, \\\\r\\\\n9:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")

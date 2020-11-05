@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Richviet.API.DataContracts.Dto;
+using Richviet.IoC.Configuration.AutoMapper.Converter;
 using Richviet.Services.Models;
+using System;
 using C = Richviet.API.DataContracts.Dto;
 using M = Richviet.Services.Models;
 using R = Richviet.API.DataContracts.Requests;
@@ -24,6 +27,10 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<M.OftenBeneficiar, M.OftenBeneficiar>()
                 .ForMember(x => x.Id, opt => opt.Ignore())
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<CurrencyCode, CurrencyInfoDTO>().ReverseMap();
+            CreateMap<ExchangeRate,ExchangeRateDTO>().ReverseMap();
+            CreateMap<DateTimeOffset, long>().ConvertUsing<UnixTimestampDateTimeOffsetConverter>();
+            CreateMap<DateTime, long>().ConvertUsing<UnixTimestampDateTimeConverter>();
         }
     }
 }
