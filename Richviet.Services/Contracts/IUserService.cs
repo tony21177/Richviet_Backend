@@ -1,5 +1,6 @@
 ﻿
 using Richviet.API.DataContracts.Requests;
+using Richviet.Services.Constants;
 using Richviet.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,6 @@ namespace Richviet.Services.Contracts
 
         bool ReigsterUserById(int id, RegisterRequest registerReq);
 
-        bool ChangeKycStatusById(KycRequest kycReq);
+        bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, int userId);
     }
 }

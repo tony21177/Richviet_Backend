@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Richviet.API.DataContracts.Requests
+namespace Richviet.Admin.API.DataContracts.Requests
 {
     [SwaggerSchema(Required = new[] { "Description" })]
     public class KycRequest

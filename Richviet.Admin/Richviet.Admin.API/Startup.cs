@@ -1,8 +1,8 @@
-ï»¿using Richviet.API.Common.Attributes;
-using Richviet.API.Common.Middlewares;
-using Richviet.API.Common.Settings;
-using Richviet.API.Swagger;
-using Richviet.IoC.Configuration.DI;
+using System;
+using System.Data;
+using System.IO;
+using System.Net;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -10,31 +10,24 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
-using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Data;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Text.Json;
-using MySql.Data.EntityFrameworkCore.Extensions;
-using Richviet.Services.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
-using Richviet.API.DataContracts.Converter;
+using Newtonsoft.Json;
+using Richviet.Admin.API.Common.Attributes;
+using Richviet.Admin.API.Common.Settings;
+using Richviet.Admin.API.DataContracts.Converter;
+using Richviet.Admin.API.Swagger;
+using Richviet.IoC.Configuration.DI;
+using Richviet.Services.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
-#pragma warning disable CS1591
-namespace Richviet.API
+namespace Richviet.Admin.API
 {
     public class Startup
     {
@@ -46,12 +39,10 @@ namespace Richviet.API
 
         //private readonly ILogger _logger;
 
-
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             HostingEnvironment = env;
             Configuration = configuration;
-            //_logger = logger;
 
             //AppSettings
             _appsettingsConfigurationSection = Configuration.GetSection(nameof(AppSettings));
@@ -94,23 +85,23 @@ namespace Richviet.API
                             options.JsonSerializerOptions.Converters.Add(new CustomDateConverter());
                         });
 
-                    // authentication
-                    services
-                    // æª¢æŸ¥ HTTP Header çš„ Authorization æ˜¯å¦æœ‰ JWT Bearer Token
-                    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    // è¨­å®š JWT Bearer Token çš„æª¢æŸ¥é¸é …
-                    .AddJwtBearer(options =>
-                        {
-                            options.IncludeErrorDetails = true;
-                            options.TokenValidationParameters = new TokenValidationParameters
-                            {
-                                ValidateIssuer = false,
-                                ValidateAudience = false,
-                                ValidateLifetime = true,
-                                ValidateIssuerSigningKey = false,
-                                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
-                            };
-                        });
+                    //// authentication
+                    //services
+                    //// ÀË¬d HTTP Header ªº Authorization ¬O§_¦³ JWT Bearer Token
+                    //.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    //// ³]©w JWT Bearer Token ªºÀË¬d¿ï¶µ
+                    //.AddJwtBearer(options =>
+                    //{
+                    //    options.IncludeErrorDetails = true;
+                    //    options.TokenValidationParameters = new TokenValidationParameters
+                    //    {
+                    //        ValidateIssuer = false,
+                    //        ValidateAudience = false,
+                    //        ValidateLifetime = true,
+                    //        ValidateIssuerSigningKey = false,
+                    //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                    //    };
+                    //});
 
                     //API versioning
                     services.AddApiVersioning(
@@ -145,14 +136,14 @@ namespace Richviet.API
                         {
                             options.OperationFilter<SwaggerDefaultValues>();
                             options.IncludeXmlComments(XmlCommentsFilePath);
-                            options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
-                            {
-                                Type = SecuritySchemeType.Http,
-                                BearerFormat = "JWT",
-                                In = ParameterLocation.Header,
-                                Scheme = "bearer"
-                            });
-                            options.OperationFilter<AddRequiredHeaderParameter>();
+                            //options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+                            //{
+                            //    Type = SecuritySchemeType.Http,
+                            //    BearerFormat = "JWT",
+                            //    In = ParameterLocation.Header,
+                            //    Scheme = "bearer"
+                            //});
+                            //options.OperationFilter<AddRequiredHeaderParameter>();
                             options.EnableAnnotations();
                         });
                     }

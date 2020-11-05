@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Richviet.Tools.Utility;
 using Richviet.API.DataContracts.Requests;
+using Microsoft.Extensions.Logging;
 
 namespace Richviet.Services
 {
@@ -15,12 +16,14 @@ namespace Richviet.Services
     {
         private readonly IEnumerable<IAuthService> authServices;
         private readonly GeneralContext dbContext;
+        private readonly ILogger logger;
 
 
-        public UserService(IEnumerable<IAuthService> authServices, GeneralContext dbContext)
+        public UserService(IEnumerable<IAuthService> authServices, GeneralContext dbContext, ILogger<UserService> logger)
         {
             this.authServices = authServices;
             this.dbContext = dbContext;
+            this.logger =  logger;
         }
 
         public async Task<bool> AddNewUserInfo(UserRegisterType loginUser)
@@ -95,6 +98,7 @@ namespace Richviet.Services
 
             if (user == null || userArc == null || userInfo == null)
             {
+                logger.LogError("{userId} does not exist", id);
                 return false;
             }
 
@@ -140,27 +144,25 @@ namespace Richviet.Services
             }
         }
 
-        public bool ChangeKycStatusById(KycRequest kycReq)
+        public bool ChangeKycStatusByUserId(KycStatusEnum kycStatus,int userId)
         {
-            User user = dbContext.User.Where(user => user.Id == kycReq.Id).FirstOrDefault();
-            UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == kycReq.Id).FirstOrDefault();
+            User user = dbContext.User.Where(user => user.Id == userId).FirstOrDefault();
+            UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == userId).FirstOrDefault();
 
             if (user == null || userArc == null)
             {
+                logger.LogError("userId {userId} does not exists", userId);
                 return false;
             }
 
-            if (kycReq.kycStatus == 2)
-            {
-                user.Status = 1;
-            }
-
-            userArc.KycStatus = kycReq.kycStatus;
-            userArc.KycStatusUpdateTime = DateTime.Now;
+            userArc.KycStatus = (byte)kycStatus;
+            userArc.KycStatusUpdateTime = DateTimeOffset.UtcNow;
 
             dbContext.SaveChanges();
 
             return true;
         }
+
+       
     }
 }

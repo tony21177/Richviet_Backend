@@ -1,0 +1,73 @@
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
+using Richviet.Services.Contracts;
+using Richviet.Services.Models;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Richviet.Admin.API.DataContracts.Responses;
+using Swashbuckle.AspNetCore.Annotations;
+using Richviet.Services.Constants;
+
+namespace Richviet.Admin.API.Controllers.V1
+{
+    [ApiVersion("1.0")]
+    [Route("admin/v{version:apiVersion}/kyc")]
+    [ApiController]
+
+    public class KycController : Controller
+    {
+        private readonly IUserService userService;
+        private IMapper mapper;
+
+        public KycController(IUserService userService, IMapper mapper)
+        {
+            this.userService = userService;
+            this.mapper = mapper;
+        }
+
+        /// <summary>
+        /// 審核通過會員的註冊KYC
+        /// </summary>
+        [HttpGet("kycStatus/{userId}")]
+        [AllowAnonymous]
+
+        public ActionResult<MessageModel<Object>> PassUserKyc([FromRoute, SwaggerParameter("使用者ID", Required = true)] int userId)
+        {
+
+            UserArc userArc = userService.GetUserArcById(userId);
+            if (userArc == null)
+            {
+                return BadRequest(new MessageModel<Object>
+                {
+                    Success = false,
+                    Msg = "User does not exist"
+                });
+            }
+
+            if (userArc.KycStatus != (byte)KycStatusEnum.WAITING_VERIFIED_KYC)
+            {
+                return BadRequest(new MessageModel<Object>
+                {
+                    Success = false,
+                    Msg = "Invalid Operation"
+                });
+
+            }
+            var result = new MessageModel<Object>
+            {
+                Success = false,
+                Msg = "Fail to Operate"
+            };
+
+            if (userService.ChangeKycStatusByUserId(KycStatusEnum.PASSED_KYC, userId))
+            {
+                result.Success = true;
+                result.Msg = "Successful Operation";
+                return Ok(result);
+                
+            }
+
+            return BadRequest(result);
+        }
+    }
+}
