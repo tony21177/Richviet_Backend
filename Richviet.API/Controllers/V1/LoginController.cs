@@ -45,19 +45,34 @@ namespace Richviet.API.Controllers.V1
 
             dynamic verifiedData = userService.VerifyUserInfo(loginRequest.accessToken, loginRequest.permissions, loginUserRegistger).Result;
 
-            if (verifiedData == null )
-                return Unauthorized(new MessageModel<Object>
-                {
-                    Status = (int)HttpStatusCode.Unauthorized,
-                    Success = false,
-                    Msg = "Unauthorized",
-                    Data = null
-                }); ;
+            try
+            {
+                if (verifiedData == false)
+                    return Unauthorized(new MessageModel<Object>
+                    {
+                        Status = (int)HttpStatusCode.Unauthorized,
+                        Success = false,
+                        Msg = "Unauthorized",
+                        Data = null
+                    }); ;
+            }
+            catch {}
 
-            loginUserRegistger.Name = verifiedData["name"] == null ? "" : verifiedData["name"].ToString();
-            loginUserRegistger.Email = verifiedData["email"] ==null?"":verifiedData["email"].ToString();
+            try
+            {
+                if (verifiedData == null || verifiedData["name"] == null || verifiedData["email"] == null)
+                    return Unauthorized(new MessageModel<Object>
+                    {
+                        Status = (int)HttpStatusCode.Unauthorized,
+                        Success = false,
+                        Msg = "Unauthorized",
+                        Data = null
+                    }); ;
+            }
+            catch {}
 
-            Console.WriteLine($"aaaaa:{loginUserRegistger.Email}");
+            loginUserRegistger.Name = verifiedData["name"].ToString();
+            loginUserRegistger.Email = verifiedData["email"].ToString();
 
             if (userService.GetUserInfo(loginUserRegistger).Result == null)
             {
@@ -70,7 +85,7 @@ namespace Richviet.API.Controllers.V1
             {
                 Data = new 
                 {
-                    AccessToken = accessToken.Token,
+                    Jwt = accessToken.Token,
                     loginUser.Status,
                     KYCStatus = loginUser.KycStatus
                 }

@@ -70,7 +70,7 @@ namespace Richviet.API.Controllers.V1
             {
                 Data = new
                 {
-                    AccessToken = accessToken.Token,
+                    Jwt = accessToken.Token,
                     userModel.Status,
                     KYCStatus = userModel.KycStatus
                 }
