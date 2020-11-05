@@ -17,7 +17,7 @@ namespace Richviet.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/register")]
     [ApiController]
-
+    [Authorize]
     public class RegisterController : Controller
     {
         private readonly IUserService userService;
