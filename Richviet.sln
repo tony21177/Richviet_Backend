@@ -34,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Repositories", "3.Reposit
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.Admin", "4.Admin", "{11D47A71-662E-4D11-824B-6A91A52F439E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.Admin.API", "Richviet.Admin\Richviet.Admin.API\Richviet.Admin.API.csproj", "{00C18677-52E4-4A38-BC18-E17E75D69068}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.Admin.API", "Richviet.Admin.API\Richviet.Admin.API.csproj", "{00C18677-52E4-4A38-BC18-E17E75D69068}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.Admin.API.Common", "Richviet.Admin.API.Common\Richviet.Admin.API.Common.csproj", "{B3559FCE-46A1-45A0-9E0E-DFD56C57FAD5}"
 EndProject
