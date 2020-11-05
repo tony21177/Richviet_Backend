@@ -63,7 +63,7 @@ namespace Richviet.Admin.API.Controllers.V1
                 Msg = "Fail to Operate"
             };
 
-            if (userService.ChangeKycStatusByUserId(KycStatusEnum.PASSED_KYC, userId))
+            if (userService.ChangeKycStatusByUserId(KycStatusEnum.PASSED_KYC,UserStatusEnum.FORMAL, userId))
             {
                 result.Status = (int)HttpStatusCode.OK;
                 result.Success = true;

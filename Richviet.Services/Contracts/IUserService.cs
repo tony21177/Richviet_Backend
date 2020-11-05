@@ -25,6 +25,6 @@ namespace Richviet.Services.Contracts
 
         bool ReigsterUserById(int id, RegisterRequest registerReq);
 
-        bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, int userId);
+        bool ChangeKycStatusByUserId(KycStatusEnum kycStatus,UserStatusEnum userStatus, int userId);
     }
 }

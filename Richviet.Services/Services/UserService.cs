@@ -144,7 +144,7 @@ namespace Richviet.Services
             }
         }
 
-        public bool ChangeKycStatusByUserId(KycStatusEnum kycStatus,int userId)
+        public bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, UserStatusEnum userStatus, int userId)
         {
             User user = dbContext.User.Where(user => user.Id == userId).FirstOrDefault();
             UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == userId).FirstOrDefault();
@@ -157,6 +157,11 @@ namespace Richviet.Services
 
             userArc.KycStatus = (byte)kycStatus;
             userArc.KycStatusUpdateTime = DateTimeOffset.UtcNow;
+
+            if (userStatus != null)
+            {
+                user.Status = (byte)userStatus;
+            }
 
             dbContext.SaveChanges();
 
