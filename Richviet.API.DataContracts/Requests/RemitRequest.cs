@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
+﻿using Richviet.API.DataContracts.Validation;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,10 +10,13 @@ namespace Richviet.API.DataContracts.Requests
 
     public class RemitRequest
     {
-
+        [Required]
+        [CountryValidation("TW")]
+        [SwaggerSchema("匯款國家")]
+        public int Country { get; set; }
         [Required]
         [SwaggerSchema("匯款金額")]
-        public double FromAmount { get; set; }
+        public int FromAmount { get; set; }
         [Required]
         [SwaggerSchema("常用收款人pk,對應/user/beneficiars回傳的pk")]
         public int BenefiaiarId { get; set; }

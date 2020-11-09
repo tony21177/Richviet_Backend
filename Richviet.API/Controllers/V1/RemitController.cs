@@ -9,8 +9,9 @@ using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Net;
 
-#pragma warning disable    1591
+#pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
 {
 
@@ -39,7 +40,7 @@ namespace Richviet.API.Controllers.V1
         /// 取得服務所在國家的匯款相關設定(min,max)
         /// </summary>
         [HttpGet("settings/{country}")]
-        [AllowAnonymous]
+        [Authorize]
         public MessageModel<RemitSettingDTO> GetCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. TW ", Required = true)] string country)
         {
             Logger.LogInformation(country);
@@ -90,9 +91,30 @@ namespace Richviet.API.Controllers.V1
         /// 使用者送出匯款申請
         /// </summary>
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
         public ActionResult<MessageModel<RemitRecordDTO>> ApplyRemitRecord([FromBody] RemitRequest remitRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "amount out of range"
+
+                }); ;
+            }
+            if(CheckIfAmountOutOfRange(remitRequest.FromAmount,"TW")) 
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "amount out of range"
+
+                }); ;
+
+
+
             return Ok(new MessageModel<RemitRecordDTO>
             {
                 Data = new RemitRecordDTO() {
@@ -171,6 +193,15 @@ namespace Richviet.API.Controllers.V1
                     }
                 }
             });
+        }
+
+
+        private bool CheckIfAmountOutOfRange(int amount,string country)
+        {
+            BussinessUnitRemitSetting remitSetting = remitSettingService.GetRemitSettingByCountry(country);
+            if (remitSetting == null) return true;
+            if (amount < remitSetting.RemitMin || amount > remitSetting.RemitMax) return true;
+            return false;
         }
 
 
