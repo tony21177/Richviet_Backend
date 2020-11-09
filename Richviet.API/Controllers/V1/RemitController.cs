@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
+using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -22,9 +24,15 @@ namespace Richviet.API.Controllers.V1
     {
         private readonly ILogger Logger;
 
-        public RemitController(ILogger<RemitController> logger)
+        private readonly IMapper _mapper;
+
+        private readonly IRemitSettingService remitSettingService;
+
+        public RemitController(ILogger<RemitController> logger, IMapper mapper, IRemitSettingService remitSettingService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._mapper = mapper;
+            this.remitSettingService = remitSettingService;
         }
 
         /// <summary>
@@ -35,14 +43,12 @@ namespace Richviet.API.Controllers.V1
         public MessageModel<RemitSettingDTO> GetCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. TW ", Required = true)] string country)
         {
             Logger.LogInformation(country);
+            BussinessUnitRemitSetting setting = remitSettingService.GetRemitSettingByCountry(country.ToUpper());
+            RemitSettingDTO settingDTO = _mapper.Map<RemitSettingDTO>(setting);
 
             return new MessageModel<RemitSettingDTO>
             {
-                Data = new RemitSettingDTO {
-                    country = "TW",
-                    remitMin = 1000,
-                    remitMax = 30000
-                }
+                Data = settingDTO
             };
 
         }

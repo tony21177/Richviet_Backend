@@ -31,6 +31,7 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<ExchangeRate,ExchangeRateDTO>().ReverseMap();
             CreateMap<DateTimeOffset, long>().ConvertUsing<UnixTimestampDateTimeOffsetConverter>();
             CreateMap<DateTime, long>().ConvertUsing<UnixTimestampDateTimeConverter>();
+            CreateMap<BussinessUnitRemitSetting,RemitSettingDTO>().ReverseMap();
         }
     }
 }

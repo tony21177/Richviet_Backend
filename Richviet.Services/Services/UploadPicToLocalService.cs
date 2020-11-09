@@ -37,6 +37,9 @@ namespace Richviet.Services.Services
                 case 3:
                     mainFolder = "back";
                     break;
+                default:
+                    mainFolder = "other";
+                    break;
 
             }
             resultFileName = imageType + "_" + userArc.ArcNo + "_" + DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
