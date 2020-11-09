@@ -19,7 +19,7 @@ namespace Richviet.API.DataContracts.Requests
         public int FromAmount { get; set; }
         [Required]
         [SwaggerSchema("常用收款人pk,對應/user/beneficiars回傳的pk")]
-        public int BenefiaiarId { get; set; }
+        public int BeneficiarId { get; set; }
         [Required]
         [SwaggerSchema("大頭照檔名,填上經由/uploadPicture上傳回覆的檔名")]
         public string PhotoFilename { get; set; }

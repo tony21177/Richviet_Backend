@@ -23,6 +23,10 @@ namespace Richviet.Tools.Utility
             return Directory.CreateDirectory(".."+Path.DirectorySeparatorChar + _configuration["StoredFilesPath"]+ Path.DirectorySeparatorChar + folderName);
         }
 
+        public bool IsFileExists(string filePath)
+        {
+            return File.Exists(".." + Path.DirectorySeparatorChar + _configuration["StoredFilesPath"] + Path.DirectorySeparatorChar + filePath);
+        }
 
     }
 }
