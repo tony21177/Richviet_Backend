@@ -32,7 +32,6 @@ namespace Richviet.Services.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -485,6 +484,12 @@ namespace Richviet.Services.Models
                     .HasColumnName("id_image_c")
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.Property(e => e.IsDraft)
+                    .HasColumnName("is_draft")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("0:正式匯款單,1:草稿");
 
                 entity.Property(e => e.PayeeType)
                     .HasColumnName("payee_type")
