@@ -23,19 +23,55 @@ namespace Richviet.Services
             return dbContext.ReceiveBank.ToList();
         }
 
-        public void AddReceiveBank(ReceiveBank bank)
+        public bool AddReceiveBank(ReceiveBank bank)
         {
-            dbContext.ReceiveBank.Add(bank);
+            try
+            {
+                dbContext.ReceiveBank.Add(bank);
+                dbContext.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return false;
+            
         }
 
-        public void DeleteReceiveBank(ReceiveBank bank)
+        public bool DeleteReceiveBank(int id)
         {
-            
+            try
+            {
+                ReceiveBank bank = dbContext.ReceiveBank.Single(x => x.Id == id);
+                if (bank != null)
+                {
+                    dbContext.ReceiveBank.Remove(bank);
+                    dbContext.SaveChanges();
+                    return true;
+                }          
+            }
+            catch(Exception ex)
+            {
+                
+            }
+            return false;
         }     
 
-        public void ModifyReceiveBank(ReceiveBank modifyBank, ReceiveBank oldBank)
+        public bool ModifyReceiveBank(ReceiveBank modifyBank)
         {
-            throw new NotImplementedException();
+            try
+            {
+                ReceiveBank bank = dbContext.ReceiveBank.Single(x => x.Id == modifyBank.Id);
+                dbContext.Entry(bank).CurrentValues.SetValues(modifyBank);
+                dbContext.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return false;
         }
     }
 }

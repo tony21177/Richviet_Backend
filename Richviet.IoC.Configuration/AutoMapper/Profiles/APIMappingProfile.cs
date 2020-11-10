@@ -6,6 +6,7 @@ using System;
 using C = Richviet.API.DataContracts.Dto;
 using M = Richviet.Services.Models;
 using R = Richviet.API.DataContracts.Requests;
+using A = Richviet.Admin.API.DataContracts.Dto;
 
 namespace Richviet.IoC.Configuration.AutoMapper.Profiles
 {
@@ -31,6 +32,9 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<ExchangeRate,ExchangeRateDTO>().ReverseMap();
             CreateMap<DateTimeOffset, long>().ConvertUsing<UnixTimestampDateTimeOffsetConverter>();
             CreateMap<DateTime, long>().ConvertUsing<UnixTimestampDateTimeConverter>();
+
+            //Admin
+            CreateMap<M.ReceiveBank, A.EditBankDTO>().ReverseMap();
         }
     }
 }

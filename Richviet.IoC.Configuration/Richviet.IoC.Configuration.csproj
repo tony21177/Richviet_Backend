@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Richviet.Admin.API.DataContracts\Richviet.Admin.API.DataContracts.csproj" />
     <ProjectReference Include="..\Richviet.API.DataContracts\Richviet.API.DataContracts.csproj" />
     <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
   </ItemGroup>
