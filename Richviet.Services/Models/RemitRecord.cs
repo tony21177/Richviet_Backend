@@ -32,6 +32,7 @@ namespace Richviet.Services.Models
         public DateTimeOffset? ArcVerifyTime { get; set; }
         public DateTimeOffset? PaymentTime { get; set; }
         public string PaymentCode { get; set; }
+        public byte IsDraft { get; set; }
 
         public virtual OftenBeneficiar Beneficiar { get; set; }
         public virtual User User { get; set; }
