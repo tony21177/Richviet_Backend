@@ -11,5 +11,10 @@ namespace Richviet.Services.Contracts
     {
         List<ReceiveBank> GetReceiveBanks();
 
+        void AddReceiveBank(ReceiveBank bank);
+
+        void ModifyReceiveBank(ReceiveBank modifyBank, ReceiveBank oldBank);
+
+        void DeleteReceiveBank(ReceiveBank bank);
     }
 }

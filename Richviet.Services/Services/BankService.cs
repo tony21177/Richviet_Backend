@@ -22,5 +22,20 @@ namespace Richviet.Services
         {
             return dbContext.ReceiveBank.ToList();
         }
+
+        public void AddReceiveBank(ReceiveBank bank)
+        {
+            dbContext.ReceiveBank.Add(bank);
+        }
+
+        public void DeleteReceiveBank(ReceiveBank bank)
+        {
+            
+        }     
+
+        public void ModifyReceiveBank(ReceiveBank modifyBank, ReceiveBank oldBank)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
