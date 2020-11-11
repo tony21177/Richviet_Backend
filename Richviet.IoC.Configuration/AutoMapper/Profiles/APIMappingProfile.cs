@@ -68,6 +68,8 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             //Admin
             CreateMap<M.ReceiveBank, A.EditBankDTO>().ReverseMap();
             CreateMap<M.PayeeRelationType, A.EditRelationDTO>().ReverseMap();
+            CreateMap<M.BussinessUnitRemitSetting, A.EditRemitSettingDTO>().ReverseMap();
+            CreateMap<M.CurrencyCode, A.EditCurrencyInfoDTO>().ReverseMap();
         }
     }
 }

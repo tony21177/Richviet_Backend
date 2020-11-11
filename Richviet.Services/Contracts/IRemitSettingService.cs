@@ -8,5 +8,13 @@ namespace Richviet.Services.Contracts
     public interface IRemitSettingService
     {
         BussinessUnitRemitSetting GetRemitSettingByCountry(string country);
+
+        List<BussinessUnitRemitSetting> GetRemitSettingList();
+
+        bool AddRemitSetting(BussinessUnitRemitSetting remitSetting);
+
+        bool ModifyRemitSetting(BussinessUnitRemitSetting modifyRemitSetting);
+
+        bool DeleteRemitSetting(int id);
     }
 }

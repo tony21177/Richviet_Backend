@@ -24,5 +24,60 @@ namespace Richviet.Services.Services
         {
             return dbContext.BussinessUnitRemitSetting.Where<BussinessUnitRemitSetting>(setting => setting.Country.Equals(country)).FirstOrDefault();
         }
+
+        public List<BussinessUnitRemitSetting> GetRemitSettingList()
+        {
+            return dbContext.BussinessUnitRemitSetting.ToList();
+        }
+
+        public bool AddRemitSetting(BussinessUnitRemitSetting remitSetting)
+        {
+            try
+            {
+                dbContext.BussinessUnitRemitSetting.Add(remitSetting);
+                dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogDebug(ex.Message);
+            }
+            return false;
+        }
+
+        public bool DeleteRemitSetting(int id)
+        {
+            try
+            {
+                BussinessUnitRemitSetting remitSetting = dbContext.BussinessUnitRemitSetting.Single(x => x.Id == id);
+                if (remitSetting != null)
+                {
+                    dbContext.BussinessUnitRemitSetting.Remove(remitSetting);
+                    dbContext.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogDebug(ex.Message);
+            }
+            return false;
+        }
+
+        public bool ModifyRemitSetting(BussinessUnitRemitSetting modifyRemitSetting)
+        {
+            try
+            {
+                BussinessUnitRemitSetting remitSetting = dbContext.BussinessUnitRemitSetting.Single(x => x.Id == modifyRemitSetting.Id);
+                dbContext.Entry(remitSetting).CurrentValues.SetValues(modifyRemitSetting);
+                dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogDebug(ex.Message);
+            }
+            return false;
+        }
     }
 }
