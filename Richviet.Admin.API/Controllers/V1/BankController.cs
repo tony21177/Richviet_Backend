@@ -53,9 +53,9 @@ namespace Richviet.Admin.API.Controllers.V1
         /// <summary>
         /// 新增可收款銀行
         /// </summary>
-        [HttpPost("edit")]
+        [HttpPost]
         [AllowAnonymous]
-        public MessageModel<EditBankDTO> GetReceiveBanks(AddReceiveBankRequest request)
+        public MessageModel<EditBankDTO> AddReceiveBank(AddReceiveBankRequest request)
         {
             ReceiveBank bank = new ReceiveBank
             {
@@ -70,7 +70,7 @@ namespace Richviet.Admin.API.Controllers.V1
             return new MessageModel<EditBankDTO>
             {
                 Success = result,
-                Msg = result ? "" : "Delete Fail",
+                Msg = result ? "" : "Add Fail",
                 Data = bankDTO
             };
         }
@@ -78,9 +78,9 @@ namespace Richviet.Admin.API.Controllers.V1
         /// <summary>
         /// 刪除可收款銀行
         /// </summary>
-        [HttpDelete("edit/{id}")]
+        [HttpDelete("{id}")]
         [AllowAnonymous]
-        public MessageModel<EditBankDTO> DeleteReceiveBanks([FromRoute, SwaggerParameter("id,可從/bank/edit取得", Required = true)] int id)
+        public MessageModel<EditBankDTO> DeleteReceiveBank([FromRoute, SwaggerParameter("id,可從/bank/edit取得", Required = true)] int id)
         {
             bool result = bankService.DeleteReceiveBank(id);
             return new MessageModel<EditBankDTO>
@@ -93,9 +93,9 @@ namespace Richviet.Admin.API.Controllers.V1
         /// <summary>
         /// 修改可收款銀行
         /// </summary>
-        [HttpPut("edit/{id}")]
+        [HttpPut("{id}")]
         [AllowAnonymous]
-        public MessageModel<EditBankDTO> ModifyReceiveBanks([FromRoute, SwaggerParameter("id,可從/bank/edit取得", Required = true)] int id, [FromBody] ModifyReceiveBankRequest request)
+        public MessageModel<EditBankDTO> ModifyReceiveBank([FromRoute, SwaggerParameter("id,可從/bank/edit取得", Required = true)] int id, [FromBody] ModifyReceiveBankRequest request)
         {
             ReceiveBank bank = new ReceiveBank
             {
