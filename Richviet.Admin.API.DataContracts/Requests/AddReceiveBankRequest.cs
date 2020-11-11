@@ -19,6 +19,6 @@ namespace Richviet.Admin.API.DataContracts.Requests
         [SwaggerSchema("可收款銀行中文名稱")]
         public string TwName { get; set; }
         [SwaggerSchema("可收款銀行排列順序")]
-        public int? SortNum { get; set; }
+        public int SortNum { get; set; }
     }
 }
