@@ -40,6 +40,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.Admin.API.Common",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.Admin.API.DataContracts", "Richviet.Admin.API.DataContracts\Richviet.Admin.API.DataContracts.csproj", "{27168EF8-B5DF-454A-B29E-21E5C4E759FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EF.Database", "EF.Database", "{C1464784-6826-4859-AFE5-22110CD7B8FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.DB.EF", "Admin.DB.EF\Admin.DB.EF.csproj", "{86F37451-B73E-48A2-9A68-1EBD8C48DD96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +94,10 @@ Global
 		{27168EF8-B5DF-454A-B29E-21E5C4E759FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27168EF8-B5DF-454A-B29E-21E5C4E759FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27168EF8-B5DF-454A-B29E-21E5C4E759FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86F37451-B73E-48A2-9A68-1EBD8C48DD96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86F37451-B73E-48A2-9A68-1EBD8C48DD96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86F37451-B73E-48A2-9A68-1EBD8C48DD96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86F37451-B73E-48A2-9A68-1EBD8C48DD96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +114,7 @@ Global
 		{00C18677-52E4-4A38-BC18-E17E75D69068} = {11D47A71-662E-4D11-824B-6A91A52F439E}
 		{B3559FCE-46A1-45A0-9E0E-DFD56C57FAD5} = {11D47A71-662E-4D11-824B-6A91A52F439E}
 		{27168EF8-B5DF-454A-B29E-21E5C4E759FC} = {11D47A71-662E-4D11-824B-6A91A52F439E}
+		{86F37451-B73E-48A2-9A68-1EBD8C48DD96} = {C1464784-6826-4859-AFE5-22110CD7B8FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {756538D4-5347-479B-8083-19EF5CC5850C}

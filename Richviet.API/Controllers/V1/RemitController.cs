@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
+using Richviet.Services.Constants;
+using Richviet.Services.Contracts;
 using Richviet.Services.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Net;
+using System.Security.Claims;
 
-#pragma warning disable    1591
+#pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
 {
 
@@ -22,27 +27,41 @@ namespace Richviet.API.Controllers.V1
     {
         private readonly ILogger Logger;
 
-        public RemitController(ILogger<RemitController> logger)
+        private readonly IMapper _mapper;
+
+        private readonly IUserService userService;
+
+        private readonly IRemitSettingService remitSettingService;
+
+        private readonly IBeneficiarService beneficiarService;
+
+        private readonly IUploadPic uploadPicService;
+
+        public RemitController(ILogger<RemitController> logger, IMapper mapper, IRemitSettingService remitSettingService, IBeneficiarService beneficiarService
+            , IUserService userService, IUploadPic uploadPicService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._mapper = mapper;
+            this.userService = userService;
+            this.remitSettingService = remitSettingService;
+            this.beneficiarService = beneficiarService;
+            this.uploadPicService = uploadPicService;
         }
 
         /// <summary>
         /// 取得服務所在國家的匯款相關設定(min,max)
         /// </summary>
         [HttpGet("settings/{country}")]
-        [AllowAnonymous]
+        [Authorize]
         public MessageModel<RemitSettingDTO> GetCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. TW ", Required = true)] string country)
         {
             Logger.LogInformation(country);
+            BussinessUnitRemitSetting setting = remitSettingService.GetRemitSettingByCountry(country.ToUpper());
+            RemitSettingDTO settingDTO = _mapper.Map<RemitSettingDTO>(setting);
 
             return new MessageModel<RemitSettingDTO>
             {
-                Data = new RemitSettingDTO {
-                    country = "TW",
-                    remitMin = 1000,
-                    remitMax = 30000
-                }
+                Data = settingDTO
             };
 
         }
@@ -84,9 +103,62 @@ namespace Richviet.API.Controllers.V1
         /// 使用者送出匯款申請
         /// </summary>
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
         public ActionResult<MessageModel<RemitRecordDTO>> ApplyRemitRecord([FromBody] RemitRequest remitRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            // check user arc status
+            var userId = int.Parse(User.FindFirstValue("id"));
+            UserArc userArc = userService.GetUserArcById(userId);
+
+            if(userArc.KycStatus!= (byte)KycStatusEnum.PASSED_KYC)
+            {
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "KYC process Has not been passed"
+
+                });
+            }
+
+            // check amount
+            if (CheckIfAmountOutOfRange(remitRequest.FromAmount,"TW")) 
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "amount out of range"
+
+                });
+            // check beneficiar
+            OftenBeneficiar beneficiar= beneficiarService.GetBeneficiarById(remitRequest.BeneficiarId);
+            if (beneficiar == null)
+            {
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "wrong beneficiar"
+
+                });
+            }
+            // check uploaded picture
+            if(!uploadPicService.CheckUploadFileExistence(userArc, PictureTypeEnum.Instant, remitRequest.PhotoFilename)
+                || !uploadPicService.CheckUploadFileExistence(userArc, PictureTypeEnum.Signature, remitRequest.SignatureFilename))
+            {
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "uploaded pictures does not exists"
+
+                });
+            }
+
             return Ok(new MessageModel<RemitRecordDTO>
             {
                 Data = new RemitRecordDTO() {
@@ -165,6 +237,15 @@ namespace Richviet.API.Controllers.V1
                     }
                 }
             });
+        }
+
+
+        private bool CheckIfAmountOutOfRange(int amount,string country)
+        {
+            BussinessUnitRemitSetting remitSetting = remitSettingService.GetRemitSettingByCountry(country);
+            if (remitSetting == null) return true;
+            if (amount < remitSetting.RemitMin || amount > remitSetting.RemitMax) return true;
+            return false;
         }
 
 
