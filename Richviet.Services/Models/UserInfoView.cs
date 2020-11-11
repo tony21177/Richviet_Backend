@@ -11,8 +11,8 @@ namespace Richviet.Services.Models
         public byte Gender { get; set; }
         public DateTime? Birthday { get; set; }
         public byte Status { get; set; }
-        public DateTimeOffset? CreateTime { get; set; }
-        public DateTimeOffset? UpdateTime { get; set; }
+        public DateTimeOffset CreateTime { get; set; }
+        public DateTimeOffset UpdateTime { get; set; }
         public string Country { get; set; }
         public string ArcName { get; set; }
         public string ArcNo { get; set; }

@@ -24,5 +24,10 @@ namespace Richviet.Services.Services
             return dbContext.CurrencyCode.Where(currency => currency.Country == country).ToList<CurrencyCode>();
 
         }
+
+        public CurrencyCode GetCurrencyById(int id)
+        {
+            return dbContext.CurrencyCode.Find(id);
+        }
     }
 }

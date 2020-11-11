@@ -18,7 +18,7 @@ namespace Richviet.Services.Models
         public string IdImageC { get; set; }
         public byte? KycStatus { get; set; }
         public DateTimeOffset? KycStatusUpdateTime { get; set; }
-        public DateTimeOffset? CreateTime { get; set; }
+        public DateTimeOffset CreateTime { get; set; }
         public DateTimeOffset? UpdateTime { get; set; }
 
         public virtual User User { get; set; }

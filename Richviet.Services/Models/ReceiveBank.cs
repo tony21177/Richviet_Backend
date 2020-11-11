@@ -11,6 +11,6 @@ namespace Richviet.Services.Models
         public string VietName { get; set; }
         public string EnName { get; set; }
         public string TwName { get; set; }
-        public int? SortNum { get; set; }
+        public int SortNum { get; set; }
     }
 }

@@ -15,10 +15,10 @@ namespace Richviet.Services.Models
         public string IdImageC { get; set; }
         public string RealTimePic { get; set; }
         public string ESignature { get; set; }
-        public DateTimeOffset? CreateTime { get; set; }
-        public DateTimeOffset? UpdateTime { get; set; }
-        public int FromCurrencyId { get; set; }
-        public int ToCurrencyId { get; set; }
+        public DateTimeOffset CreateTime { get; set; }
+        public DateTimeOffset UpdateTime { get; set; }
+        public int? FromCurrencyId { get; set; }
+        public int? ToCurrencyId { get; set; }
         public double FromAmount { get; set; }
         public double ApplyExchangeRate { get; set; }
         public double TransactionExchangeRate { get; set; }
@@ -28,13 +28,13 @@ namespace Richviet.Services.Models
         public double? DiscountAmount { get; set; }
         public int? BeneficiarId { get; set; }
         public byte TransactionStatus { get; set; }
-        public byte? ArcStatus { get; set; }
+        public byte ArcStatus { get; set; }
         public DateTimeOffset? ArcVerifyTime { get; set; }
         public DateTimeOffset? PaymentTime { get; set; }
         public string PaymentCode { get; set; }
-        public byte IsDraft { get; set; }
 
         public virtual OftenBeneficiar Beneficiar { get; set; }
+        public virtual CurrencyCode ToCurrency { get; set; }
         public virtual User User { get; set; }
     }
 }

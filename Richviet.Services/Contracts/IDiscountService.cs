@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Richviet.Services.Contracts
 {
-    public interface ICurrencyService
+    public interface IDiscountService
     {
-        List<CurrencyCode> GetCureencyByCountry(string country);
-        public CurrencyCode GetCurrencyById(int id);
+        Discount GetDoscountById(int id);
     }
 }

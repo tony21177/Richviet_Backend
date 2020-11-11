@@ -19,8 +19,8 @@ namespace Richviet.Services.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public byte Gender { get; set; }
-        public DateTimeOffset? CreateTime { get; set; }
-        public DateTimeOffset? UpdateTime { get; set; }
+        public DateTimeOffset CreateTime { get; set; }
+        public DateTimeOffset UpdateTime { get; set; }
         public DateTime? Birthday { get; set; }
         public byte Status { get; set; }
 

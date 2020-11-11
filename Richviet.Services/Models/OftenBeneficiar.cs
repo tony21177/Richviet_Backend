@@ -19,8 +19,8 @@ namespace Richviet.Services.Models
         public int? ReceiveBankId { get; set; }
         public int PayeeTypeId { get; set; }
         public int PayeeRelationId { get; set; }
-        public DateTimeOffset? CreateTime { get; set; }
-        public DateTimeOffset? UpdateTime { get; set; }
+        public DateTimeOffset CreateTime { get; set; }
+        public DateTimeOffset UpdateTime { get; set; }
 
         public virtual PayeeRelationType PayeeRelation { get; set; }
         public virtual PayeeType PayeeType { get; set; }

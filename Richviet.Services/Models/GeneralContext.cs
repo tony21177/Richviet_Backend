@@ -32,6 +32,11 @@ namespace Richviet.Services.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=root;database=General;TreatTinyAsBoolean=false;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -168,6 +173,7 @@ namespace Richviet.Services.Models
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.CurrencyName)
+                    .IsRequired()
                     .HasColumnName("currency_name")
                     .HasMaxLength(45)
                     .IsUnicode(false);
@@ -355,7 +361,6 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.SortNum)
                     .HasColumnName("sort_num")
                     .HasColumnType("int(11)")
-                    .HasDefaultValueSql("'0'")
                     .HasComment("排序");
 
                 entity.Property(e => e.SwiftCode)
@@ -389,6 +394,9 @@ namespace Richviet.Services.Models
                 entity.HasIndex(e => e.BeneficiarId)
                     .HasName("fk_remit_record_beneficiar_idx");
 
+                entity.HasIndex(e => e.ToCurrencyId)
+                    .HasName("fk_remit_record_to_currency_idx");
+
                 entity.HasIndex(e => e.UserId)
                     .HasName("fk_remit_record_user1_idx");
 
@@ -398,8 +406,7 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.ApplyExchangeRate)
                     .HasColumnName("apply_exchange_rate")
-                    .HasComment(@"使用者申請時當下匯率
-");
+                    .HasComment("使用者申請時當下匯率\\n");
 
                 entity.Property(e => e.ArcName)
                     .IsRequired()
@@ -416,7 +423,6 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.ArcStatus)
                     .HasColumnName("arc_status")
                     .HasColumnType("tinyint(2)")
-                    .HasDefaultValueSql("'0'")
                     .HasComment("0:arc未審核,1:系統自動審核arc成功");
 
                 entity.Property(e => e.ArcVerifyTime)
@@ -444,19 +450,17 @@ namespace Richviet.Services.Models
                     .HasColumnName("e-signature")
                     .HasMaxLength(255)
                     .IsUnicode(false)
+                    .HasDefaultValueSql("''")
                     .HasComment("電子簽名");
 
                 entity.Property(e => e.Fee)
                     .HasColumnName("fee")
-                    .HasComment(@"手續費要搭配fee_type
-");
+                    .HasComment("手續費要搭配fee_type\\n");
 
                 entity.Property(e => e.FeeType)
                     .HasColumnName("fee_type")
                     .HasColumnType("tinyint(1)")
-                    .HasComment(@"手續費計算方式
-0:數量
-1:百分比");
+                    .HasComment("手續費計算方式\\n0:數量\\n1:百分比");
 
                 entity.Property(e => e.FromAmount).HasColumnName("from_amount");
 
@@ -483,13 +487,8 @@ namespace Richviet.Services.Models
                     .IsRequired()
                     .HasColumnName("id_image_c")
                     .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.IsDraft)
-                    .HasColumnName("is_draft")
-                    .HasColumnType("tinyint(1)")
-                    .HasDefaultValueSql("'1'")
-                    .HasComment("0:正式匯款單,1:草稿");
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("''");
 
                 entity.Property(e => e.PayeeType)
                     .HasColumnName("payee_type")
@@ -512,6 +511,7 @@ namespace Richviet.Services.Models
                     .HasColumnName("real_time_pic")
                     .HasMaxLength(255)
                     .IsUnicode(false)
+                    .HasDefaultValueSql("''")
                     .HasComment("即時拍照");
 
                 entity.Property(e => e.ToCurrencyId)
@@ -521,13 +521,13 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.TransactionExchangeRate)
                     .HasColumnName("transaction_exchange_rate")
-                    .HasComment(@"實際匯款時的匯率
-");
+                    .HasComment("實際匯款時的匯率\\n");
 
                 entity.Property(e => e.TransactionStatus)
                     .HasColumnName("transaction_status")
                     .HasColumnType("tinyint(4)")
-                    .HasComment("99:其他錯誤\\\\n9: 審核失敗\\\\n0: 待審核(系統進入arc_status流程)\\\\n1: 待繳款\\\\n2: 已繳款\\\\n3:處理完成");
+                    .HasDefaultValueSql("'98'")
+                    .HasComment("99:其他錯誤\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\98:草稿狀態\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n9: 審核失敗\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n0: 待審核(系統進入arc_status流程)\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n1: 待繳款\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n2: 已繳款\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n3:處理完成");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -542,6 +542,11 @@ namespace Richviet.Services.Models
                     .WithMany(p => p.RemitRecord)
                     .HasForeignKey(d => d.BeneficiarId)
                     .HasConstraintName("fk_remit_record_beneficiar");
+
+                entity.HasOne(d => d.ToCurrency)
+                    .WithMany(p => p.RemitRecord)
+                    .HasForeignKey(d => d.ToCurrencyId)
+                    .HasConstraintName("fk_remit_record_to_currency");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RemitRecord)
@@ -603,7 +608,7 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("更新时间")
+                    .HasComment("更新時間")
                     .ValueGeneratedOnAddOrUpdate();
             });
 
@@ -694,7 +699,7 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
-                    .HasComment("LV2审核通过时间");
+                    .HasComment("審核時間");
 
                 entity.Property(e => e.PassportId)
                     .IsRequired()
@@ -707,7 +712,7 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("更新时间")
+                    .HasComment("更新時間")
                     .ValueGeneratedOnAddOrUpdate();
 
                 entity.Property(e => e.UserId)
@@ -771,7 +776,9 @@ namespace Richviet.Services.Models
                     .HasDefaultValueSql("''")
                     .HasComment("國家");
 
-                entity.Property(e => e.CreateTime).HasColumnName("create_time");
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("create_time")
+                    .HasDefaultValueSql("'0000-00-00 00:00:00'");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -822,7 +829,7 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
-                    .HasComment("LV2审核通过时间");
+                    .HasComment("審核時間");
 
                 entity.Property(e => e.LoginPlatformEmal)
                     .HasColumnName("login_platform_emal")
@@ -856,7 +863,7 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.RegisterTime)
                     .HasColumnName("register_time")
-                    .HasComment("注册时间");
+                    .HasComment("註冊時間");
 
                 entity.Property(e => e.RegisterType)
                     .HasColumnName("register_type")
@@ -871,7 +878,8 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasComment("更新时间");
+                    .HasDefaultValueSql("'0000-00-00 00:00:00'")
+                    .HasComment("更新時間");
             });
 
             modelBuilder.Entity<UserLoginLog>(entity =>
@@ -968,7 +976,7 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.RegisterTime)
                     .HasColumnName("register_time")
-                    .HasComment("注册时间");
+                    .HasComment("註冊時間");
 
                 entity.Property(e => e.RegisterType)
                     .HasColumnName("register_type")
@@ -979,7 +987,7 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("更新时间")
+                    .HasComment("更新時間")
                     .ValueGeneratedOnAddOrUpdate();
 
                 entity.Property(e => e.UserId)
