@@ -26,6 +26,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddSingleton<IUploadPic, UploadPicToLocalService>();
                 services.AddScoped<ICurrencyService,CurrencyService>();
                 services.AddScoped<IExchangeRateService, DBExchangeRateService>();
+                services.AddScoped<IRemitSettingService, RemitSettingService>();
             }
         }
 

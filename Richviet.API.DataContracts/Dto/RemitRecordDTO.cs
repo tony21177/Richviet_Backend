@@ -31,5 +31,9 @@ namespace Richviet.API.DataContracts.Dto
         public byte Type { get; set; }
         [SwaggerSchema("交易狀態99:其他錯誤,9: 審核失敗,0: 待審核(系統進入arc_status流程),1: 待繳款,2: 已繳款,3:處理完成")]
         public byte TransactionStatus { get; set; }
+        [SwaggerSchema("繳款碼")]
+        public string PaymentCode { get; set; }
+        [SwaggerSchema("是否為草稿,0:為正式,1:為草稿")]
+        public byte IsDraft { get; set; }
     }
 }

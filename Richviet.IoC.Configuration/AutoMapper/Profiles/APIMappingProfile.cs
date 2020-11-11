@@ -33,6 +33,7 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<DateTimeOffset, long>().ConvertUsing<UnixTimestampDateTimeOffsetConverter>();
             CreateMap<DateTime, long>().ConvertUsing<UnixTimestampDateTimeConverter>();
 
+            CreateMap<BussinessUnitRemitSetting,RemitSettingDTO>().ReverseMap();
             //Admin
             CreateMap<M.ReceiveBank, A.EditBankDTO>().ReverseMap();
         }
