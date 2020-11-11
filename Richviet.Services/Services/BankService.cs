@@ -33,10 +33,9 @@ namespace Richviet.Services
             }
             catch(Exception ex)
             {
-
+                logger.LogDebug(ex.Message);
             }
-            return false;
-            
+            return false;          
         }
 
         public bool DeleteReceiveBank(int id)
@@ -53,7 +52,7 @@ namespace Richviet.Services
             }
             catch(Exception ex)
             {
-                
+                logger.LogDebug(ex.Message);
             }
             return false;
         }     
@@ -63,13 +62,14 @@ namespace Richviet.Services
             try
             {
                 ReceiveBank bank = dbContext.ReceiveBank.Single(x => x.Id == modifyBank.Id);
+                modifyBank.SortNum = bank.SortNum;
                 dbContext.Entry(bank).CurrentValues.SetValues(modifyBank);
                 dbContext.SaveChanges();
                 return true;
             }
             catch(Exception ex)
             {
-
+                logger.LogDebug(ex.Message);
             }
             return false;
         }

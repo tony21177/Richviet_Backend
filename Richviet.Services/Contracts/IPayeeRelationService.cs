@@ -11,5 +11,10 @@ namespace Richviet.Services.Contracts
     {
         List<PayeeRelationType> GetPayeeRelations();
 
+        bool AddPayeeRelation(PayeeRelationType Relation);
+
+        bool ModifyPayeeRelation(PayeeRelationType modifyRelation);
+
+        bool DeletePayeeRelation(int id);
     }
 }
