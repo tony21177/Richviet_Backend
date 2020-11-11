@@ -36,7 +36,6 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 取得可收款銀行列表
         /// </summary>
         [HttpGet]
-        [AllowAnonymous]
         public MessageModel<List<EditBankDTO>> GetReceiveBanks()
         {
 
@@ -54,7 +53,6 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 新增可收款銀行
         /// </summary>
         [HttpPost]
-        [AllowAnonymous]
         public MessageModel<EditBankDTO> AddReceiveBank(AddReceiveBankRequest request)
         {
             ReceiveBank bank = new ReceiveBank
@@ -63,7 +61,8 @@ namespace Richviet.Admin.API.Controllers.V1
                 Code = request.Code,
                 VietName = request.VietName,
                 EnName = request.EnName,
-                TwName = request.TwName
+                TwName = request.TwName,
+                SortNum = request.SortNum,
             };
             bool result = bankService.AddReceiveBank(bank);
             EditBankDTO bankDTO = mapper.Map<EditBankDTO>(bank);
@@ -79,8 +78,7 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 刪除可收款銀行
         /// </summary>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
-        public MessageModel<EditBankDTO> DeleteReceiveBank([FromRoute, SwaggerParameter("id,可從/bank/edit取得", Required = true)] int id)
+        public MessageModel<EditBankDTO> DeleteReceiveBank([FromRoute, SwaggerParameter("id,可從/bank取得", Required = true)] int id)
         {
             bool result = bankService.DeleteReceiveBank(id);
             return new MessageModel<EditBankDTO>
@@ -94,8 +92,7 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 修改可收款銀行
         /// </summary>
         [HttpPut("{id}")]
-        [AllowAnonymous]
-        public MessageModel<EditBankDTO> ModifyReceiveBank([FromRoute, SwaggerParameter("id,可從/bank/edit取得", Required = true)] int id, [FromBody] ModifyReceiveBankRequest request)
+        public MessageModel<EditBankDTO> ModifyReceiveBank([FromRoute, SwaggerParameter("id,可從/bank取得", Required = true)] int id, [FromBody] ModifyReceiveBankRequest request)
         {
             ReceiveBank bank = new ReceiveBank
             {
@@ -104,7 +101,8 @@ namespace Richviet.Admin.API.Controllers.V1
                 Code = request.Code,
                 VietName = request.VietName,
                 EnName = request.EnName,
-                TwName = request.TwName
+                TwName = request.TwName,
+                SortNum = request.SortNum,
             };
             bool result = bankService.ModifyReceiveBank(bank);
             EditBankDTO bankDTO = mapper.Map<EditBankDTO>(bank);

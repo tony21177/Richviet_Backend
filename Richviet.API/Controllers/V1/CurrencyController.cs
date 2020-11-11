@@ -39,7 +39,7 @@ namespace Richviet.API.Controllers.V1
         public MessageModel<List<CurrencyInfoDTO>> GetCurrencyInfo([FromRoute, SwaggerParameter("國家 e.g. VN ", Required = true)] string country)
         {
             Logger.LogInformation(country);
-            List<CurrencyCode> currencyCodes = currencyService.GetCureencyByCountry(country.ToUpper());
+            List<CurrencyCode> currencyCodes = currencyService.GetCurrencyByCountry(country.ToUpper());
             List<CurrencyInfoDTO> currencyInfoDTOs = mapper.Map<List<CurrencyInfoDTO>>(currencyCodes);
 
 

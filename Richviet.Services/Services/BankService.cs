@@ -62,7 +62,6 @@ namespace Richviet.Services
             try
             {
                 ReceiveBank bank = dbContext.ReceiveBank.Single(x => x.Id == modifyBank.Id);
-                modifyBank.SortNum = bank.SortNum;
                 dbContext.Entry(bank).CurrentValues.SetValues(modifyBank);
                 dbContext.SaveChanges();
                 return true;
