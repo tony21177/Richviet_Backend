@@ -7,9 +7,10 @@ namespace Richviet.Services.Constants
 {
     public enum KycStatusEnum
     {
+        FORBIDDEN = 10,
         FAILED_KYC = 9,
-        NOT_VERIFIED_KYC = 0,
+        DRAFT_MEMBER = 0,
         WAITING_VERIFIED_KYC = 1,
-        PASSED_KYC = 2
+        PASSED_KYC_FORMAL_MEMBER = 2
     }
 }

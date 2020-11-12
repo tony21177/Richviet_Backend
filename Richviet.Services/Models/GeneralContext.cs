@@ -395,7 +395,7 @@ namespace Richviet.Services.Models
                     .HasName("fk_remit_record_beneficiar_idx");
 
                 entity.HasIndex(e => e.ToCurrencyId)
-                    .HasName("fk_remit_record_to_currency_idx");
+                    .HasName("fk_remit_record_to_currency");
 
                 entity.HasIndex(e => e.UserId)
                     .HasName("fk_remit_record_user1_idx");
@@ -586,6 +586,11 @@ namespace Richviet.Services.Models
                     .HasColumnType("tinyint(2)")
                     .HasComment("0:其他(包括未填)\\n1:男\\n2:女\\n");
 
+                entity.Property(e => e.Level)
+                    .HasColumnName("level")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("會員等級0:一般會員;1:VIP;9:高風險");
+
                 entity.Property(e => e.Password)
                     .HasColumnName("password")
                     .HasMaxLength(255)
@@ -599,11 +604,6 @@ namespace Richviet.Services.Models
                     .IsUnicode(false)
                     .HasDefaultValueSql("''")
                     .HasComment("手機號碼");
-
-                entity.Property(e => e.Status)
-                    .HasColumnName("status")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment("會員狀態\\\\n0:草稿會員\\\\n1:正式會員");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -695,7 +695,7 @@ namespace Richviet.Services.Models
                     .HasColumnName("kyc_status")
                     .HasColumnType("tinyint(2)")
                     .HasDefaultValueSql("'0'")
-                    .HasComment("KYC審核狀態, \\\\r\\\\n9:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
+                    .HasComment("KYC審核狀態, 10:禁用,9:KYC未通過, 0:草稿會員,1:待審核(註冊完),2:正式會員(KYC審核通過);\\n");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
@@ -825,7 +825,7 @@ namespace Richviet.Services.Models
                     .HasColumnName("kyc_status")
                     .HasColumnType("tinyint(2)")
                     .HasDefaultValueSql("'0'")
-                    .HasComment("KYC審核狀態, \\\\r\\\\n9:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
+                    .HasComment("KYC審核狀態, 10:禁用,9:KYC未通過, 0:草稿會員,1:待審核(註冊完),2:正式會員(KYC審核通過);\\n");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
@@ -870,11 +870,6 @@ namespace Richviet.Services.Models
                     .HasColumnType("tinyint(2)")
                     .HasComment(@"註冊方式\\n0:平台本身\n1:FB\n2:apple\n3:google\n4:zalo
 ");
-
-                entity.Property(e => e.Status)
-                    .HasColumnName("status")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment("會員狀態\\\\n0:草稿會員\\\\n1:正式會員");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")

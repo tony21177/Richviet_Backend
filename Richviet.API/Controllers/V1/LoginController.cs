@@ -86,7 +86,7 @@ namespace Richviet.API.Controllers.V1
                 Data = new 
                 {
                     Jwt = accessToken.Token,
-                    loginUser.Status,
+                    loginUser.KycStatus,
                     KYCStatus = loginUser.KycStatus
                 }
             });

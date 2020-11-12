@@ -22,7 +22,7 @@ namespace Frontend.DB.EF.Models
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public DateTime? Birthday { get; set; }
-        public int Status { get; set; }
+        public byte Level { get; set; }
 
         public virtual UserArc UserArc { get; set; }
         public virtual ICollection<Discount> Discount { get; set; }

@@ -491,6 +491,10 @@ namespace Frontend.DB.EF.Models
                     .HasColumnName("gender")
                     .HasComment("0:其他(包括未填)\\\\n1:男\\\\n2:女\\\\n");
 
+                entity.Property(e => e.Level)
+                    .HasColumnName("level")
+                    .HasComment("會員等級0:一般會員;1:VIP;9:高風險");
+
                 entity.Property(e => e.Password)
                     .HasColumnName("password")
                     .HasMaxLength(255)
@@ -502,10 +506,6 @@ namespace Frontend.DB.EF.Models
                     .HasMaxLength(255)
                     .HasDefaultValueSql("('')")
                     .HasComment("手機號碼");
-
-                entity.Property(e => e.Status)
-                    .HasColumnName("status")
-                    .HasComment("會員狀態\\\\\\\\n0:草稿會員\\\\\\\\n1:正式會員");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -593,7 +593,7 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.KycStatus)
                     .HasColumnName("kyc_status")
                     .HasDefaultValueSql("((0))")
-                    .HasComment("KYC審核狀態, \\\\\\\\r\\\\\\\\n9:未通過, \\\\\\\\r\\\\\\\\n0:未認證,\\\\\\\\r\\\\\\\\n1:待審核,\\\\\\\\r\\\\\\\\n2:審核通過;");
+                    .HasComment("KYC審核狀態, 10:禁用,9:KYC未通過, 0:草稿會員,1:待審核(註冊完),2:正式會員(KYC審核通過);\\\\n");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
@@ -723,8 +723,6 @@ namespace Frontend.DB.EF.Models
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.RegisterType).HasColumnName("register_type");
-
-                entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")

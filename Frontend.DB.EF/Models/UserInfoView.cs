@@ -10,7 +10,6 @@ namespace Frontend.DB.EF.Models
         public string Email { get; set; }
         public int Gender { get; set; }
         public DateTime? Birthday { get; set; }
-        public int Status { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public string Country { get; set; }
