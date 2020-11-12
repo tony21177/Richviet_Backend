@@ -421,7 +421,7 @@ namespace Richviet.API.Controllers.V1
         private bool CheckIfKYCPassed(UserArc userArc)
         {
 
-            if (userArc != null && userArc.KycStatus == (byte)KycStatusEnum.PASSED_KYC)
+            if (userArc != null && userArc.KycStatus == (byte)KycStatusEnum.PASSED_KYC_FORMAL_MEMBER)
             {
                 return true;
             }

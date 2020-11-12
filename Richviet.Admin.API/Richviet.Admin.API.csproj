@@ -40,10 +40,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Richviet.Admin.API.Common\Richviet.Admin.API.Common.csproj" />
-		<ProjectReference Include="..\Richviet.Admin.API.DataContracts\Richviet.Admin.API.DataContracts.csproj" />
-		<ProjectReference Include="..\Richviet.IoC.Configuration\Richviet.IoC.Configuration.csproj" />
-		<ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
+	  <ProjectReference Include="..\Richviet.Admin.API.Common\Richviet.Admin.API.Common.csproj" />
+	  <ProjectReference Include="..\Richviet.Admin.API.DataContracts\Richviet.Admin.API.DataContracts.csproj" />
+	  <ProjectReference Include="..\Richviet.IoC.Configuration\Richviet.IoC.Configuration.csproj" />
+	  <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
 	</ItemGroup>
 
 </Project>

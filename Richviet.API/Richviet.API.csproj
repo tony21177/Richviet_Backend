@@ -19,10 +19,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -42,8 +38,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Richviet.API.Common\Richviet.API.Common.csproj" />
     <ProjectReference Include="..\Richviet.API.DataContracts\Richviet.API.DataContracts.csproj" />
-    <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
     <ProjectReference Include="..\Richviet.IoC.Configuration\Richviet.IoC.Configuration.csproj" />
+    <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
   </ItemGroup>
 
 </Project>

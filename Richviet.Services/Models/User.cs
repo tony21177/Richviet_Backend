@@ -22,7 +22,7 @@ namespace Richviet.Services.Models
         public DateTimeOffset CreateTime { get; set; }
         public DateTimeOffset UpdateTime { get; set; }
         public DateTime? Birthday { get; set; }
-        public byte Status { get; set; }
+        public byte Level { get; set; }
 
         public virtual UserArc UserArc { get; set; }
         public virtual ICollection<Discount> Discount { get; set; }

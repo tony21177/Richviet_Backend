@@ -8,6 +8,10 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.9" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.20" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
