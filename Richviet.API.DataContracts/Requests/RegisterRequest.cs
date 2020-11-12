@@ -29,6 +29,7 @@ namespace Richviet.API.DataContracts.Requests
         [SwaggerSchema("護照號碼")]
         public string passportNumber { get; set; }
         [Required]
+        [RegularExpression(@"^[A-Z]{1}[CD]{1}[0-9]{8}$", ErrorMessage="UI No. wrong format")]
         [SwaggerSchema("身分證統一編號")]
         public string personalID { get; set; }
         [Required]
