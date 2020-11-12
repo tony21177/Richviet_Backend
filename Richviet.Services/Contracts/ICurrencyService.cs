@@ -8,7 +8,9 @@ namespace Richviet.Services.Contracts
     public interface ICurrencyService
     {
         List<CurrencyCode> GetCurrencyByCountry(string country);
-
+        
+        public CurrencyCode GetCurrencyById(int id);
+        
         List<CurrencyCode> GetCurrencyList();
 
         bool AddCurrency(CurrencyCode currency);

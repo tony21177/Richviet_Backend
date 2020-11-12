@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Richviet.Services.Models
+namespace Frontend.DB.EF.Models
 {
     public partial class ReceiveBank
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string SwiftCode { get; set; }
         public string Code { get; set; }
         public string VietName { get; set; }

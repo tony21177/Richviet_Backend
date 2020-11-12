@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Richviet.Tools.Utility;
 using Richviet.Services.Services;
+using System.Collections.Generic;
 
 namespace Richviet.IoC.Configuration.DI
 {
@@ -27,6 +28,8 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<ICurrencyService,CurrencyService>();
                 services.AddScoped<IExchangeRateService, DBExchangeRateService>();
                 services.AddScoped<IRemitSettingService, RemitSettingService>();
+                services.AddScoped<IRemitRecordService,RemitRecordService>();
+                services.AddScoped<IDiscountService,DiscountService>();
             }
         }
 

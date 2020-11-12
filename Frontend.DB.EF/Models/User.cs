@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Richviet.Services.Models
+namespace Frontend.DB.EF.Models
 {
     public partial class User
     {
@@ -14,15 +14,15 @@ namespace Richviet.Services.Models
             UserRegisterType = new HashSet<UserRegisterType>();
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public byte Gender { get; set; }
-        public DateTimeOffset CreateTime { get; set; }
-        public DateTimeOffset UpdateTime { get; set; }
+        public int Gender { get; set; }
+        public DateTime CreateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
         public DateTime? Birthday { get; set; }
-        public byte Status { get; set; }
+        public int Status { get; set; }
 
         public virtual UserArc UserArc { get; set; }
         public virtual ICollection<Discount> Discount { get; set; }

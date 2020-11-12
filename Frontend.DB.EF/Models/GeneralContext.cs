@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Richviet.Services.Models
+namespace Frontend.DB.EF.Models
 {
     public partial class GeneralContext : DbContext
     {
@@ -35,7 +35,7 @@ namespace Richviet.Services.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=root;database=General;TreatTinyAsBoolean=false;");
+                optionsBuilder.UseSqlServer("Server=LAPTOP-DCDEKIUG;Database=General;Trusted_Connection=True;");
             }
         }
 
@@ -48,18 +48,15 @@ namespace Richviet.Services.Models
                 entity.HasComment("服務所在國家的匯款相關設定");
 
                 entity.HasIndex(e => e.Country)
-                    .HasName("country_UNIQUE")
+                    .HasName("uq_country_Unique")
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
                     .HasMaxLength(10)
-                    .IsUnicode(false)
                     .HasComment("服務所在國家");
 
                 entity.Property(e => e.RemitMax)
@@ -72,8 +69,8 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<CurrencyCode>(entity =>
@@ -82,22 +79,18 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("國家可使用貨幣幣別,比如越南可收美金和越南盾");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
                     .HasMaxLength(10)
-                    .IsUnicode(false)
                     .HasComment("國家");
 
                 entity.Property(e => e.CurrencyName)
                     .IsRequired()
                     .HasColumnName("currency_name")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
                     .HasComment("貨幣名稱");
 
                 entity.Property(e => e.Fee)
@@ -106,8 +99,7 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.FeeType)
                     .HasColumnName("fee_type")
-                    .HasColumnType("tinyint(1)")
-                    .HasComment("手續費計算方式\\n0:數量\\n1:百分比");
+                    .HasComment("手續費計算方式\\\\n0:數量\\\\n1:百分比");
             });
 
             modelBuilder.Entity<Discount>(entity =>
@@ -116,38 +108,31 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("優惠券");
 
-                entity.HasIndex(e => e.UserId)
-                    .HasName("fk_discount_user_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.EffectiveDate)
                     .HasColumnName("effective_date")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.ExpireDate)
                     .HasColumnName("expire_date")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UseStatus)
                     .HasColumnName("use_status")
-                    .HasColumnType("tinyint(2)")
                     .HasComment("0:可使用,1:已使用,2:無效");
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.Value).HasColumnName("value");
 
@@ -155,28 +140,23 @@ namespace Richviet.Services.Models
                     .WithMany(p => p.Discount)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_discount_user");
+                    .HasConstraintName("ffk_discount_user");
             });
 
             modelBuilder.Entity<ExchangeRate>(entity =>
             {
                 entity.ToTable("exchange_rate");
 
-                entity.HasComment("台幣對幣別匯率");
-
                 entity.HasIndex(e => e.CurrencyName)
-                    .HasName("currency_name_UNIQUE")
+                    .HasName("uq_currency_name_Unique")
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CurrencyName)
                     .IsRequired()
                     .HasColumnName("currency_name")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .HasMaxLength(45);
 
                 entity.Property(e => e.Rate).HasColumnName("rate");
             });
@@ -187,36 +167,24 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("常用收款人");
 
-                entity.HasIndex(e => e.PayeeRelationId)
-                    .HasName("fk_often_beneficiar_payee_relation_idx");
-
-                entity.HasIndex(e => e.PayeeTypeId)
-                    .HasName("fk_often_beneficiar_payee_type1_idx");
-
-                entity.HasIndex(e => e.UserId)
-                    .HasName("fk_often_beneficiar_user1_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasMaxLength(45)
-                    .IsUnicode(false)
                     .HasComment("收款人姓名");
 
                 entity.Property(e => e.Note)
                     .IsRequired()
                     .HasColumnName("note")
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("備註");
 
                 entity.Property(e => e.PayeeAddress)
@@ -224,41 +192,34 @@ namespace Richviet.Services.Models
                     .HasColumnName("payee_address")
                     .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasComment(@"根據type有不同格式
-");
+                    .HasComment("根據type有不同格式");
 
                 entity.Property(e => e.PayeeId)
                     .IsRequired()
                     .HasColumnName("payee_id")
                     .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("收款人的ID");
 
                 entity.Property(e => e.PayeeRelationId)
                     .HasColumnName("payee_relation_id")
-                    .HasColumnType("int(11)")
-                    .HasComment(@"對應payee_relation_type的pk(與收款人的關係)
-");
+                    .HasComment("對應payee_relation_type的pk(與收款人的關係)");
 
                 entity.Property(e => e.PayeeTypeId)
                     .HasColumnName("payee_type_id")
-                    .HasColumnType("int(11)")
                     .HasComment("對照payee_type的pk(收款方式)");
 
                 entity.Property(e => e.ReceiveBankId)
                     .HasColumnName("receive_bank_id")
-                    .HasColumnType("int(11)")
-                    .HasComment("對應receive_bank的pk(收款方銀行代號)\\n");
+                    .HasComment("對應receive_bank的pk(收款方銀行代號)");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.PayeeRelation)
                     .WithMany(p => p.OftenBeneficiar)
@@ -285,20 +246,15 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("收款人關係");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnName("description")
                     .HasMaxLength(200)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''");
+                    .HasDefaultValueSql("('')");
 
-                entity.Property(e => e.Type)
-                    .HasColumnName("type")
-                    .HasColumnType("tinyint(2)");
+                entity.Property(e => e.Type).HasColumnName("type");
             });
 
             modelBuilder.Entity<PayeeType>(entity =>
@@ -307,27 +263,18 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("收款方式");
 
-                entity.HasIndex(e => e.Type)
-                    .HasName("type_UNIQUE")
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnName("description")
                     .HasMaxLength(45)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("收款方式描述");
 
                 entity.Property(e => e.Type)
                     .HasColumnName("type")
-                    .HasColumnType("tinyint(4)")
-                    .HasComment(@"收款方式
-0:銀行");
+                    .HasComment("收款方式");
             });
 
             modelBuilder.Entity<ReceiveBank>(entity =>
@@ -337,51 +284,42 @@ namespace Richviet.Services.Models
                 entity.HasComment("可收款银行表");
 
                 entity.HasIndex(e => e.SwiftCode)
-                    .HasName("uk_swift_code")
+                    .HasName("uq_swift_code_Unique")
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Code)
                     .IsRequired()
                     .HasColumnName("code")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
                     .HasComment("台灣銀行代碼");
 
                 entity.Property(e => e.EnName)
                     .IsRequired()
                     .HasColumnName("en_name")
                     .HasMaxLength(100)
-                    .IsUnicode(false)
                     .HasComment("名稱(英文)");
 
                 entity.Property(e => e.SortNum)
                     .HasColumnName("sort_num")
-                    .HasColumnType("int(11)")
                     .HasComment("排序");
 
                 entity.Property(e => e.SwiftCode)
                     .IsRequired()
                     .HasColumnName("swift_code")
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .HasComment("Swift Code");
+                    .HasMaxLength(15);
 
                 entity.Property(e => e.TwName)
                     .IsRequired()
                     .HasColumnName("tw_name")
                     .HasMaxLength(100)
-                    .IsUnicode(false)
                     .HasComment("名稱(繁体中文)");
 
                 entity.Property(e => e.VietName)
                     .IsRequired()
                     .HasColumnName("viet_name")
                     .HasMaxLength(100)
-                    .IsUnicode(false)
                     .HasComment("名稱(越南)");
             });
 
@@ -391,162 +329,132 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("匯款紀錄");
 
-                entity.HasIndex(e => e.BeneficiarId)
-                    .HasName("fk_remit_record_beneficiar_idx");
-
-                entity.HasIndex(e => e.ToCurrencyId)
-                    .HasName("fk_remit_record_to_currency_idx");
-
-                entity.HasIndex(e => e.UserId)
-                    .HasName("fk_remit_record_user1_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ApplyExchangeRate)
                     .HasColumnName("apply_exchange_rate")
-                    .HasComment("使用者申請時當下匯率\\n");
+                    .HasComment("使用者申請時當下匯率");
 
                 entity.Property(e => e.ArcName)
                     .IsRequired()
                     .HasColumnName("arc_name")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.ArcNo)
                     .IsRequired()
                     .HasColumnName("arc_no")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.ArcStatus)
                     .HasColumnName("arc_status")
-                    .HasColumnType("tinyint(2)")
+                    .HasDefaultValueSql("((0))")
                     .HasComment("0:arc未審核,1:系統自動審核arc成功");
 
                 entity.Property(e => e.ArcVerifyTime)
                     .HasColumnName("arc_verify_time")
+                    .HasColumnType("datetime")
                     .HasComment("系統自動審核移名屬ARC時間");
 
-                entity.Property(e => e.BeneficiarId)
-                    .HasColumnName("beneficiar_id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.BeneficiarId).HasColumnName("beneficiar_id");
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.DiscountAmount)
                     .HasColumnName("discount_amount")
                     .HasComment("總折扣金額");
 
-                entity.Property(e => e.DiscountId)
-                    .HasColumnName("discount_id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.DiscountId).HasColumnName("discount_id");
 
                 entity.Property(e => e.ESignature)
                     .IsRequired()
                     .HasColumnName("e-signature")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("電子簽名");
+                    .HasMaxLength(512)
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.Fee)
                     .HasColumnName("fee")
-                    .HasComment("手續費要搭配fee_type\\n");
+                    .HasComment("手續費要搭配fee_type");
 
                 entity.Property(e => e.FeeType)
                     .HasColumnName("fee_type")
-                    .HasColumnType("tinyint(1)")
                     .HasComment("手續費計算方式\\n0:數量\\n1:百分比");
 
                 entity.Property(e => e.FromAmount).HasColumnName("from_amount");
 
                 entity.Property(e => e.FromCurrencyId)
                     .HasColumnName("from_currency_id")
-                    .HasColumnType("int(11)")
                     .HasComment("匯出國家幣(對應currency_code的pk)");
 
                 entity.Property(e => e.IdImageA)
                     .IsRequired()
                     .HasColumnName("id_image_a")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''");
+                    .HasMaxLength(512)
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.IdImageB)
                     .IsRequired()
                     .HasColumnName("id_image_b")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''");
+                    .HasMaxLength(512)
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.IdImageC)
                     .IsRequired()
                     .HasColumnName("id_image_c")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''");
+                    .HasMaxLength(512)
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.PayeeType)
                     .HasColumnName("payee_type")
-                    .HasColumnType("tinyint(4)")
-                    .HasComment(@"收款方式,對應table:payee_type
-");
+                    .HasComment("收款方式,對應table:payee_type");
 
                 entity.Property(e => e.PaymentCode)
                     .HasColumnName("payment_code")
                     .HasMaxLength(200)
-                    .IsUnicode(false)
                     .HasComment("繳款碼,給前端產生QR CODE用");
 
                 entity.Property(e => e.PaymentTime)
                     .HasColumnName("payment_time")
+                    .HasColumnType("datetime")
                     .HasComment("會員繳款時間");
 
                 entity.Property(e => e.RealTimePic)
                     .IsRequired()
                     .HasColumnName("real_time_pic")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("即時拍照");
+                    .HasMaxLength(512)
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.ToCurrencyId)
                     .HasColumnName("to_currency_id")
-                    .HasColumnType("int(11)")
                     .HasComment("收款國家幣(對應currency_code的pk)");
 
                 entity.Property(e => e.TransactionExchangeRate)
                     .HasColumnName("transaction_exchange_rate")
-                    .HasComment("實際匯款時的匯率\\n");
+                    .HasComment("實際匯款時的匯率");
 
                 entity.Property(e => e.TransactionStatus)
                     .HasColumnName("transaction_status")
-                    .HasColumnType("tinyint(4)")
-                    .HasDefaultValueSql("'98'")
-                    .HasComment("99:其他錯誤\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\98:草稿狀態\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n9: 審核失敗\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n0: 待審核(系統進入arc_status流程)\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n1: 待繳款\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n2: 已繳款\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n3:處理完成");
+                    .HasDefaultValueSql("((98))")
+                    .HasComment("99:其他錯誤\\\\\\\\98:草稿\\\\\\\\n9: 審核失敗\\\\\\\\n0: 待審核(系統進入arc_status流程)\\\\\\\\n1: 待繳款\\\\\\\\n2: 已繳款\\\\\\\\n3:處理完成");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.Beneficiar)
                     .WithMany(p => p.RemitRecord)
                     .HasForeignKey(d => d.BeneficiarId)
-                    .HasConstraintName("fk_remit_record_beneficiar");
+                    .HasConstraintName("FK_often_beneficiar_remit_record");
 
                 entity.HasOne(d => d.ToCurrency)
                     .WithMany(p => p.RemitRecord)
                     .HasForeignKey(d => d.ToCurrencyId)
-                    .HasConstraintName("fk_remit_record_to_currency");
+                    .HasConstraintName("FK_remit_record_currency_code");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RemitRecord)
@@ -559,11 +467,9 @@ namespace Richviet.Services.Models
             {
                 entity.ToTable("user");
 
-                entity.HasComment("用户表");
+                entity.HasComment("用户");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Birthday)
                     .HasColumnName("birthday")
@@ -571,45 +477,41 @@ namespace Richviet.Services.Models
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasColumnName("email")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("信箱");
 
                 entity.Property(e => e.Gender)
                     .HasColumnName("gender")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment("0:其他(包括未填)\\n1:男\\n2:女\\n");
+                    .HasComment("0:其他(包括未填)\\\\n1:男\\\\n2:女\\\\n");
 
                 entity.Property(e => e.Password)
                     .HasColumnName("password")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
                     .HasComment("密碼");
 
                 entity.Property(e => e.Phone)
                     .IsRequired()
                     .HasColumnName("phone")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("手機號碼");
 
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment("會員狀態\\\\n0:草稿會員\\\\n1:正式會員");
+                    .HasComment("會員狀態\\\\\\\\n0:草稿會員\\\\\\\\n1:正式會員");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("更新時間")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())")
+                    .HasComment("更新時間");
             });
 
             modelBuilder.Entity<UserArc>(entity =>
@@ -619,24 +521,21 @@ namespace Richviet.Services.Models
                 entity.HasComment("使用者KYC資料");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("user_id_UNIQUE")
+                    .HasName("uq_user_id_Unique")
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ArcIssueDate)
                     .HasColumnName("arc_issue_date")
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasComment("發證日期");
 
                 entity.Property(e => e.ArcName)
                     .IsRequired()
                     .HasColumnName("arc_name")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("ARC姓名");
 
                 entity.Property(e => e.ArcNo)
@@ -644,7 +543,7 @@ namespace Richviet.Services.Models
                     .HasColumnName("arc_no")
                     .HasMaxLength(255)
                     .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("ARC ID");
 
                 entity.Property(e => e.BackSequence)
@@ -652,27 +551,27 @@ namespace Richviet.Services.Models
                     .HasColumnName("back_sequence")
                     .HasMaxLength(255)
                     .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("背面序號");
 
                 entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("國家");
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.IdImageA)
                     .IsRequired()
                     .HasColumnName("id_image_a")
                     .HasMaxLength(255)
                     .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("證件正面");
 
                 entity.Property(e => e.IdImageB)
@@ -680,7 +579,7 @@ namespace Richviet.Services.Models
                     .HasColumnName("id_image_b")
                     .HasMaxLength(255)
                     .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("證件反面");
 
                 entity.Property(e => e.IdImageC)
@@ -688,17 +587,17 @@ namespace Richviet.Services.Models
                     .HasColumnName("id_image_c")
                     .HasMaxLength(255)
                     .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("手持證件照");
 
                 entity.Property(e => e.KycStatus)
                     .HasColumnName("kyc_status")
-                    .HasColumnType("tinyint(2)")
-                    .HasDefaultValueSql("'0'")
-                    .HasComment("KYC審核狀態, \\\\r\\\\n9:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("KYC審核狀態, \\\\\\\\r\\\\\\\\n9:未通過, \\\\\\\\r\\\\\\\\n0:未認證,\\\\\\\\r\\\\\\\\n1:待審核,\\\\\\\\r\\\\\\\\n2:審核通過;");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
+                    .HasColumnType("datetime")
                     .HasComment("審核時間");
 
                 entity.Property(e => e.PassportId)
@@ -706,25 +605,23 @@ namespace Richviet.Services.Models
                     .HasColumnName("passport_id")
                     .HasMaxLength(255)
                     .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("護照號碼");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("更新時間")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
-                    .HasColumnType("int(11)")
                     .HasComment("對應user的pk");
 
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.UserArc)
                     .HasForeignKey<UserArc>(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_user_arc");
+                    .HasConstraintName("FK_User_UserArc");
             });
 
             modelBuilder.Entity<UserInfoView>(entity =>
@@ -736,33 +633,24 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.ArcName)
                     .IsRequired()
                     .HasColumnName("arc_name")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("ARC姓名");
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.ArcNo)
                     .IsRequired()
                     .HasColumnName("arc_no")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("ARC ID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.AuthPlatformId)
                     .IsRequired()
                     .HasColumnName("auth_platform_id")
-                    .HasMaxLength(45)
-                    .IsUnicode(false)
-                    .HasComment("不同平台(FB,Apple...)的id");
+                    .HasMaxLength(45);
 
                 entity.Property(e => e.BackSequence)
                     .IsRequired()
                     .HasColumnName("back_sequence")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("背面序號");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Birthday)
                     .HasColumnName("birthday")
@@ -771,162 +659,109 @@ namespace Richviet.Services.Models
                 entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("國家");
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
-                    .HasDefaultValueSql("'0000-00-00 00:00:00'");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasColumnName("email")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("信箱");
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.Gender)
-                    .HasColumnName("gender")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment("0:其他(包括未填)\\n1:男\\n2:女\\n");
+                entity.Property(e => e.Gender).HasColumnName("gender");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.IdImageA)
                     .IsRequired()
                     .HasColumnName("id_image_a")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("證件正面");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.IdImageB)
                     .IsRequired()
                     .HasColumnName("id_image_b")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("證件反面");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.IdImageC)
                     .IsRequired()
                     .HasColumnName("id_image_c")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("手持證件照");
+                    .IsUnicode(false);
 
-                entity.Property(e => e.KycStatus)
-                    .HasColumnName("kyc_status")
-                    .HasColumnType("tinyint(2)")
-                    .HasDefaultValueSql("'0'")
-                    .HasComment("KYC審核狀態, \\\\r\\\\n9:未通過, \\\\r\\\\n0:未認證,\\\\r\\\\n1:待審核,\\\\r\\\\n2:審核通過;");
+                entity.Property(e => e.KycStatus).HasColumnName("kyc_status");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")
-                    .HasComment("審核時間");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.LoginPlatformEmal)
                     .HasColumnName("login_platform_emal")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''");
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("平台的名字");
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.PassportId)
                     .IsRequired()
                     .HasColumnName("passport_id")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("護照號碼");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Phone)
                     .IsRequired()
                     .HasColumnName("phone")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("手機號碼");
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.RegisterTime)
                     .HasColumnName("register_time")
-                    .HasComment("註冊時間");
+                    .HasColumnType("datetime");
 
-                entity.Property(e => e.RegisterType)
-                    .HasColumnName("register_type")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment(@"註冊方式\\n0:平台本身\n1:FB\n2:apple\n3:google\n4:zalo
-");
+                entity.Property(e => e.RegisterType).HasColumnName("register_type");
 
-                entity.Property(e => e.Status)
-                    .HasColumnName("status")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment("會員狀態\\\\n0:草稿會員\\\\n1:正式會員");
+                entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasDefaultValueSql("'0000-00-00 00:00:00'")
-                    .HasComment("更新時間");
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<UserLoginLog>(entity =>
             {
-                entity.HasKey(e => new { e.Id, e.UserId })
-                    .HasName("PRIMARY");
-
                 entity.ToTable("user_login_log");
 
                 entity.HasComment("用戶登入紀錄");
 
-                entity.HasIndex(e => e.UserId)
-                    .HasName("fk_user_login_log_user_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Address)
                     .IsRequired()
                     .HasColumnName("address")
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasMaxLength(1024)
+                    .HasDefaultValueSql("('')")
                     .HasComment("login地區");
 
                 entity.Property(e => e.Ip)
                     .IsRequired()
                     .HasColumnName("ip")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
-                    .HasComment("IP");
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.LoginTime)
                     .HasColumnName("login_time")
+                    .HasColumnType("datetime")
                     .HasComment("登入時間");
 
                 entity.Property(e => e.LoginType)
                     .HasColumnName("login_type")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment("0:平台本身\\n1:FB\\n2:apple\\n3:google\\n4:zalo");
+                    .HasComment("0:平台本身\\\\n1:FB\\\\n2:apple\\\\n3:google\\\\n4:zalo");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserLoginLog)
@@ -945,54 +780,48 @@ namespace Richviet.Services.Models
                     .HasName("uni_user_id_platform_id")
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.AuthPlatformId)
                     .IsRequired()
                     .HasColumnName("auth_platform_id")
                     .HasMaxLength(45)
-                    .IsUnicode(false)
                     .HasComment("不同平台(FB,Apple...)的id");
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Email)
                     .HasColumnName("email")
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''");
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("''")
+                    .HasDefaultValueSql("('')")
                     .HasComment("平台的名字");
 
                 entity.Property(e => e.RegisterTime)
                     .HasColumnName("register_time")
+                    .HasColumnType("datetime")
                     .HasComment("註冊時間");
 
                 entity.Property(e => e.RegisterType)
                     .HasColumnName("register_type")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment(@"註冊方式\\n0:平台本身\n1:FB\n2:apple\n3:google\n4:zalo
-");
+                    .HasComment("註冊方式\\\\\\\\n0:平台本身\\\\n1:FB\\\\n2:apple\\\\n3:google\\\\n4:zalo\\n");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("更新時間")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())")
+                    .HasComment("更新時間");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
-                    .HasColumnType("int(11)")
                     .HasComment("對應user的pk");
 
                 entity.HasOne(d => d.User)

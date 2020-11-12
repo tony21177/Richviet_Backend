@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Richviet.Services.Models
+namespace Frontend.DB.EF.Models
 {
     public partial class CurrencyCode
     {
@@ -10,11 +10,11 @@ namespace Richviet.Services.Models
             RemitRecord = new HashSet<RemitRecord>();
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string CurrencyName { get; set; }
         public string Country { get; set; }
         public double Fee { get; set; }
-        public byte FeeType { get; set; }
+        public int FeeType { get; set; }
 
         public virtual ICollection<RemitRecord> RemitRecord { get; set; }
     }

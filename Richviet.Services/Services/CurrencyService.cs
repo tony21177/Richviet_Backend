@@ -78,5 +78,10 @@ namespace Richviet.Services.Services
             }
             return false;
         }
+
+        public CurrencyCode GetCurrencyById(int id)
+        {
+            return dbContext.CurrencyCode.Find(id);
+        }
     }
 }
