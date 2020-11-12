@@ -20,5 +20,7 @@ namespace Richviet.Admin.API.DataContracts.Dto
         public string EnName { get; set; }
         [SwaggerSchema("可收款銀行中文名稱")]
         public string TwName { get; set; }
+        [SwaggerSchema("可收款銀行排列順序")]
+        public int? SortNum { get; set; }
     }
 }
