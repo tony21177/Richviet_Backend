@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +29,23 @@ namespace Richviet.Tools.Utility
         public bool IsFileExists(string filePath)
         {
             return File.Exists(".." + Path.DirectorySeparatorChar + _configuration["StoredFilesPath"] + Path.DirectorySeparatorChar + filePath);
+        }
+
+        public void SaveImageFromUri(string fileNamePath, ImageFormat format, String uri)
+        {
+            WebClient client = new WebClient();
+            Stream stream = client.OpenRead(uri);
+            Bitmap bitmap; bitmap = new Bitmap(stream);
+
+            if (bitmap != null)
+            {
+                DirectoryInfo directoryInfo = CreateFolder("validation");
+                bitmap.Save(fileNamePath, format);
+            }
+
+            stream.Flush();
+            stream.Close();
+            client.Dispose();
         }
 
     }

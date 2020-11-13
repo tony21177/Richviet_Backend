@@ -15,14 +15,14 @@ namespace Richviet.API.Tests.Controllers.TestBaseTests
     public class IoCDITests : TestBase
     {
         [TestMethod]
-        public async Task IoC_DI_ServiceProvider_OK()
+        public async System.Threading.Tasks.Task IoC_DI_ServiceProvider_OK()
         {
             Assert.IsNotNull(_serviceProvider);
         }
 
 
         [TestMethod]
-        public async Task IoC_DI_Mapper_OK()
+        public async System.Threading.Tasks.Task IoC_DI_Mapper_OK()
         {
             Assert.IsNotNull(_serviceProvider);
 
@@ -31,7 +31,7 @@ namespace Richviet.API.Tests.Controllers.TestBaseTests
         }
 
         [TestMethod]
-        public async Task IoC_DI_LoggerFactory_OK()
+        public async System.Threading.Tasks.Task IoC_DI_LoggerFactory_OK()
         {
             var serviceProvider = _services.BuildServiceProvider();
             Assert.IsNotNull(serviceProvider);
@@ -41,7 +41,7 @@ namespace Richviet.API.Tests.Controllers.TestBaseTests
         }
 
         [TestMethod]
-        public async Task IoC_DI_IOptions_AppSettings_OK()
+        public async System.Threading.Tasks.Task IoC_DI_IOptions_AppSettings_OK()
         {
             var serviceProvider = _services.BuildServiceProvider();
             Assert.IsNotNull(serviceProvider);

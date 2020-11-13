@@ -11,6 +11,8 @@ using System.Collections;
 using AutoMapper;
 using Richviet.API.DataContracts.Requests;
 using Richviet.Tools.Utility;
+using Richviet.Task;
+using Microsoft.Extensions.Logging;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -22,13 +24,15 @@ namespace Richviet.API.Controllers.V1
     {
         private readonly IUserService userService;
         private readonly JwtHandler jwtHandler;
-        private IMapper mapper;
+        private readonly IMapper mapper;
+        private readonly ArcValidationTask arcValidationTask;
 
-        public RegisterController(IUserService userService, JwtHandler jwtHandler, IMapper mapper)
+        public RegisterController(IUserService userService, JwtHandler jwtHandler, IMapper mapper, ArcValidationTask arcValidationTask)
         {
             this.userService = userService;
             this.jwtHandler = jwtHandler;
             this.mapper = mapper;
+            this.arcValidationTask = arcValidationTask;
         }
 
         /// <summary>
@@ -76,5 +80,15 @@ namespace Richviet.API.Controllers.V1
                 }
             });
         }
-    }
+
+        [HttpGet("validation")]
+        public ActionResult<MessageModel<Object>> Validation()
+        {
+            
+            var isVerified = arcValidationTask.Validate("XXXXXXXX", "20180101", "", "F160000001");
+
+            return Ok();
+        }
+        
+    } 
 }

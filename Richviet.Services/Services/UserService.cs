@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Richviet.Tools.Utility;
 using Richviet.API.DataContracts.Requests;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace Richviet.Services
 {
@@ -17,13 +18,15 @@ namespace Richviet.Services
         private readonly IEnumerable<IAuthService> authServices;
         private readonly GeneralContext dbContext;
         private readonly ILogger logger;
+        private readonly IMapper mapper;
 
 
-        public UserService(IEnumerable<IAuthService> authServices, GeneralContext dbContext, ILogger<UserService> logger)
+        public UserService(IEnumerable<IAuthService> authServices, GeneralContext dbContext, ILogger<UserService> logger, IMapper mapper)
         {
             this.authServices = authServices;
             this.dbContext = dbContext;
             this.logger =  logger;
+            this.mapper = mapper;
         }
 
         public async Task<bool> AddNewUserInfo(UserRegisterType loginUser)
@@ -115,8 +118,6 @@ namespace Richviet.Services
             userArc.PassportId = registerReq.passportNumber;
             userArc.BackSequence = registerReq.backCode;
             userArc.ArcIssueDate = registerReq.issue;
-            userArc.IdImageA = registerReq.certificateA;
-            userArc.IdImageB = registerReq.certificateB;
             userArc.KycStatus = 1;
             userArc.KycStatusUpdateTime = DateTime.Now;
 
@@ -144,6 +145,16 @@ namespace Richviet.Services
             }
         }
 
+        public UserArc UpdateUserArc(UserArc modifyUserArc,UserArc originalUserArc)
+        {
+            dbContext.Entry(originalUserArc).CurrentValues.SetValues(modifyUserArc);
+            dbContext.Entry(originalUserArc).Property(x => x.UserId).IsModified = false;
+            dbContext.Entry(originalUserArc).Property(x => x.CreateTime).IsModified = false;
+            originalUserArc.UpdateTime = DateTimeOffset.UtcNow;
+            dbContext.SaveChanges();
+            return modifyUserArc;
+        }
+
         public bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, int userId)
         {
             User user = dbContext.User.Where(user => user.Id == userId).FirstOrDefault();
@@ -164,6 +175,21 @@ namespace Richviet.Services
             return true;
         }
 
+        public void UpdatePicFileNameOfUserInfo(UserArc userArc,Byte type,String fileName)
+        {
+            PictureTypeEnum pictureType = (PictureTypeEnum)type;
+            switch (pictureType)
+            {
+                case PictureTypeEnum.Front:
+                    userArc.IdImageA = fileName;
+                    break;
+                case PictureTypeEnum.Back:
+                    userArc.IdImageB = fileName;
+                    break;
+            }
+            dbContext.UserArc.Update(userArc);
+            dbContext.SaveChanges();
+        }
        
     }
 }

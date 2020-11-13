@@ -526,9 +526,14 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.ArcExpireDate)
+                    .HasColumnName("arc_expire_date")
+                    .HasColumnType("date")
+                    .HasComment("居留期限");
+
                 entity.Property(e => e.ArcIssueDate)
                     .HasColumnName("arc_issue_date")
-                    .HasColumnType("datetime")
+                    .HasColumnType("date")
                     .HasComment("發證日期");
 
                 entity.Property(e => e.ArcName)
