@@ -1,4 +1,5 @@
 ﻿using Richviet.Admin.API.DataContracts.Dto;
+using Richviet.Admin.API.DataContracts.Requests;
 using Richviet.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Richviet.Services.Contracts
     {
         List<UserAdminListDTO> GetUserList();
 
-        List<UserAdminListDTO> GetUserFilterList();
+        List<UserAdminListDTO> GetUserFilterList(UserFilterListRequest request);
 
 
     }

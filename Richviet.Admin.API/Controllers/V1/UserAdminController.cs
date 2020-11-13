@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Richviet.Admin.API.DataContracts.Dto;
+using Richviet.Admin.API.DataContracts.Requests;
 using Richviet.Admin.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
 using System;
@@ -34,9 +35,20 @@ namespace Richviet.Admin.API.Controllers.V1
         [HttpGet]
         public MessageModel<List<UserAdminListDTO>> GetUserList()
         {
-
             List<UserAdminListDTO> userList = userAdminService.GetUserList();
+            return new MessageModel<List<UserAdminListDTO>>
+            {
+                Data = userList
+            };
+        }
 
+        /// <summary>
+        /// 取得使用者過濾列表
+        /// </summary>
+        [HttpGet("filter")]
+        public MessageModel<List<UserAdminListDTO>> GetUserFilterList(UserFilterListRequest request)
+        {
+            List<UserAdminListDTO> userList = userAdminService.GetUserFilterList(request);
             return new MessageModel<List<UserAdminListDTO>>
             {
                 Data = userList
