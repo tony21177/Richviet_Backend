@@ -40,6 +40,7 @@
     <ProjectReference Include="..\Richviet.API.DataContracts\Richviet.API.DataContracts.csproj" />
     <ProjectReference Include="..\Richviet.IoC.Configuration\Richviet.IoC.Configuration.csproj" />
     <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
+    <ProjectReference Include="..\Richviet.Task\Richviet.BackgroudTask.csproj" />
   </ItemGroup>
 
 </Project>

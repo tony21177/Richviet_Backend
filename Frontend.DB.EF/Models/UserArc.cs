@@ -20,6 +20,7 @@ namespace Frontend.DB.EF.Models
         public DateTime? KycStatusUpdateTime { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
+        public DateTime? ArcExpireDate { get; set; }
 
         public virtual User User { get; set; }
     }
