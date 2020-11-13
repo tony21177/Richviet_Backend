@@ -20,7 +20,7 @@ namespace Frontend.DB.EF.Models
         public string IdImageA { get; set; }
         public string IdImageB { get; set; }
         public string IdImageC { get; set; }
-        public int? KycStatus { get; set; }
+        public byte? KycStatus { get; set; }
         public DateTime? KycStatusUpdateTime { get; set; }
         public DateTime? RegisterTime { get; set; }
         public string AuthPlatformId { get; set; }

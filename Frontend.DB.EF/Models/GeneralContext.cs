@@ -15,6 +15,7 @@ namespace Frontend.DB.EF.Models
         {
         }
 
+        public virtual DbSet<ArcScanRecord> ArcScanRecord { get; set; }
         public virtual DbSet<BussinessUnitRemitSetting> BussinessUnitRemitSetting { get; set; }
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
         public virtual DbSet<Discount> Discount { get; set; }
@@ -41,6 +42,22 @@ namespace Frontend.DB.EF.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ArcScanRecord>(entity =>
+            {
+                entity.ToTable("arc_scan_record");
+
+                entity.HasComment("會員KYC移民署系統掃描紀錄");
+
+                entity.Property(e => e.ArcStatus)
+                    .HasColumnName("arc_status")
+                    .HasComment("系統移民屬ARC驗證,0:未確認,1:資料符合,2:資料不符,3:系統驗證失敗");
+
+                entity.Property(e => e.ScanTime)
+                    .HasColumnName("scan_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+            });
+
             modelBuilder.Entity<BussinessUnitRemitSetting>(entity =>
             {
                 entity.ToTable("bussiness_unit_remit_setting");
@@ -345,15 +362,7 @@ namespace Frontend.DB.EF.Models
                     .HasColumnName("arc_no")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.ArcStatus)
-                    .HasColumnName("arc_status")
-                    .HasDefaultValueSql("((0))")
-                    .HasComment("0:arc未審核,1:系統自動審核arc成功");
-
-                entity.Property(e => e.ArcVerifyTime)
-                    .HasColumnName("arc_verify_time")
-                    .HasColumnType("datetime")
-                    .HasComment("系統自動審核移名屬ARC時間");
+                entity.Property(e => e.ArcScanRecordId).HasColumnName("arc_scan_record_id");
 
                 entity.Property(e => e.BeneficiarId).HasColumnName("beneficiar_id");
 
@@ -445,6 +454,12 @@ namespace Frontend.DB.EF.Models
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.ArcScanRecord)
+                    .WithMany(p => p.RemitRecord)
+                    .HasForeignKey(d => d.ArcScanRecordId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_remit_record_arc_scan_record");
 
                 entity.HasOne(d => d.Beneficiar)
                     .WithMany(p => p.RemitRecord)
@@ -605,6 +620,10 @@ namespace Frontend.DB.EF.Models
                     .HasColumnType("datetime")
                     .HasComment("審核時間");
 
+                entity.Property(e => e.LastArcScanRecordId)
+                    .HasColumnName("last_arc_scan_record_id")
+                    .HasComment("最後一次的ARC掃描紀錄id");
+
                 entity.Property(e => e.PassportId)
                     .IsRequired()
                     .HasColumnName("passport_id")
@@ -612,6 +631,11 @@ namespace Frontend.DB.EF.Models
                     .IsUnicode(false)
                     .HasDefaultValueSql("('')")
                     .HasComment("護照號碼");
+
+                entity.Property(e => e.SystemArcVerify)
+                    .HasColumnName("system_arc_verify")
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("系統移民屬ARC驗證,0:未確認,1:資料符合,2:資料不符,3:系統驗證失敗");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -621,6 +645,12 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasComment("對應user的pk");
+
+                entity.HasOne(d => d.LastArcScanRecord)
+                    .WithMany(p => p.UserArc)
+                    .HasForeignKey(d => d.LastArcScanRecordId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_user_arc_scan_id");
 
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.UserArc)

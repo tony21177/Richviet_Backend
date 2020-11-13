@@ -28,11 +28,11 @@ namespace Richviet.Services.Models
         public double? DiscountAmount { get; set; }
         public int? BeneficiarId { get; set; }
         public byte TransactionStatus { get; set; }
-        public byte ArcStatus { get; set; }
-        public DateTimeOffset? ArcVerifyTime { get; set; }
         public DateTimeOffset? PaymentTime { get; set; }
         public string PaymentCode { get; set; }
+        public int ArcScanRecordId { get; set; }
 
+        public virtual ArcScanRecord ArcScanRecord { get; set; }
         public virtual OftenBeneficiar Beneficiar { get; set; }
         public virtual CurrencyCode ToCurrency { get; set; }
         public virtual User User { get; set; }
