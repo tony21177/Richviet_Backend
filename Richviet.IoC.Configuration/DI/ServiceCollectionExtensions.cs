@@ -33,6 +33,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IRemitRecordService,RemitRecordService>();
                 services.AddScoped<IDiscountService,DiscountService>();
                 services.AddScoped<IUserAdminService, UserAdminService>();
+   
             }
         }
 
