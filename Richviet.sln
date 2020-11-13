@@ -48,7 +48,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frontend.DB.EF", "Frontend.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Task", "Task", "{09413445-3ECE-4D11-83DB-5E1CB1A4288B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Richviet.Task", "Richviet.Task\Richviet.Task.csproj", "{882678DA-F7E0-4AAD-B0DC-B0BD538EB17E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.BackgroudTask", "Richviet.Task\Richviet.BackgroudTask.csproj", "{882678DA-F7E0-4AAD-B0DC-B0BD538EB17E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

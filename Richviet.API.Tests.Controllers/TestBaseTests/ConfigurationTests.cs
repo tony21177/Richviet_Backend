@@ -11,13 +11,13 @@ namespace Richviet.API.Tests.Controllers.TestBaseTests
     public class ConfigurationTests : TestBase
     {
         [TestMethod]
-        public async Task ConfigurationRoot_OK()
+        public async System.Threading.Tasks.Task ConfigurationRoot_OK()
         {
             Assert.IsNotNull(_configurationRoot);
         }
 
         [TestMethod]
-        public async Task AppSettingsIConfiguration_OK()
+        public async System.Threading.Tasks.Task AppSettingsIConfiguration_OK()
         {
             Assert.IsNotNull(_configurationRoot);
 
@@ -26,7 +26,7 @@ namespace Richviet.API.Tests.Controllers.TestBaseTests
         }
 
         [TestMethod]
-        public async Task AppSettings_OK()
+        public async System.Threading.Tasks.Task AppSettings_OK()
         {
             Assert.IsNotNull(_configurationRoot);
 

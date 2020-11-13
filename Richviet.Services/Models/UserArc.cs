@@ -13,6 +13,7 @@ namespace Richviet.Services.Models
         public string PassportId { get; set; }
         public string BackSequence { get; set; }
         public DateTime? ArcIssueDate { get; set; }
+        public DateTime? ArcExpireDate { get; set; }
         public string IdImageA { get; set; }
         public string IdImageB { get; set; }
         public string IdImageC { get; set; }

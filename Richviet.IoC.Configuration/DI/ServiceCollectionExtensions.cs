@@ -7,6 +7,7 @@ using System.Reflection;
 using Richviet.Tools.Utility;
 using Richviet.Services.Services;
 using System.Collections.Generic;
+using Richviet.Task;
 
 namespace Richviet.IoC.Configuration.DI
 {
@@ -24,6 +25,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IBeneficiarService, BeneficiarService>();
                 services.AddScoped<IPayeeTypeService, PayeeTypeService>();
                 services.AddSingleton(typeof(FolderHandler));
+                services.AddSingleton(typeof(ArcValidationTask));
                 services.AddSingleton<IUploadPic, UploadPicToLocalService>();
                 services.AddScoped<ICurrencyService,CurrencyService>();
                 services.AddScoped<IExchangeRateService, DBExchangeRateService>();

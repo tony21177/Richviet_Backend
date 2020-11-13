@@ -57,7 +57,7 @@ namespace Richviet.Admin.API.Controllers.V1
                 CurrencyName = request.CurrencyName,
                 Country = request.Country,
                 Fee = request.Fee,
-                FeeType = request.FeeType == 1 ? (byte)1 : (byte)0
+                FeeType = (byte)request.FeeType
             };
             bool result = currencyService.AddCurrency(currency);
             EditCurrencyInfoDTO currencyDTO = mapper.Map<EditCurrencyInfoDTO>(currency);
@@ -95,7 +95,7 @@ namespace Richviet.Admin.API.Controllers.V1
                 CurrencyName = request.CurrencyName,
                 Country = request.Country,
                 Fee = request.Fee,
-                FeeType = request.FeeType == 1 ? (byte)1 : (byte)0
+                FeeType = (byte)request.FeeType
             };
             bool result = currencyService.ModifyCurrency(currency);
             EditCurrencyInfoDTO currencyDTO = mapper.Map<EditCurrencyInfoDTO>(currency);
