@@ -17,11 +17,14 @@ namespace Richviet.Services.Models
         public string IdImageA { get; set; }
         public string IdImageB { get; set; }
         public string IdImageC { get; set; }
+        public byte SystemArcVerify { get; set; }
         public byte? KycStatus { get; set; }
         public DateTimeOffset? KycStatusUpdateTime { get; set; }
         public DateTimeOffset CreateTime { get; set; }
         public DateTimeOffset? UpdateTime { get; set; }
+        public int LastArcScanRecordId { get; set; }
 
+        public virtual ArcScanRecord LastArcScanRecord { get; set; }
         public virtual User User { get; set; }
     }
 }

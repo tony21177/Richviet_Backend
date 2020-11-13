@@ -15,6 +15,7 @@ namespace Richviet.Services.Models
         {
         }
 
+        public virtual DbSet<ArcScanRecord> ArcScanRecord { get; set; }
         public virtual DbSet<BussinessUnitRemitSetting> BussinessUnitRemitSetting { get; set; }
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
         public virtual DbSet<Discount> Discount { get; set; }
@@ -41,6 +42,26 @@ namespace Richviet.Services.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ArcScanRecord>(entity =>
+            {
+                entity.ToTable("arc_scan_record");
+
+                entity.HasComment("會員KYC移民署系統掃描紀錄");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.ArcStatus)
+                    .HasColumnName("arc_status")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("系統移民屬ARC驗證,0:未確認,1:資料符合,2:資料不符,3:系統驗證失敗");
+
+                entity.Property(e => e.ScanTime)
+                    .HasColumnName("scan_time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
+
             modelBuilder.Entity<BussinessUnitRemitSetting>(entity =>
             {
                 entity.ToTable("bussiness_unit_remit_setting");
@@ -391,6 +412,9 @@ namespace Richviet.Services.Models
 
                 entity.HasComment("匯款紀錄");
 
+                entity.HasIndex(e => e.ArcScanRecordId)
+                    .HasName("fk_remit_record_arc_scan_record_idx");
+
                 entity.HasIndex(e => e.BeneficiarId)
                     .HasName("fk_remit_record_beneficiar_idx");
 
@@ -420,14 +444,10 @@ namespace Richviet.Services.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ArcStatus)
-                    .HasColumnName("arc_status")
-                    .HasColumnType("tinyint(2)")
-                    .HasComment("0:arc未審核,1:系統自動審核arc成功");
-
-                entity.Property(e => e.ArcVerifyTime)
-                    .HasColumnName("arc_verify_time")
-                    .HasComment("系統自動審核移名屬ARC時間");
+                entity.Property(e => e.ArcScanRecordId)
+                    .HasColumnName("arc_scan_record_id")
+                    .HasColumnType("int(11)")
+                    .HasComment("對應的系統掃描arc紀錄id");
 
                 entity.Property(e => e.BeneficiarId)
                     .HasColumnName("beneficiar_id")
@@ -538,6 +558,12 @@ namespace Richviet.Services.Models
                     .HasColumnName("user_id")
                     .HasColumnType("int(11)");
 
+                entity.HasOne(d => d.ArcScanRecord)
+                    .WithMany(p => p.RemitRecord)
+                    .HasForeignKey(d => d.ArcScanRecordId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_remit_record_arc_scan_record");
+
                 entity.HasOne(d => d.Beneficiar)
                     .WithMany(p => p.RemitRecord)
                     .HasForeignKey(d => d.BeneficiarId)
@@ -617,6 +643,9 @@ namespace Richviet.Services.Models
                 entity.ToTable("user_arc");
 
                 entity.HasComment("使用者KYC資料");
+
+                entity.HasIndex(e => e.LastArcScanRecordId)
+                    .HasName("fk_user_arc_scan_id");
 
                 entity.HasIndex(e => e.UserId)
                     .HasName("user_id_UNIQUE")
@@ -706,6 +735,11 @@ namespace Richviet.Services.Models
                     .HasColumnName("kyc_status_update_time")
                     .HasComment("審核時間");
 
+                entity.Property(e => e.LastArcScanRecordId)
+                    .HasColumnName("last_arc_scan_record_id")
+                    .HasColumnType("int(11)")
+                    .HasComment("最後一次的ARC掃描紀錄id");
+
                 entity.Property(e => e.PassportId)
                     .IsRequired()
                     .HasColumnName("passport_id")
@@ -713,6 +747,11 @@ namespace Richviet.Services.Models
                     .IsUnicode(false)
                     .HasDefaultValueSql("''")
                     .HasComment("護照號碼");
+
+                entity.Property(e => e.SystemArcVerify)
+                    .HasColumnName("system_arc_verify")
+                    .HasColumnType("tinyint(2)")
+                    .HasComment("系統移民屬ARC驗證,0:未確認,1:資料符合,2:資料不符,3:系統驗證失敗");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -724,6 +763,12 @@ namespace Richviet.Services.Models
                     .HasColumnName("user_id")
                     .HasColumnType("int(11)")
                     .HasComment("對應user的pk");
+
+                entity.HasOne(d => d.LastArcScanRecord)
+                    .WithMany(p => p.UserArc)
+                    .HasForeignKey(d => d.LastArcScanRecordId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_user_arc_scan_id");
 
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.UserArc)
