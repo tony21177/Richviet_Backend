@@ -26,5 +26,7 @@ namespace Richviet.Services.Contracts
         bool ReigsterUserById(int id, RegisterRequest registerReq);
 
         bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, int userId);
+
+        void UpdatePicFileNameOfUserInfo(UserArc userArc, Byte type, String fileName);
     }
 }
