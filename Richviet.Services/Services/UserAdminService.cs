@@ -84,5 +84,37 @@ namespace Richviet.Services.Services
             }
             return userList;
         }
+
+        public UserDetailDTO GetUserDetail(int userId)
+        {
+            var res = from u in dbContext.User where u.Id == userId
+                      join a in dbContext.UserArc on u.Id equals a.UserId
+                      join g in dbContext.UserLoginLog on u.Id equals g.UserId
+                      select new { u.Id, a.ArcName, a.ArcNo, a.KycStatus, u.Level, u.Gender, a.Country,
+                          u.Birthday, a.PassportId, a.ArcIssueDate, a.ArcExpireDate, a.BackSequence,
+                          u.Phone, g.LoginTime, g.Address, a.IdImageA, a.IdImageB };
+            UserDetailDTO dto = new UserDetailDTO();
+            foreach (var r in res)
+            {
+                dto.Id = r.Id;
+                dto.Name = r.ArcName;
+                dto.ArcNo = r.ArcNo;
+                dto.KycStatus = r.KycStatus;
+                dto.Level = r.Level;
+                dto.Gender = r.Gender;
+                dto.Country = r.Country;
+                dto.Birthday = r.Birthday;
+                dto.PassportId = r.PassportId;
+                dto.ArcIssueDate = r.ArcIssueDate;
+                dto.ArcExpireDate = r.ArcExpireDate;
+                dto.BackSequence = r.BackSequence;
+                dto.Phone = r.Phone;
+                dto.LoginTime = r.LoginTime;
+                dto.Address = r.Address;
+                dto.IdImageA = r.IdImageA;
+                dto.IdImageB = r.IdImageB;
+            }
+            return dto;
+        }
     }
 }

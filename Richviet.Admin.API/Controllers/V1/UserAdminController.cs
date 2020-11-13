@@ -6,6 +6,7 @@ using Richviet.Admin.API.DataContracts.Dto;
 using Richviet.Admin.API.DataContracts.Requests;
 using Richviet.Admin.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,19 @@ namespace Richviet.Admin.API.Controllers.V1
             return new MessageModel<List<UserAdminListDTO>>
             {
                 Data = userList
+            };
+        }
+
+        /// <summary>
+        /// 取得使用者詳細資料
+        /// </summary>
+        [HttpGet("{id}")]
+        public MessageModel<UserDetailDTO> GetUserDetail([FromRoute, SwaggerParameter("id,可從/useradmin取得", Required = true)] int id)
+        {
+            UserDetailDTO userDetail = userAdminService.GetUserDetail(id);
+            return new MessageModel<UserDetailDTO>
+            {
+                Data = userDetail
             };
         }
     }
