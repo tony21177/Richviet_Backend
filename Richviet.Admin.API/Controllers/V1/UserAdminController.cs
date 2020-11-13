@@ -1,0 +1,46 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Richviet.Admin.API.DataContracts.Dto;
+using Richviet.Admin.API.DataContracts.Responses;
+using Richviet.Services.Contracts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Richviet.Admin.API.Controllers.V1
+{
+    [ApiVersion("1.0")]
+    [Route("admin/v{version:apiVersion}/useradmin")]
+    [ApiController]
+    public class UserAdminController : ControllerBase
+    {
+        private readonly ILogger Logger;
+        private readonly IMapper mapper;
+        private readonly IUserAdminService userAdminService;
+
+        public UserAdminController(ILogger<UserAdminController> logger, IMapper mapper, IUserAdminService userAdminService)
+        {
+            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.mapper = mapper;
+            this.userAdminService = userAdminService;
+        }
+
+        /// <summary>
+        /// 取得使用者列表
+        /// </summary>
+        [HttpGet]
+        public MessageModel<List<UserAdminListDTO>> GetUserList()
+        {
+
+            List<UserAdminListDTO> userList = userAdminService.GetUserList();
+
+            return new MessageModel<List<UserAdminListDTO>>
+            {
+                Data = userList
+            };
+        }
+    }
+}

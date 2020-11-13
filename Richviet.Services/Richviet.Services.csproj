@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Richviet.Admin.API.DataContracts\Richviet.Admin.API.DataContracts.csproj" />
     <ProjectReference Include="..\Richviet.API.Common\Richviet.API.Common.csproj" />
     <ProjectReference Include="..\Richviet.Tools\Richviet.Tools.csproj" />
     <ProjectReference Include="..\Richviet.API.DataContracts\Richviet.API.DataContracts.csproj" />
