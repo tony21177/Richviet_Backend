@@ -14,8 +14,6 @@ namespace Richviet.API.DataContracts.Dto
         [SwaggerSchema("0:未填,1:男,2:女")]
         public byte Gender { get; set; }
         public DateTime? Birthday { get; set; }
-        [SwaggerSchema("0:草稿會員,1:正式會員")]
-        public byte Status { get; set; }
         public string Country { get; set; }
         public string ArcName { get; set; }
         public string ArcNo { get; set; }
@@ -29,9 +27,9 @@ namespace Richviet.API.DataContracts.Dto
         public string IdImageC { get; set; }
 
         [SwaggerSchema("KYC審核狀態, 10:禁用,9:KYC未通過, 0:草稿會員,1:待審核(註冊完),2:正式會員(KYC審核通過)")]
-        public byte? KycStatus { get; set; }
-        public long? KycStatusUpdateTime { get; set; }
-        public long? RegisterTime { get; set; }
+        public byte KycStatus { get; set; }
+        public long KycStatusUpdateTime { get; set; }
+        public long RegisterTime { get; set; }
         [SwaggerSchema("第三方登入平台ID")]
         public string AuthPlatformId { get; set; }
         [SwaggerSchema("註冊方式,0:平台本身,1:FB,2:apple,3:google,4:zalo")]
@@ -40,5 +38,7 @@ namespace Richviet.API.DataContracts.Dto
         public string LoginPlatformEmal { get; set; }
         [SwaggerSchema("第三方登入平台name")]
         public string Name { get; set; }
+        [SwaggerSchema("會員等級0:一般會員;1:VIP;9:高風險")]
+        public byte Level { get; set; }
     }
 }

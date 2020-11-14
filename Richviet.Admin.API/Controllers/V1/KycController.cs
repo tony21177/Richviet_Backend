@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Richviet.Admin.API.DataContracts.Responses;

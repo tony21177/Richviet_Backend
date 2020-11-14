@@ -9,7 +9,7 @@ namespace Frontend.DB.EF.Models
         public long UserId { get; set; }
         public string Name { get; set; }
         public string AuthPlatformId { get; set; }
-        public int RegisterType { get; set; }
+        public byte RegisterType { get; set; }
         public string Email { get; set; }
         public DateTime? RegisterTime { get; set; }
         public DateTime? CreateTime { get; set; }

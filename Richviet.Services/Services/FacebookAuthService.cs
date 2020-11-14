@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using System;
 using System.Collections;
 using System.Linq;

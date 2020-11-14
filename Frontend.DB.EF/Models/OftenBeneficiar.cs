@@ -16,11 +16,11 @@ namespace Frontend.DB.EF.Models
         public string PayeeId { get; set; }
         public string Note { get; set; }
         public long UserId { get; set; }
-        public int? ReceiveBankId { get; set; }
+        public long? ReceiveBankId { get; set; }
         public long PayeeTypeId { get; set; }
         public long PayeeRelationId { get; set; }
-        public DateTime? CreateTime { get; set; }
-        public DateTime? UpdateTime { get; set; }
+        public DateTime CreateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
 
         public virtual PayeeRelationType PayeeRelation { get; set; }
         public virtual PayeeType PayeeType { get; set; }

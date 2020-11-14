@@ -13,16 +13,15 @@ namespace Frontend.DB.EF.Models
         public string PassportId { get; set; }
         public string BackSequence { get; set; }
         public DateTime? ArcIssueDate { get; set; }
+        public DateTime? ArcExpireDate { get; set; }
         public string IdImageA { get; set; }
         public string IdImageB { get; set; }
         public string IdImageC { get; set; }
-        public byte? SystemArcVerify { get; set; }
         public byte? KycStatus { get; set; }
         public DateTime? KycStatusUpdateTime { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
-        public DateTime? ArcExpireDate { get; set; }
-        public long LastArcScanRecordId { get; set; }
+        public long? LastArcScanRecordId { get; set; }
 
         public virtual ArcScanRecord LastArcScanRecord { get; set; }
         public virtual User User { get; set; }

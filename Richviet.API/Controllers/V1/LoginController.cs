@@ -4,10 +4,11 @@ using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using Richviet.Tools.Utility;
 using System;
 using System.Net;
+using Richviet.API.DataContracts.Dto;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -30,7 +31,7 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult<MessageModel<Object>> Login([FromBody] LoginUserRequest loginRequest)
+        public ActionResult<MessageModel<RegisterResponseDTO>> Login([FromBody] LoginUserRequest loginRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -45,31 +46,16 @@ namespace Richviet.API.Controllers.V1
 
             dynamic verifiedData = userService.VerifyUserInfo(loginRequest.accessToken, loginRequest.permissions, loginUserRegistger).Result;
 
-            try
-            {
-                if (verifiedData == false)
-                    return Unauthorized(new MessageModel<Object>
-                    {
-                        Status = (int)HttpStatusCode.Unauthorized,
-                        Success = false,
-                        Msg = "Unauthorized",
-                        Data = null
-                    }); ;
-            }
-            catch {}
+            
 
-            try
-            {
-                if (verifiedData == null || verifiedData["name"] == null || verifiedData["email"] == null)
-                    return Unauthorized(new MessageModel<Object>
-                    {
-                        Status = (int)HttpStatusCode.Unauthorized,
-                        Success = false,
-                        Msg = "Unauthorized",
-                        Data = null
-                    }); ;
-            }
-            catch {}
+            if (verifiedData == null || verifiedData["name"] == null || verifiedData["email"] == null)
+                return Unauthorized(new MessageModel<Object>
+                {
+                    Status = (int)HttpStatusCode.Unauthorized,
+                    Success = false,
+                    Msg = "Unauthorized",
+                    Data = null
+                });
 
             loginUserRegistger.Name = verifiedData["name"].ToString();
             loginUserRegistger.Email = verifiedData["email"].ToString();
@@ -80,13 +66,13 @@ namespace Richviet.API.Controllers.V1
             }
             var loginUser = userService.GetUserInfo(loginUserRegistger).Result;
 
-            var accessToken = this.jwtHandler.CreateAccessToken(loginUser.Id, loginUser.Email, loginUser.Name);
-            return Ok(new MessageModel<Object>
+            var accessToken = this.jwtHandler.CreateAccessToken((int)loginUser.Id, loginUser.Email, loginUser.Name);
+            return Ok(new MessageModel<RegisterResponseDTO>
             {
-                Data = new 
+                Data = new RegisterResponseDTO()
                 {
                     Jwt = accessToken.Token,
-                    KYCStatus = loginUser.KycStatus
+                    kycStatus = (byte)loginUser.KycStatus
                 }
             });
         }

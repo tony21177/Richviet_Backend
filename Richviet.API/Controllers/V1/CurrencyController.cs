@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;

@@ -11,7 +11,7 @@ namespace Frontend.DB.EF.Models
         }
 
         public long Id { get; set; }
-        public int Type { get; set; }
+        public byte Type { get; set; }
         public string Description { get; set; }
 
         public virtual ICollection<OftenBeneficiar> OftenBeneficiar { get; set; }

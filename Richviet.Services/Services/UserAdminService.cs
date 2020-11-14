@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using MySqlX.XDevAPI.Common;
 using Richviet.Admin.API.DataContracts.Dto;
 using Richviet.Admin.API.DataContracts.Requests;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +32,7 @@ namespace Richviet.Services.Services
             {
                 UserAdminListDTO dto = new UserAdminListDTO
                 { 
-                    Id = res.Id,
+                    Id = (int)res.Id,
                     Name = res.ArcName,
                     ArcNo = res.ArcNo,
                     KycStatus = res.KycStatus,
@@ -73,7 +72,7 @@ namespace Richviet.Services.Services
             {
                 UserAdminListDTO dto = new UserAdminListDTO
                 {
-                    Id = res.Id,
+                    Id = (int)res.Id,
                     Name = res.ArcName,
                     ArcNo = res.ArcNo,
                     KycStatus = res.KycStatus,
@@ -96,12 +95,12 @@ namespace Richviet.Services.Services
             UserDetailDTO dto = new UserDetailDTO();
             foreach (var r in res)
             {
-                dto.Id = r.Id;
+                dto.Id = (int)r.Id;
                 dto.Name = r.ArcName;
                 dto.ArcNo = r.ArcNo;
                 dto.KycStatus = r.KycStatus;
                 dto.Level = r.Level;
-                dto.Gender = r.Gender;
+                dto.Gender = (byte)r.Gender;
                 dto.Country = r.Country;
                 dto.Birthday = r.Birthday;
                 dto.PassportId = r.PassportId;

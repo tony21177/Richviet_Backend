@@ -24,8 +24,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text.Json;
-using MySql.Data.EntityFrameworkCore.Extensions;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -71,7 +70,8 @@ namespace Richviet.API
             {
                 services.AddDbContext<GeneralContext>(options =>
                 {
-                    options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+                    //options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 });
 
                 if (_appSettings.IsValid())
