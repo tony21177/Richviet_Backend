@@ -7,20 +7,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Admin.DB.EF\Admin.DB.EF.csproj" />
     <ProjectReference Include="..\Frontend.DB.EF\Frontend.DB.EF.csproj" />
     <ProjectReference Include="..\Richviet.Admin.API.DataContracts\Richviet.Admin.API.DataContracts.csproj" />
-    <ProjectReference Include="..\Richviet.API.Common\Richviet.API.Common.csproj" />
     <ProjectReference Include="..\Richviet.Tools\Richviet.Tools.csproj" />
-    <ProjectReference Include="..\Richviet.API.DataContracts\Richviet.API.DataContracts.csproj" />
   </ItemGroup>
 
 </Project>
