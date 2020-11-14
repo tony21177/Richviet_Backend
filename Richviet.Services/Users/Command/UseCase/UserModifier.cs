@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using MySql.Data.X.XDevAPI.Common;
 using Richviet.Admin.API.DataContracts.Requests;
 using Richviet.Services.Users.Command.Adapter.Repositories;
 

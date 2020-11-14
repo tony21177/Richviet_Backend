@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Richviet.Services.Models;
+﻿using Frontend.DB.EF.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Richviet.Services.Users.Command.Adapter.Repositories
 {

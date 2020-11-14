@@ -1,4 +1,6 @@
-﻿using Richviet.Services.Models;
+﻿
+
+using Frontend.DB.EF.Models;
 
 namespace Richviet.Services.Users.Command.Adapter.Repositories
 {
