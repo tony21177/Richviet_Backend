@@ -17,7 +17,7 @@ namespace Richviet.Admin.API.DataContracts.Requests
         public string Email { get; set; }
 
         [SwaggerSchema("性別")]
-        public int Gender { get; set; }
+        public byte Gender { get; set; }
 
         [SwaggerSchema("生日")]
         public DateTime? Birthday { get; set; }
@@ -44,7 +44,7 @@ namespace Richviet.Admin.API.DataContracts.Requests
         public DateTime? ArcIssueDate { get; set; }
 
         [SwaggerSchema("KYC審核狀態, 10:禁用,9:KYC未通過, 0:草稿會員,1:待審核(註冊完),2:正式會員(KYC審核通過);\\n")]
-        public int? KycStatus { get; set; }
+        public byte? KycStatus { get; set; }
 
 
     }

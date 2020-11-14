@@ -7,6 +7,9 @@ using System.Reflection;
 using Richviet.Tools.Utility;
 using Richviet.Services.Services;
 using System.Collections.Generic;
+using Richviet.Services.Users.Command.Adapter.Repositories;
+using Richviet.Services.Users.Command.UseCase;
+using Richviet.Services.Users.Query;
 using Richviet.Task;
 
 namespace Richviet.IoC.Configuration.DI
@@ -33,7 +36,10 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IRemitRecordService,RemitRecordService>();
                 services.AddScoped<IDiscountService,DiscountService>();
                 services.AddScoped<IUserAdminService, UserAdminService>();
-   
+
+                services.AddTransient<IUserCommandRepository, UserCommandDbCommandRepository>();
+                services.AddTransient<IUserQueryRepositories, UserQueryRepositories>();
+                services.AddTransient<UserModifier>();
             }
         }
 
