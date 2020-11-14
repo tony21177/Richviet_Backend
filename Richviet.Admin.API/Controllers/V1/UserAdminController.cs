@@ -23,7 +23,9 @@ namespace Richviet.Admin.API.Controllers.V1
         private readonly IMapper mapper;
         private readonly IUserAdminService userAdminService;
 
-        public UserAdminController(ILogger<UserAdminController> logger, IMapper mapper, IUserAdminService userAdminService)
+        public UserAdminController(ILogger<UserAdminController> logger, 
+            IMapper mapper, 
+            IUserAdminService userAdminService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper;
@@ -68,5 +70,18 @@ namespace Richviet.Admin.API.Controllers.V1
                 Data = userDetail
             };
         }
+
+        [HttpPost("modify")]
+        public MessageModel<UserUpdateDto> ModifyUser(UserModifyRequest request)
+        {
+
+            return new MessageModel<UserUpdateDto>
+            {
+                Data = new UserUpdateDto()
+            };
+        }
+
     }
+
+
 }

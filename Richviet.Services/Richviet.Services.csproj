@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Richviet.Tools\Richviet.Tools.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Users\Query\" />
+  </ItemGroup>
+
 </Project>
