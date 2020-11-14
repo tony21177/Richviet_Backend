@@ -8,8 +8,9 @@ namespace Frontend.DB.EF.Models
         public long Id { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public int Gender { get; set; }
+        public byte Gender { get; set; }
         public DateTime? Birthday { get; set; }
+        public byte Level { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public string Country { get; set; }
@@ -22,9 +23,11 @@ namespace Frontend.DB.EF.Models
         public string IdImageC { get; set; }
         public byte? KycStatus { get; set; }
         public DateTime? KycStatusUpdateTime { get; set; }
+        public DateTime? ArcIssueDate { get; set; }
+        public DateTime? ArcExpireDate { get; set; }
         public DateTime? RegisterTime { get; set; }
         public string AuthPlatformId { get; set; }
-        public int RegisterType { get; set; }
+        public byte RegisterType { get; set; }
         public string LoginPlatformEmal { get; set; }
         public string Name { get; set; }
     }

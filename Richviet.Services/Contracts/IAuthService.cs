@@ -1,5 +1,5 @@
-﻿using Richviet.Services.Constants;
-using Richviet.Services.Models;
+﻿using Frontend.DB.EF.Models;
+using Richviet.Services.Constants;
 using System.Threading.Tasks;
 
 namespace Richviet.Services.Contracts

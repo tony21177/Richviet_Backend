@@ -1,7 +1,6 @@
 ﻿
-using Richviet.API.DataContracts.Requests;
 using Richviet.Services.Constants;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +22,9 @@ namespace Richviet.Services.Contracts
 
         UserArc GetUserArcById(int userId);
 
-        bool ReigsterUserById(int id, RegisterRequest registerReq);
+        UserRegisterType GetUserRegisterTypeById(int userId);
+
+        bool ReigsterUser(User user, UserArc userArc,UserRegisterType userRegisterType);
 
         bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, int userId);
 

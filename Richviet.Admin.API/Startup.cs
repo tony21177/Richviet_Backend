@@ -24,7 +24,7 @@ using Richviet.Admin.API.Common.Settings;
 using Richviet.Admin.API.DataContracts.Converter;
 using Richviet.Admin.API.Swagger;
 using Richviet.IoC.Configuration.DI;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Richviet.Admin.API
@@ -62,7 +62,8 @@ namespace Richviet.Admin.API
             {
                 services.AddDbContext<GeneralContext>(options =>
                 {
-                    options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+                    //options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 });
 
                 if (_appSettings.IsValid())

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using AutoMapper;
@@ -13,6 +13,8 @@ using Richviet.API.DataContracts.Requests;
 using Richviet.Tools.Utility;
 using Richviet.Task;
 using Microsoft.Extensions.Logging;
+using Richviet.Services.Constants;
+using System.Net;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -39,44 +41,83 @@ namespace Richviet.API.Controllers.V1
         /// 註冊使用者相關資訊
         /// </summary>
         [HttpPut("register")]
-        public ActionResult<MessageModel<Object>> ModifyOwnUserInfo([FromBody] RegisterRequest registerReq)
+        public ActionResult<MessageModel<RegisterResponseDTO>> ModifyOwnUserInfo([FromBody] RegisterRequest registerReq)
         {
             UserInfoDTO userModel = null;
             Tools.Utility.TokenResource accessToken = null;
 
-            //解JWT
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity != null)
+            
+            var userId = int.Parse(User.FindFirstValue("id"));
+            UserArc userArc = userService.GetUserArcById(userId);
+            if (userArc.KycStatus != (byte)KycStatusEnum.DRAFT_MEMBER)
             {
-                var userID = identity.FindFirst("id").Value;
-                Console.WriteLine(identity.FindFirst("id").Value);
-
-                bool isRegister = userService.ReigsterUserById(int.Parse(userID), registerReq);
-
-                if (isRegister == false)
+                return BadRequest(new MessageModel<RegisterResponseDTO>
                 {
-                    return BadRequest();
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "Only Draft member can register"
                 }
-
-                UserInfoView userInfo = userService.GetUserInfoById(int.Parse(userID));
-                //// 將 user 置換成 ViewModel
-                userModel = mapper.Map<UserInfoDTO>(userInfo);
-
-                accessToken = jwtHandler.CreateAccessToken(userModel.Id, userModel.Email, userModel.ArcName);
+                );
             }
+            if (String.IsNullOrEmpty(userArc.IdImageA) || String.IsNullOrEmpty(userArc.IdImageB))
+            {
+                return BadRequest(new MessageModel<RegisterResponseDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "Please upload your ID photo"
+                }
+                    );
+            }
+            User user = userService.GetUserById(userId);
+            UserRegisterType userRegisterType = userService.GetUserRegisterTypeById(userId);
+            //user data
+            user.Phone = registerReq.phone;
+            user.Email = userRegisterType.Email;
+            user.Gender = (byte)registerReq.gender;
+            user.Birthday = registerReq.birthday;
+
+            //userArc data
+            userArc.ArcName = registerReq.name;
+            userArc.Country = registerReq.country;
+            userArc.ArcNo = registerReq.personalID;
+            userArc.PassportId = registerReq.passportNumber;
+            userArc.BackSequence = registerReq.backCode;
+            userArc.ArcIssueDate = registerReq.issue;
+            userArc.ArcExpireDate = registerReq.expiry;
+            userArc.KycStatus = 1;
+            userArc.KycStatusUpdateTime = DateTime.Now;
+
+            //update UserRegisterType data
+            userRegisterType.RegisterTime = DateTime.Now;
+            
+
+
+            bool isRegister = userService.ReigsterUser(user,userArc, userRegisterType);
+
+            if (isRegister == false)
+            {
+                return BadRequest();
+            }
+
+            UserInfoView userInfo = userService.GetUserInfoById(userId);
+            //// 將 user 置換成 ViewModel
+            userModel = mapper.Map<UserInfoDTO>(userInfo);
+
+            accessToken = jwtHandler.CreateAccessToken(userModel.Id, userModel.Email, userModel.ArcName);
+            
 
             //return Ok(new MessageModel<UserInfoDTO>
             //{
             //    Data = userModel
             //});
 
-            return Ok(new MessageModel<Object>
+            return Ok(new MessageModel<RegisterResponseDTO>
             {
-                Data = new
+                Data = new RegisterResponseDTO
                 {
                     Jwt = accessToken.Token,
-                    userModel.Status,
-                    KYCStatus = userModel.KycStatus
+                    kycStatus = (byte)userModel.KycStatus
                 }
             });
         }

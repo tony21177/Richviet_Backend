@@ -1,5 +1,4 @@
-﻿using Renci.SshNet.Messages.Authentication;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 

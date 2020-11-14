@@ -2,10 +2,10 @@
 using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Requests;
 using Richviet.IoC.Configuration.AutoMapper.Converter;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using System;
 using C = Richviet.API.DataContracts.Dto;
-using M = Richviet.Services.Models;
+using M = Frontend.DB.EF.Models;
 using R = Richviet.API.DataContracts.Requests;
 using A = Richviet.Admin.API.DataContracts.Dto;
 

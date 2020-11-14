@@ -8,7 +8,7 @@ namespace Frontend.DB.EF.Models
         public long Id { get; set; }
         public string Ip { get; set; }
         public string Address { get; set; }
-        public int LoginType { get; set; }
+        public byte LoginType { get; set; }
         public DateTime? LoginTime { get; set; }
         public long UserId { get; set; }
 

@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Richviet.Services.Contracts
 {
-    public interface IExchangeRateService
+    public interface IUserLoginLogService
     {
-        List<ExchangeRate> GetExchangeRate();
-
+        void AddLoginLog(UserLoginLog userLogingLog);
     }
 }
