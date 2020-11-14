@@ -59,9 +59,41 @@ namespace Richviet.API.Controllers.V1
                 }
                 );
             }
+            if (String.IsNullOrEmpty(userArc.IdImageA) || String.IsNullOrEmpty(userArc.IdImageB))
+            {
+                return BadRequest(new MessageModel<RegisterResponseDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "Please upload your ID photo"
+                }
+                    );
+            }
+            User user = userService.GetUserById(userId);
+            UserRegisterType userRegisterType = userService.GetUserRegisterTypeById(userId);
+            //user data
+            user.Phone = registerReq.phone;
+            user.Email = userRegisterType.Email;
+            user.Gender = (byte)registerReq.gender;
+            user.Birthday = registerReq.birthday;
+
+            //userArc data
+            userArc.ArcName = registerReq.name;
+            userArc.Country = registerReq.country;
+            userArc.ArcNo = registerReq.personalID;
+            userArc.PassportId = registerReq.passportNumber;
+            userArc.BackSequence = registerReq.backCode;
+            userArc.ArcIssueDate = registerReq.issue;
+            userArc.ArcExpireDate = registerReq.expiry;
+            userArc.KycStatus = 1;
+            userArc.KycStatusUpdateTime = DateTime.Now;
+
+            //update UserRegisterType data
+            userRegisterType.RegisterTime = DateTime.Now;
             
 
-            bool isRegister = userService.ReigsterUserById(userId, registerReq);
+
+            bool isRegister = userService.ReigsterUser(user,userArc, userRegisterType);
 
             if (isRegister == false)
             {

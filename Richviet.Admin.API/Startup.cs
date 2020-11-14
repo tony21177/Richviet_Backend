@@ -62,7 +62,8 @@ namespace Richviet.Admin.API
             {
                 services.AddDbContext<GeneralContext>(options =>
                 {
-                    options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+                    //options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 });
 
                 if (_appSettings.IsValid())

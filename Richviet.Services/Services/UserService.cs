@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Richviet.Tools.Utility;
-using Richviet.API.DataContracts.Requests;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 
@@ -79,6 +78,10 @@ namespace Richviet.Services
             return dbContext.UserArc.Where(userArc => userArc.UserId == userId).FirstOrDefault();
         }
 
+        public UserRegisterType GetUserRegisterTypeById(int userId)
+        {
+            return dbContext.UserRegisterType.Where(userRegisterType => userRegisterType.UserId == userId).FirstOrDefault();
+        }
         public async Task<UserInfoView> GetUserInfo(UserRegisterType loginUser)
         {
 
@@ -93,40 +96,11 @@ namespace Richviet.Services
             return dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
         }
 
-        public bool ReigsterUserById(int id, RegisterRequest registerReq)
+        public bool ReigsterUser(User user,UserArc userArc,UserRegisterType userRegisterType)
         {
-            User user = dbContext.User.Where(user => user.Id == id).FirstOrDefault();
-            UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == id).FirstOrDefault();
-            UserInfoView userInfo = dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
-            UserRegisterType userRegisterType = dbContext.UserRegisterType.Where(userRegisterType => userRegisterType.UserId == id).FirstOrDefault();
-
-            if (user == null || userArc == null || userInfo == null)
-            {
-                logger.LogError("{userId} does not exist", id);
-                return false;
-            }
-
-            //update user data
-            user.Phone = registerReq.phone;
-            user.Email = userInfo.LoginPlatformEmal;
-            user.Gender = (byte)registerReq.gender;
-            user.Birthday = registerReq.birthday;
-
-            //update userArc data
-            userArc.ArcName = registerReq.name;
-            userArc.Country = registerReq.country;
-            userArc.ArcNo = registerReq.personalID;
-            userArc.PassportId = registerReq.passportNumber;
-            userArc.BackSequence = registerReq.backCode;
-            userArc.ArcIssueDate = registerReq.issue;
-            userArc.KycStatus = 1;
-            userArc.KycStatusUpdateTime = DateTime.Now;
-
-            //update UserRegisterType data
-            if (userRegisterType.RegisterTime == null)
-            {
-                userRegisterType.RegisterTime = DateTime.Now;
-            }
+            dbContext.User.Update(user);
+            dbContext.UserArc.Update(userArc);
+            dbContext.UserRegisterType.Update(userRegisterType);
 
             dbContext.SaveChanges();
 

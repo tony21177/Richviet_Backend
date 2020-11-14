@@ -18,12 +18,14 @@ namespace Richviet.API.Controllers.V1
     public class LoginController : Controller
     {
         private readonly IUserService userService;
+        private readonly IUserLoginLogService userLoginLogService;
         private readonly JwtHandler jwtHandler;
 
-        public LoginController(IUserService userService, JwtHandler jwtHandler)
+        public LoginController(IUserService userService, IUserLoginLogService userLoginLogService, JwtHandler jwtHandler)
         {
             this.userService = userService;
             this.jwtHandler = jwtHandler;
+            this.userLoginLogService = userLoginLogService;
         }
 
         /// <summary>
@@ -67,6 +69,17 @@ namespace Richviet.API.Controllers.V1
             var loginUser = userService.GetUserInfo(loginUserRegistger).Result;
 
             var accessToken = this.jwtHandler.CreateAccessToken((int)loginUser.Id, loginUser.Email, loginUser.Name);
+
+            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+            UserLoginLog loginLog = new UserLoginLog
+            {
+                Ip = remoteIpAddress.ToString(),
+                LoginType = (byte)loginRequest.loginType,
+                LoginTime = DateTime.UtcNow,
+                UserId = loginUser.Id
+            };
+            userLoginLogService.AddLoginLog(loginLog);
+
             return Ok(new MessageModel<RegisterResponseDTO>
             {
                 Data = new RegisterResponseDTO()

@@ -36,7 +36,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IRemitRecordService,RemitRecordService>();
                 services.AddScoped<IDiscountService,DiscountService>();
                 services.AddScoped<IUserAdminService, UserAdminService>();
-
+                services.AddScoped<IUserLoginLogService, UserLoginService>();
                 services.AddTransient<IUserCommandRepository, UserCommandDbCommandRepository>();
                 services.AddTransient<IUserQueryRepositories, UserQueryRepositories>();
                 services.AddTransient<UserModifier>();
