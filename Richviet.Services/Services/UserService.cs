@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,8 +61,9 @@ namespace Richviet.Services
                 transaction.Commit();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex,null);
                 transaction.Rollback();
                 return false;
             }
@@ -141,7 +142,7 @@ namespace Richviet.Services
                     IAuthService authService = authServices.Single(service => service.LoginType == LoginType.FB);
                     return await authService.VerifyUserInfo(accessToken, permissions, loginUser);
                 default:
-                    return false;
+                    return null;
             }
         }
 
@@ -150,7 +151,7 @@ namespace Richviet.Services
             dbContext.Entry(originalUserArc).CurrentValues.SetValues(modifyUserArc);
             dbContext.Entry(originalUserArc).Property(x => x.UserId).IsModified = false;
             dbContext.Entry(originalUserArc).Property(x => x.CreateTime).IsModified = false;
-            originalUserArc.UpdateTime = DateTimeOffset.UtcNow;
+            originalUserArc.UpdateTime = DateTime.UtcNow;
             dbContext.SaveChanges();
             return modifyUserArc;
         }
@@ -167,7 +168,7 @@ namespace Richviet.Services
             }
 
             userArc.KycStatus = (byte)kycStatus;
-            userArc.KycStatusUpdateTime = DateTimeOffset.UtcNow;
+            userArc.KycStatusUpdateTime = DateTime.UtcNow;
 
 
             dbContext.SaveChanges();

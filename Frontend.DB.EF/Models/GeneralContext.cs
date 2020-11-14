@@ -458,7 +458,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.ArcScanRecord)
                     .WithMany(p => p.RemitRecord)
                     .HasForeignKey(d => d.ArcScanRecordId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_remit_record_arc_scan_record");
 
                 entity.HasOne(d => d.Beneficiar)
@@ -632,11 +631,6 @@ namespace Frontend.DB.EF.Models
                     .HasDefaultValueSql("('')")
                     .HasComment("護照號碼");
 
-                entity.Property(e => e.SystemArcVerify)
-                    .HasColumnName("system_arc_verify")
-                    .HasDefaultValueSql("((0))")
-                    .HasComment("系統移民屬ARC驗證,0:未確認,1:資料符合,2:資料不符,3:系統驗證失敗");
-
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
                     .HasColumnType("datetime")
@@ -649,7 +643,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.LastArcScanRecord)
                     .WithMany(p => p.UserArc)
                     .HasForeignKey(d => d.LastArcScanRecordId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_user_arc_scan_id");
 
                 entity.HasOne(d => d.User)
@@ -664,6 +657,14 @@ namespace Frontend.DB.EF.Models
                 entity.HasNoKey();
 
                 entity.ToView("user_info_view");
+
+                entity.Property(e => e.ArcExpireDate)
+                    .HasColumnName("arc_expire_date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ArcIssueDate)
+                    .HasColumnName("arc_issue_date")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.ArcName)
                     .IsRequired()
@@ -733,6 +734,8 @@ namespace Frontend.DB.EF.Models
                     .HasColumnName("kyc_status_update_time")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.Level).HasColumnName("level");
+
                 entity.Property(e => e.LoginPlatformEmal)
                     .HasColumnName("login_platform_emal")
                     .HasMaxLength(255);
@@ -788,6 +791,7 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.LoginTime)
                     .HasColumnName("login_time")
                     .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())")
                     .HasComment("登入時間");
 
                 entity.Property(e => e.LoginType)

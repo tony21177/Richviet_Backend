@@ -18,7 +18,7 @@ namespace Frontend.DB.EF.Models
         public string Phone { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public int Gender { get; set; }
+        public byte Gender { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public DateTime? Birthday { get; set; }

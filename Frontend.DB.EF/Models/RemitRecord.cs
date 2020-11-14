@@ -30,7 +30,7 @@ namespace Frontend.DB.EF.Models
         public byte TransactionStatus { get; set; }
         public DateTime? PaymentTime { get; set; }
         public string PaymentCode { get; set; }
-        public long ArcScanRecordId { get; set; }
+        public long? ArcScanRecordId { get; set; }
 
         public virtual ArcScanRecord ArcScanRecord { get; set; }
         public virtual OftenBeneficiar Beneficiar { get; set; }

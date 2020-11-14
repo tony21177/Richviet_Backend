@@ -1,6 +1,6 @@
 ﻿using Richviet.Admin.API.DataContracts.Dto;
 using Richviet.Admin.API.DataContracts.Requests;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;

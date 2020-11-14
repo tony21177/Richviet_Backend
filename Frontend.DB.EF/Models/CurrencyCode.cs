@@ -14,7 +14,7 @@ namespace Frontend.DB.EF.Models
         public string CurrencyName { get; set; }
         public string Country { get; set; }
         public double Fee { get; set; }
-        public int FeeType { get; set; }
+        public byte FeeType { get; set; }
 
         public virtual ICollection<RemitRecord> RemitRecord { get; set; }
     }

@@ -10,7 +10,7 @@ using Richviet.Admin.API.DataContracts.Dto;
 using Richviet.Admin.API.DataContracts.Requests;
 using Richviet.Admin.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Richviet.Admin.API.Controllers.V1

@@ -14,7 +14,7 @@ using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using Richviet.Tools.Utility;
 
 namespace Richviet.API.Controllers.V1

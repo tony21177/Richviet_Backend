@@ -8,7 +8,7 @@ using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
-using Richviet.Services.Models;
+using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Collections;
