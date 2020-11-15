@@ -12,7 +12,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("user/v{version:apiVersion}/command")]
     [ApiController]
-    public class UserCommandController : Controller
+    public class UserCommandController : ControllerBase
     {
         private readonly UserModifier modifier;
 
@@ -31,5 +31,16 @@ namespace Richviet.Admin.API.Controllers.V1
                 Data = "modify success"
             };
         }
+
+        [HttpPost("modifyLevel")]
+        public MessageModel<string> ModifyLevel(UserLevelModifyRequest request)
+        {
+            this.modifier.ModifyUserLevel(request);
+            return new MessageModel<string>()
+            {
+                Data = "modify success"
+            };
+        }
     }
+
 }

@@ -25,6 +25,14 @@ namespace Richviet.Services.Users.Command.UseCase
            commandRepository.Modify(user);
         }
 
+        public void ModifyUserLevel(UserLevelModifyRequest request)
+        {
+            var user = this.queryRepositories.FindById(request.Id);
+            user.Level = request.Level;
+            commandRepository.Modify(user);
+        }
+
+
         private User MapToUser(UserModifyRequest modifyRequest)
         {
             var user = queryRepositories.FindById(modifyRequest.Id);
@@ -45,5 +53,7 @@ namespace Richviet.Services.Users.Command.UseCase
 
             return user;
         }
+
+
     }
 }
