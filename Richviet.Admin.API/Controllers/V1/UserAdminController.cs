@@ -71,15 +71,7 @@ namespace Richviet.Admin.API.Controllers.V1
             };
         }
 
-        [HttpPost("modify")]
-        public MessageModel<UserUpdateDto> ModifyUser(UserModifyRequest request)
-        {
 
-            return new MessageModel<UserUpdateDto>
-            {
-                Data = new UserUpdateDto()
-            };
-        }
 
     }
 
