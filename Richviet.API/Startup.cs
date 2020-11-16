@@ -23,7 +23,8 @@ using System.Data;
 using System.IO;
 using System.Net;
 using System.Reflection;
-using System.Text.Json;
+using Hangfire;
+using Hangfire.SqlServer;
 using Frontend.DB.EF.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -166,7 +167,23 @@ namespace Richviet.API
                     //_logger.LogDebug("Startup::ConfigureServices::ApiVersioning, Swagger and DI settings");
                 }
                 //else
-                    //_logger.LogDebug("Startup::ConfigureServices::invalid AppSettings");
+                //_logger.LogDebug("Startup::ConfigureServices::invalid AppSettings");
+
+                // Add Hangfire services.
+                services.AddHangfire(configuration => configuration
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                    {
+                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                        QueuePollInterval = TimeSpan.Zero,
+                        UseRecommendedIsolationLevel = true,
+                        DisableGlobalLocks = true
+                    }));
+                // Add the processing server as IHostedService
+                services.AddHangfireServer();
             }
             catch (Exception ex)
             {
@@ -175,7 +192,7 @@ namespace Richviet.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider,ILogger<Startup> _logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider,ILogger<Startup> _logger, IBackgroundJobClient backgroundJobs)
         {
             _logger.LogTrace("Startup::Configure");
             _logger.LogDebug($"Startup::Configure::Environment:{env.EnvironmentName}");
@@ -227,6 +244,10 @@ namespace Richviet.API
                     endpoints.MapControllers();
                 });
                 app.UseRequestLocalization();
+
+                // Hangfire
+                //app.UseHangfireDashboard();
+                //backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
 
                 //SWAGGER
                 if (_appSettings.IsValid())

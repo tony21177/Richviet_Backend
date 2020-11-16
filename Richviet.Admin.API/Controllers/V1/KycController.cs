@@ -46,7 +46,7 @@ namespace Richviet.Admin.API.Controllers.V1
                 }); ;
             }
 
-            if (userArc.KycStatus != (byte)KycStatusEnum.WAITING_VERIFIED_KYC)
+            if (userArc.KycStatus != (byte)KycStatusEnum.ARC_PASS_VERIFY)
             {
                 return BadRequest(new MessageModel<Object>
                 {

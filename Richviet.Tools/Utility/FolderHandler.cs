@@ -31,9 +31,13 @@ namespace Richviet.Tools.Utility
             return File.Exists(".." + Path.DirectorySeparatorChar + _configuration["StoredFilesPath"] + Path.DirectorySeparatorChar + filePath);
         }
 
-        public void SaveImageFromUri(string fileNamePath, ImageFormat format, String uri)
+        public void SaveImageFromUri(string fileNamePath, ImageFormat format, String uri,String cookieName,String cookieValue)
         {
-            WebClient client = new WebClient();
+            CookieAwareWebClient client = new CookieAwareWebClient();
+            if(cookieName!=null && cookieValue != null)
+            {
+                client.CookieContainer.Add(new Uri(uri),new Cookie(cookieName, cookieValue));
+            }
             Stream stream = client.OpenRead(uri);
             Bitmap bitmap; bitmap = new Bitmap(stream);
 
@@ -46,6 +50,21 @@ namespace Richviet.Tools.Utility
             stream.Flush();
             stream.Close();
             client.Dispose();
+        }
+
+        private class CookieAwareWebClient : WebClient
+        {
+            public CookieContainer CookieContainer { get; set; } = new CookieContainer();
+
+            protected override WebRequest GetWebRequest(Uri uri)
+            {
+                WebRequest request = base.GetWebRequest(uri);
+                if (request is HttpWebRequest)
+                {
+                    (request as HttpWebRequest).CookieContainer = CookieContainer;
+                }
+                return request;
+            }
         }
 
     }
