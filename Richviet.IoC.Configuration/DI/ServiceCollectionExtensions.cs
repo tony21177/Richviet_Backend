@@ -40,6 +40,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<IUserCommandRepository, UserCommandDbCommandRepository>();
                 services.AddTransient<IUserQueryRepositories, UserQueryRepositories>();
                 services.AddTransient<UserModifier>();
+                services.AddTransient<IFirebaseService, FirebaseService>();
             }
         }
 
