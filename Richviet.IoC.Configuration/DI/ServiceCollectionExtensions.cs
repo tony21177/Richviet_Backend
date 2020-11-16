@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using Richviet.Services.Users.Command.Adapter.Repositories;
 using Richviet.Services.Users.Command.UseCase;
 using Richviet.Services.Users.Query;
-using Richviet.Task;
+using Richviet.BackgroudTask.Arc;
 
 namespace Richviet.IoC.Configuration.DI
 {
@@ -40,6 +40,8 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<IUserCommandRepository, UserCommandDbCommandRepository>();
                 services.AddTransient<IUserQueryRepositories, UserQueryRepositories>();
                 services.AddTransient<UserModifier>();
+                services.AddTransient<ArcValidationTask>();
+                services.AddScoped<IArcScanRecordService,ArcScanRecordService>();
                 services.AddTransient<IFirebaseService, FirebaseService>();
             }
         }

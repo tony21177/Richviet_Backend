@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace Richviet.Task.vo
+namespace Richviet.BackgroudTask.vo
 {
+    [ToString]
     class ValidationData
     { 
         [JsonPropertyName("IDNO")]
         public string Idno { set; get; }
         [JsonPropertyName("APPROVE_DATE")]
         public string ApproveDate { set; get; }
+        [JsonPropertyName("END_STAY_PERIOD")]
+        public string ExpiredDate { set; get; }
         [JsonPropertyName("BARCODE_NO")]
         public string BarcodeNo { set; get; }
         [JsonPropertyName("TextBox1")]
@@ -25,6 +28,8 @@ namespace Richviet.Task.vo
         public string EventValidation { set; get; }
 
         public string SessionId { set; get; }
+
+
 
     }
 }
