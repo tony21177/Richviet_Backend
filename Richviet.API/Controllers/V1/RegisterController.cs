@@ -11,10 +11,12 @@ using System.Collections;
 using AutoMapper;
 using Richviet.API.DataContracts.Requests;
 using Richviet.Tools.Utility;
-using Richviet.Task;
 using Microsoft.Extensions.Logging;
 using Richviet.Services.Constants;
 using System.Net;
+using Richviet.BackgroudTask.Arc;
+using System.Threading.Tasks;
+using Hangfire;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -105,7 +107,9 @@ namespace Richviet.API.Controllers.V1
             userModel = mapper.Map<UserInfoDTO>(userInfo);
 
             accessToken = jwtHandler.CreateAccessToken(userModel.Id, userModel.Email, userModel.ArcName);
-            
+
+            // 系統掃ARC No.
+            BackgroundJob.Enqueue(() => userService.SystemVerifyArc(int.Parse(User.FindFirstValue("id"))));
 
             //return Ok(new MessageModel<UserInfoDTO>
             //{
@@ -122,14 +126,7 @@ namespace Richviet.API.Controllers.V1
             });
         }
 
-        [HttpGet("validation")]
-        public ActionResult<MessageModel<Object>> Validation()
-        {
-            
-            var isVerified = arcValidationTask.Validate("XXXXXXXX", "20180101", "", "F160000001");
-
-            return Ok();
-        }
+        
         
     } 
 }

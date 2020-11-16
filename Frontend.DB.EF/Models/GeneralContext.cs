@@ -52,6 +52,8 @@ namespace Frontend.DB.EF.Models
                     .HasColumnName("arc_status")
                     .HasComment("系統移民屬ARC驗證,0:未確認,1:資料符合,2:資料不符,3:系統驗證失敗");
 
+                entity.Property(e => e.Description).HasColumnName("description");
+
                 entity.Property(e => e.ScanTime)
                     .HasColumnName("scan_time")
                     .HasColumnType("datetime")
@@ -612,7 +614,7 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.KycStatus)
                     .HasColumnName("kyc_status")
                     .HasDefaultValueSql("((0))")
-                    .HasComment("KYC審核狀態, 10:禁用,9:KYC未通過, 0:草稿會員,1:待審核(註冊完),2:正式會員(KYC審核通過);\\\\n");
+                    .HasComment("KYC審核狀態, 10:禁用,9:KYC未通過, 0:草稿會員,1:待審核(註冊完),2:ARC驗證成功,3:正式會員(KYC審核通過);\\\\n");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")

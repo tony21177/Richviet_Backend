@@ -9,23 +9,30 @@ using System.Threading.Tasks;
 using Richviet.Tools.Utility;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
+using Richviet.BackgroudTask.Arc.Vo;
+using Richviet.BackgroudTask.Arc;
 
 namespace Richviet.Services
 {
     public class UserService: IUserService
     {
         private readonly IEnumerable<IAuthService> authServices;
+        private readonly IArcScanRecordService arcScanRecordService;
         private readonly GeneralContext dbContext;
         private readonly ILogger logger;
         private readonly IMapper mapper;
+        private readonly ArcValidationTask arcValidationTask;
 
 
-        public UserService(IEnumerable<IAuthService> authServices, GeneralContext dbContext, ILogger<UserService> logger, IMapper mapper)
+
+        public UserService(IEnumerable<IAuthService> authServices, IArcScanRecordService arcScanRecordService, GeneralContext dbContext, ILogger<UserService> logger, IMapper mapper, ArcValidationTask arcValidationTask)
         {
             this.authServices = authServices;
+            this.arcScanRecordService = arcScanRecordService;
             this.dbContext = dbContext;
             this.logger =  logger;
             this.mapper = mapper;
+            this.arcValidationTask =  arcValidationTask;
         }
 
         public async Task<bool> AddNewUserInfo(UserRegisterType loginUser)
@@ -165,6 +172,41 @@ namespace Richviet.Services
             dbContext.UserArc.Update(userArc);
             dbContext.SaveChanges();
         }
-       
+
+        public void SystemVerifyArc(int userId)
+        {
+            UserArc userArc = GetUserArcById(userId);
+            if(userArc.ArcIssueDate == null || userArc.ArcExpireDate == null)
+            {
+                throw new Exception("ARC Data not sufficient");
+            }
+            ArcValidationResult arcValidationResult =  arcValidationTask.Validate(userArc.ArcNo,((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"),((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"),userArc.BackSequence).Result;
+            logger.LogInformation("IsSuccessful:{1}", arcValidationResult.IsSuccessful);
+            logger.LogInformation("result:{1}", arcValidationResult.Result);
+            if (arcValidationResult.IsSuccessful)
+            {
+                ArcScanRecord record = new ArcScanRecord()
+                {
+                    ArcStatus = (byte)SystemArcVerifyStatusEnum.PASS,
+                    ScanTime = DateTime.UtcNow,
+                    Description = arcValidationResult.Result
+                };
+                userArc.KycStatus = (byte)KycStatusEnum.ARC_PASS_VERIFY;
+                userArc.KycStatusUpdateTime = DateTime.UtcNow;
+                arcScanRecordService.AddScanRecordForRegiterProcess(record,userArc);
+            }
+            else
+            {
+                ArcScanRecord record = new ArcScanRecord()
+                {
+                    ArcStatus = (byte)SystemArcVerifyStatusEnum.FAIL,
+                    ScanTime = DateTime.UtcNow,
+                    Description = arcValidationResult.Result
+                };
+                userArc.KycStatus = (byte)KycStatusEnum.FAILED_KYC;
+                userArc.KycStatusUpdateTime = DateTime.UtcNow;
+                arcScanRecordService.AddScanRecordForRegiterProcess(record, userArc);
+            }
+        }
     }
 }
