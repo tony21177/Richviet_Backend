@@ -8,6 +8,8 @@ namespace Richviet.API.DataContracts.Dto
     [SwaggerSchema(Required = new[] { "Description" })]
     public class CurrencyInfoDTO
     {
+        [SwaggerSchema("id(主鍵pk)")]
+        public long id { set; get; }
         [SwaggerSchema("收款國家可使用的幣別")]
         public string currencyName { set; get; }
         [SwaggerSchema("收款國家")]
