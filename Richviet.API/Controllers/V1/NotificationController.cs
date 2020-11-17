@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Frontend.DB.EF.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Richviet.API.DataContracts.Dto;
 using Richviet.API.DataContracts.Requests;
 using Richviet.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
@@ -36,13 +38,16 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpPost("mobiletoken")]
         //[AllowAnonymous]
-        public MessageModel<bool> UpdateMobileToken([FromBody] NotificationSettingRequest request)
+        public MessageModel<NotificationDTO> UpdateMobileToken([FromBody] NotificationSettingRequest request)
         {
             var userId = int.Parse(User.FindFirstValue("id"));
-            bool result = firebaseService.UpdateMobileToken(userId, request.MobileToken);
-            return new MessageModel<bool>
+            //int userId = 1;
+            PushNotificationSetting result = firebaseService.UpdateMobileToken(userId, request.MobileToken);
+            NotificationDTO dto = mapper.Map<NotificationDTO>(result);
+            return new MessageModel<NotificationDTO>
             {
-                Data = result
+                Msg = result==null?"error":"",
+                Data = dto
             };
         }
 
@@ -51,14 +56,32 @@ namespace Richviet.API.Controllers.V1
         /// </summary>
         [HttpPost("switch")]
         //[AllowAnonymous]
-        public MessageModel<bool> SwitchNotification([FromBody] NotificationSettingRequest request)
+        public MessageModel<NotificationDTO> SwitchNotification([FromBody] NotificationSettingRequest request)
         {
             var userId = int.Parse(User.FindFirstValue("id"));
-            //int userId = 1;
-            bool result = firebaseService.SwitchNotification(userId, request.IsTurnOn);
-            return new MessageModel<bool>
+            PushNotificationSetting result = firebaseService.SwitchNotification(userId, request.IsTurnOn);
+            NotificationDTO dto = mapper.Map<NotificationDTO>(result);
+            return new MessageModel<NotificationDTO>
             {
-                Data = result
+                Msg = result == null ? "error" : "",
+                Data = dto
+            };
+        }
+
+        /// <summary>
+        /// 取得使用者通知狀態
+        /// </summary>
+        [HttpGet]
+        //[AllowAnonymous]
+        public MessageModel<NotificationDTO> GetNotificationState()
+        {
+            var userId = int.Parse(User.FindFirstValue("id"));
+            PushNotificationSetting result = firebaseService.GetNotificationState(userId);
+            NotificationDTO dto = mapper.Map<NotificationDTO>(result);
+            return new MessageModel<NotificationDTO>
+            {
+                Msg = result == null ? "error" : "",
+                Data = dto
             };
         }
     }

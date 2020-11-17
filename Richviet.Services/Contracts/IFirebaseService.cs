@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Frontend.DB.EF.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,8 +9,10 @@ namespace Richviet.Services.Contracts
     {
         void SendPush(string mobileToken, string title, string body);
 
-        bool UpdateMobileToken(int userId, string mobileToken);
+        PushNotificationSetting UpdateMobileToken(int userId, string mobileToken);
 
-        bool SwitchNotification(int userId, bool switchFlag);
+        PushNotificationSetting SwitchNotification(int userId, bool switchFlag);
+
+        PushNotificationSetting GetNotificationState(int userId);
     }
 }

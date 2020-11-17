@@ -68,7 +68,7 @@ namespace Richviet.Services.Services
 			});
 		}
 
-        public bool UpdateMobileToken(int userId, string mobileToken)
+        public PushNotificationSetting UpdateMobileToken(int userId, string mobileToken)
         {
 			try
 			{
@@ -77,7 +77,7 @@ namespace Richviet.Services.Services
 				{
 					setting.MobileToken = mobileToken;
 					dbContext.SaveChanges();
-					return true;
+					return setting;
 				}
 				else
                 {
@@ -88,17 +88,17 @@ namespace Richviet.Services.Services
 					};
 					dbContext.PushNotificationSetting.Add(newSetting);
 					dbContext.SaveChanges();
-					return true;
+					return newSetting;
 				}
 			}
 			catch (Exception ex)
 			{
 				logger.LogDebug(ex.Message);
 			}
-			return false;
+			return null;
         }
 
-        public bool SwitchNotification(int userId, bool switchFlag)
+        public PushNotificationSetting SwitchNotification(int userId, bool switchFlag)
         {
 			try
 			{
@@ -107,7 +107,7 @@ namespace Richviet.Services.Services
 				{
 					setting.IsTurnOn = switchFlag ? (byte)1 : (byte)0;
 					dbContext.SaveChanges();
-					return true;
+					return setting;
 				}
 				else
 				{
@@ -118,14 +118,27 @@ namespace Richviet.Services.Services
 					};
 					dbContext.PushNotificationSetting.Add(newSetting);
 					dbContext.SaveChanges();
-					return true;
+					return newSetting;
 				}
 			}
 			catch (Exception ex)
 			{
 				logger.LogDebug(ex.Message);
 			}
-			return false;
+			return null;
+		}
+
+        public PushNotificationSetting GetNotificationState(int userId)
+        {
+            try
+            {
+				return dbContext.PushNotificationSetting.Single(x => x.UserId == userId);
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return null;
 		}
     }
 }
