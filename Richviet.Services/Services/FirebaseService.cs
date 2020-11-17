@@ -14,7 +14,7 @@ namespace Richviet.Services.Services
     {
 		//firebase
 		public static readonly string FIREBASE_URL = "https://fcm.googleapis.com/fcm/send";
-		public static readonly string FIREBASE_KEY_SERVER = "";
+		public static readonly string FIREBASE_KEY_SERVER = "AAAA7lTRfrA:APA91bHtwPtbeSLyhcTyhq-w6tLiwcnPhLdyQ9TGerp7klSdpK3I-9KXGthCBkyPJ4DZwZnnj9tX3yCDMF7NY6Oe1r6iFRiZglEWnd-IWjS3XMzmP0tpVdB3go4EwLACaFCn4IySdeO89bkY3_c9HBHvTzS6i6hE8Q";
 		private readonly GeneralContext dbContext;
 		private readonly ILogger logger;
 
@@ -27,10 +27,10 @@ namespace Richviet.Services.Services
 		private class PushMessage
 		{
 			[JsonProperty("notification")]
-			public dynamic Data { get; set; }
+			public dynamic Notification { get; set; }
 
 			[JsonProperty("to")]
-			public string To { get; set; }
+			public string Token { get; set; }
 		}
 
 		private dynamic Push(PushMessage message) {
@@ -61,10 +61,10 @@ namespace Richviet.Services.Services
 			}
 		}
 
-		public void SendPush(string to, string title, string body) {
-			if (to != null) Push(new PushMessage {
-				To = to,
-				Data = new { title,	body}
+		public void SendPush(string mobileToken, string title, string body) {
+			if (mobileToken != null) Push(new PushMessage {
+				Token = mobileToken,
+				Notification = new { title,	body}
 			});
 		}
 

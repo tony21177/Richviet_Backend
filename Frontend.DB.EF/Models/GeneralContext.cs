@@ -23,6 +23,7 @@ namespace Frontend.DB.EF.Models
         public virtual DbSet<OftenBeneficiar> OftenBeneficiar { get; set; }
         public virtual DbSet<PayeeRelationType> PayeeRelationType { get; set; }
         public virtual DbSet<PayeeType> PayeeType { get; set; }
+        public virtual DbSet<PushNotificationSetting> PushNotificationSetting { get; set; }
         public virtual DbSet<ReceiveBank> ReceiveBank { get; set; }
         public virtual DbSet<RemitRecord> RemitRecord { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -294,6 +295,33 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.Type)
                     .HasColumnName("type")
                     .HasComment("收款方式");
+            });
+
+            modelBuilder.Entity<PushNotificationSetting>(entity =>
+            {
+                entity.ToTable("push_notification_setting");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("uq_push_notification_setting_user_id")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.IsTurnOn)
+                    .HasColumnName("is_turn_on")
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.MobileToken)
+                    .HasColumnName("mobile_token")
+                    .HasMaxLength(256);
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.PushNotificationSetting)
+                    .HasForeignKey<PushNotificationSetting>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_push_notification_setting");
             });
 
             modelBuilder.Entity<ReceiveBank>(entity =>
@@ -614,7 +642,7 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.KycStatus)
                     .HasColumnName("kyc_status")
                     .HasDefaultValueSql("((0))")
-                    .HasComment("KYC審核狀態, 10:禁用,9:KYC未通過, 0:草稿會員,1:待審核(註冊完),2:ARC驗證成功,3:正式會員(KYC審核通過);\\\\n");
+                    .HasComment("KYC審核狀態, 10:禁用,9:KYC未通過,8:AML未通過 ,0:草稿會員,1:待審核(註冊完),2:ARC驗證成功,3:AML通過,4:正式會員(KYC審核通過);\\\\n");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")

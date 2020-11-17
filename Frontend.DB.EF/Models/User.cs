@@ -24,6 +24,7 @@ namespace Frontend.DB.EF.Models
         public DateTime? Birthday { get; set; }
         public byte Level { get; set; }
 
+        public virtual PushNotificationSetting PushNotificationSetting { get; set; }
         public virtual UserArc UserArc { get; set; }
         public virtual ICollection<Discount> Discount { get; set; }
         public virtual ICollection<OftenBeneficiar> OftenBeneficiar { get; set; }

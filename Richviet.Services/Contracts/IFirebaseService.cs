@@ -6,7 +6,7 @@ namespace Richviet.Services.Contracts
 {
     public interface IFirebaseService
     {
-        void SendPush(string to, string title, string body);
+        void SendPush(string mobileToken, string title, string body);
 
         bool UpdateMobileToken(int userId, string mobileToken);
     }

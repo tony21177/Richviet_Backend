@@ -1,23 +1,19 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Richviet.API.DataContracts.Requests;
-using Richviet.API.DataContracts.Responses;
+using Richviet.Admin.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Richviet.API.Controllers.V1
+namespace Richviet.Admin.API.Controllers.V1
 {
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/notification")]
+    [Route("admin/v{version:apiVersion}/notification")]
     [ApiController]
-    [Authorize]
     public class NotificationController : Controller
     {
         private readonly IMapper mapper;
@@ -32,17 +28,15 @@ namespace Richviet.API.Controllers.V1
         }
 
         /// <summary>
-        /// 更新使用者MobileToken
+        /// test push
         /// </summary>
-        [HttpPost("mobiletoken")]
-        //[AllowAnonymous]
-        public MessageModel<bool> UpdateMobileToken([FromBody] NotificationSettingRequest request)
+        [HttpPost("testpush")]
+        public MessageModel<bool> TestPush()
         {
-            var userId = int.Parse(User.FindFirstValue("id"));
-            bool result = firebaseService.UpdateMobileToken(userId, request.MobileToken);
+            firebaseService.SendPush("fEXQFybSwzE:APA91bHpFgfrZ1A2URzz7zkxwAIFO99ABDHlcBQaBykLMRpB0voy4LXfycMpaWQ-co0GC5YOpVhgHY5wBfgMw-eStjhCApWpbm7oMJ8yrnJinshuI2-jHtInwXIjSdTdd_KYcfUOxlg9", "test", "20201105");
             return new MessageModel<bool>
             {
-                Data = result
+                Data = true
             };
         }
     }
