@@ -324,15 +324,29 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("create_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.IsTurnOn)
                     .HasColumnName("is_turn_on")
-                    .HasDefaultValueSql("((1))");
+                    .HasDefaultValueSql("((1))")
+                    .HasComment("使用者通知開關\\\\n1:開啟\\\\n0:關閉\\\\n");
 
                 entity.Property(e => e.MobileToken)
                     .HasColumnName("mobile_token")
-                    .HasMaxLength(256);
+                    .HasMaxLength(256)
+                    .HasComment("推播通知所需的裝置識別token");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnName("update_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasComment("對應user的pk");
 
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.PushNotificationSetting)

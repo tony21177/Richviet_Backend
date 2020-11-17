@@ -9,6 +9,8 @@ namespace Frontend.DB.EF.Models
         public long UserId { get; set; }
         public string MobileToken { get; set; }
         public byte IsTurnOn { get; set; }
+        public DateTime CreateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
 
         public virtual User User { get; set; }
     }
