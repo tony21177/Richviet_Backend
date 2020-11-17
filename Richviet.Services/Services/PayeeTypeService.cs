@@ -23,7 +23,7 @@ namespace Richviet.Services
             return dbContext.PayeeType.First<PayeeType>(payeeType => payeeType.Type == (int)type);
         }
 
-        public PayeeType GetPayeeTypeById(int id)
+        public PayeeType GetPayeeTypeById(long id)
         {
             return dbContext.PayeeType.Find(id);
         }

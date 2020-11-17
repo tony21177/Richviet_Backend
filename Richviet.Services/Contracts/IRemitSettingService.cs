@@ -15,6 +15,6 @@ namespace Richviet.Services.Contracts
 
         bool ModifyRemitSetting(BussinessUnitRemitSetting modifyRemitSetting);
 
-        bool DeleteRemitSetting(int id);
+        bool DeleteRemitSetting(long id);
     }
 }

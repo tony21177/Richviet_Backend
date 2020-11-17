@@ -18,6 +18,7 @@ namespace Richviet.Services
     {
         private readonly IEnumerable<IAuthService> authServices;
         private readonly IArcScanRecordService arcScanRecordService;
+        private readonly IRemitRecordService remitRecordService;
         private readonly GeneralContext dbContext;
         private readonly ILogger logger;
         private readonly IMapper mapper;
@@ -25,10 +26,11 @@ namespace Richviet.Services
 
 
 
-        public UserService(IEnumerable<IAuthService> authServices, IArcScanRecordService arcScanRecordService, GeneralContext dbContext, ILogger<UserService> logger, IMapper mapper, ArcValidationTask arcValidationTask)
+        public UserService(IEnumerable<IAuthService> authServices, IArcScanRecordService arcScanRecordService, IRemitRecordService remitRecordService, GeneralContext dbContext, ILogger<UserService> logger, IMapper mapper, ArcValidationTask arcValidationTask)
         {
             this.authServices = authServices;
             this.arcScanRecordService = arcScanRecordService;
+            this.remitRecordService = remitRecordService;
             this.dbContext = dbContext;
             this.logger =  logger;
             this.mapper = mapper;
@@ -75,17 +77,17 @@ namespace Richviet.Services
             }
         }
 
-        public User GetUserById(int id)
+        public User GetUserById(long id)
         {
             return dbContext.User.Where(user => user.Id == id).FirstOrDefault();
         }
 
-        public UserArc GetUserArcById(int userId)
+        public UserArc GetUserArcById(long userId)
         {
             return dbContext.UserArc.Where(userArc => userArc.UserId == userId).FirstOrDefault();
         }
 
-        public UserRegisterType GetUserRegisterTypeById(int userId)
+        public UserRegisterType GetUserRegisterTypeById(long userId)
         {
             return dbContext.UserRegisterType.Where(userRegisterType => userRegisterType.UserId == userId).FirstOrDefault();
         }
@@ -98,7 +100,7 @@ namespace Richviet.Services
             return loggedingUser;
         }
 
-        public UserInfoView GetUserInfoById(int id)
+        public UserInfoView GetUserInfoById(long id)
         {
             return dbContext.UserInfoView.Where(userInfo => userInfo.Id == id).FirstOrDefault();
         }
@@ -137,7 +139,7 @@ namespace Richviet.Services
             return modifyUserArc;
         }
 
-        public bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, int userId)
+        public bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, long userId)
         {
             User user = dbContext.User.Where(user => user.Id == userId).FirstOrDefault();
             UserArc userArc = dbContext.UserArc.Where(userArc => userArc.UserId == userId).FirstOrDefault();
@@ -148,7 +150,7 @@ namespace Richviet.Services
                 return false;
             }
 
-            userArc.KycStatus = (byte)kycStatus;
+            userArc.KycStatus = (short)kycStatus;
             userArc.KycStatusUpdateTime = DateTime.UtcNow;
 
 
@@ -157,9 +159,9 @@ namespace Richviet.Services
             return true;
         }
 
-        public void UpdatePicFileNameOfUserInfo(UserArc userArc,Byte type,String fileName)
+        public void UpdatePicFileNameOfUserInfo(UserArc userArc, PictureTypeEnum pictureType, String fileName)
         {
-            PictureTypeEnum pictureType = (PictureTypeEnum)type;
+   
             switch (pictureType)
             {
                 case PictureTypeEnum.Front:
@@ -173,7 +175,22 @@ namespace Richviet.Services
             dbContext.SaveChanges();
         }
 
-        public void SystemVerifyArc(int userId)
+        public void UpdatePicFileNameOfDraftRemit(RemitRecord remitRecord, PictureTypeEnum pictureType, String fileName)
+        {
+            switch (pictureType)
+            {
+                case PictureTypeEnum.Instant:
+                    remitRecord.RealTimePic = fileName;
+                    break;
+                case PictureTypeEnum.Signature:
+                    remitRecord.ESignature = fileName;
+                    break;
+            }
+            remitRecordService.ModifyRemitRecord(remitRecord);
+
+        }
+
+        public void SystemVerifyArc(long userId)
         {
             UserArc userArc = GetUserArcById(userId);
             if(userArc.ArcIssueDate == null || userArc.ArcExpireDate == null)
@@ -187,11 +204,11 @@ namespace Richviet.Services
             {
                 ArcScanRecord record = new ArcScanRecord()
                 {
-                    ArcStatus = (byte)SystemArcVerifyStatusEnum.PASS,
+                    ArcStatus = (short)SystemArcVerifyStatusEnum.PASS,
                     ScanTime = DateTime.UtcNow,
                     Description = arcValidationResult.Result
                 };
-                userArc.KycStatus = (byte)KycStatusEnum.ARC_PASS_VERIFY;
+                userArc.KycStatus = (short)KycStatusEnum.ARC_PASS_VERIFY;
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
                 arcScanRecordService.AddScanRecordForRegiterProcess(record,userArc);
             }
@@ -199,11 +216,11 @@ namespace Richviet.Services
             {
                 ArcScanRecord record = new ArcScanRecord()
                 {
-                    ArcStatus = (byte)SystemArcVerifyStatusEnum.FAIL,
+                    ArcStatus = (short)SystemArcVerifyStatusEnum.FAIL,
                     ScanTime = DateTime.UtcNow,
                     Description = arcValidationResult.Result
                 };
-                userArc.KycStatus = (byte)KycStatusEnum.FAILED_KYC;
+                userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
                 arcScanRecordService.AddScanRecordForRegiterProcess(record, userArc);
             }

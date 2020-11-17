@@ -7,6 +7,6 @@ namespace Richviet.Services.Contracts
 {
     public interface IDiscountService
     {
-        Discount GetDoscountById(int id);
+        Discount GetDoscountById(long id);
     }
 }

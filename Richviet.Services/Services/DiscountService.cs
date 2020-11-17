@@ -21,7 +21,7 @@ namespace Richviet.Services.Services
             this.mapper = mapper;
         }
 
-        public Discount GetDoscountById(int id)
+        public Discount GetDoscountById(long id)
         {
             return dbContext.Discount.Find(id);
         }

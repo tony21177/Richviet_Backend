@@ -14,6 +14,6 @@ namespace Richviet.Services.Contracts
 
         bool ModifyPayeeRelation(PayeeRelationType modifyRelation);
 
-        bool DeletePayeeRelation(int id);
+        bool DeletePayeeRelation(long id);
     }
 }

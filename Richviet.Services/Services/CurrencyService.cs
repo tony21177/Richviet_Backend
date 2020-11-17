@@ -44,7 +44,7 @@ namespace Richviet.Services.Services
             return false;
         }
 
-        public bool DeleteCurrency(int id)
+        public bool DeleteCurrency(long id)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace Richviet.Services.Services
             return false;
         }
 
-        public CurrencyCode GetCurrencyById(int id)
+        public CurrencyCode GetCurrencyById(long id)
         {
             return dbContext.CurrencyCode.Find(id);
         }

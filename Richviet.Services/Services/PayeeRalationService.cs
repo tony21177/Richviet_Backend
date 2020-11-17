@@ -38,7 +38,7 @@ namespace Richviet.Services
             return false;
         }
 
-        public bool DeletePayeeRelation(int id)
+        public bool DeletePayeeRelation(long id)
         {
             try
             {

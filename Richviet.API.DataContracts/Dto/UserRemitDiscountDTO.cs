@@ -20,7 +20,7 @@ namespace Richviet.API.DataContracts.Dto
         [SwaggerSchema("失效日期")]
         [JsonConverter(typeof(CustomDateConverter))]
         public DateTime? ExpireDate { get; set; }
-        [SwaggerSchema("使用狀態0:可使用,1:已使用,2:無效")]
-        public byte UseStatus { get; set; }
+        [SwaggerSchema("-1:無效,0:可使用,1:已使用")]
+        public short UseStatus { get; set; }
     }
 }
