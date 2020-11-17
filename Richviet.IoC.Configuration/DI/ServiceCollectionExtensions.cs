@@ -42,6 +42,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<UserModifier>();
                 services.AddTransient<ArcValidationTask>();
                 services.AddScoped<IArcScanRecordService,ArcScanRecordService>();
+                services.AddTransient<IFirebaseService, FirebaseService>();
             }
         }
 

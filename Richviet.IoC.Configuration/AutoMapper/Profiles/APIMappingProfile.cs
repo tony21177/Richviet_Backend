@@ -59,6 +59,8 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
               , opt => opt.MapFrom(src => src.ToCurrency.CurrencyName)
             ).ReverseMap();
 
+            CreateMap<M.PushNotificationSetting, C.NotificationDTO>().ReverseMap();
+
             //Admin
             CreateMap<M.ReceiveBank, A.EditBankDTO>().ReverseMap();
             CreateMap<M.PayeeRelationType, A.EditRelationDTO>().ReverseMap();
