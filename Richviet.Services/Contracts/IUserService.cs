@@ -16,20 +16,22 @@ namespace Richviet.Services.Contracts
 
         Task<UserInfoView> GetUserInfo(UserRegisterType loginUser);
 
-        UserInfoView GetUserInfoById(int id);
+        UserInfoView GetUserInfoById(long id);
 
-        User GetUserById(int id);
+        User GetUserById(long id);
 
-        UserArc GetUserArcById(int userId);
+        UserArc GetUserArcById(long userId);
 
-        UserRegisterType GetUserRegisterTypeById(int userId);
+        UserRegisterType GetUserRegisterTypeById(long userId);
 
         bool ReigsterUser(User user, UserArc userArc,UserRegisterType userRegisterType);
 
-        bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, int userId);
+        bool ChangeKycStatusByUserId(KycStatusEnum kycStatus, long userId);
 
-        void UpdatePicFileNameOfUserInfo(UserArc userArc, Byte type, String fileName);
+        void UpdatePicFileNameOfUserInfo(UserArc userArc, PictureTypeEnum pictureType, String fileName);
 
-        void SystemVerifyArc(int userId);
+        void UpdatePicFileNameOfDraftRemit(RemitRecord remitRecord, PictureTypeEnum pictureType, String fileName);
+
+        void SystemVerifyArc(long userId);
     }
 }

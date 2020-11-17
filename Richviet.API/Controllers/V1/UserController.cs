@@ -71,7 +71,7 @@ namespace Richviet.API.Controllers.V1
         //[AllowAnonymous]
         public MessageModel<UserBeneficiarDTO> AddOwnBeneficiarsInfo([FromBody]OftenBeneficiarRequest oftenBeneficiarRequest)
         {
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
             OftenBeneficiar oftenBeneficiar = mapper.Map<OftenBeneficiar>(oftenBeneficiarRequest);
             oftenBeneficiar.UserId = userId;
             var payeeType = payeeTypeService.GetPayeeTypeByType((PayeeTypeEnum)oftenBeneficiarRequest.PayeeType);
@@ -94,7 +94,7 @@ namespace Richviet.API.Controllers.V1
         [Authorize]
         public ActionResult<MessageModel<UserBeneficiarDTO>> ModifyOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id,[FromBody]OftenBeneficiarRequest oftenBeneficiarRequest)
         {
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
             OftenBeneficiar beneficiar = beneficiarService.GetBeneficiarById(id);
             if (beneficiar == null)
             {
@@ -133,7 +133,7 @@ namespace Richviet.API.Controllers.V1
         [Authorize]
         public ActionResult<MessageModel<UserBeneficiarDTO>> DeleteOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id)
         {
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
             OftenBeneficiar beneficiar = beneficiarService.GetBeneficiarById(id);
             if(beneficiar == null)
             {
@@ -161,7 +161,7 @@ namespace Richviet.API.Controllers.V1
         [Authorize]
         public MessageModel<List<UserBeneficiarDTO>> GetOwnBeneficiarsInfo()
         {
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
             List<OftenBeneficiar> oftenBeneficiars = beneficiarService.GetAllBeneficiars(userId);
             List<UserBeneficiarDTO> userBeneficiarDTOs = mapper.Map<List<UserBeneficiarDTO>>(oftenBeneficiars);
 

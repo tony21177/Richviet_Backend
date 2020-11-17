@@ -8,7 +8,7 @@ namespace Richviet.Services.Constants
     {
         UNVERIFY = 0,
         PASS = 1,
-        FAIL = 2,
-        ABNORMAL_VERIFY = 3
+        FAIL = -1,
+        ABNORMAL_VERIFY = -2
     }
 }

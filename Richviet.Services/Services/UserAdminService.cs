@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Richviet.Services.Constants;
 
 namespace Richviet.Services.Services
 {
@@ -35,7 +36,7 @@ namespace Richviet.Services.Services
                     Id = (int)res.Id,
                     Name = res.ArcName,
                     ArcNo = res.ArcNo,
-                    KycStatus = res.KycStatus,
+                    KycStatus = (short)res.KycStatus,
                     Level = res.Level,
                     RegisterTime = res.RegisterTime
                 };
@@ -58,10 +59,10 @@ namespace Richviet.Services.Services
             {
                 resList = resList.Where(x => x.ArcNo.Contains(request.ArcNo));
             }
-            resList = resList.Where(x => (request.KycFormal && x.KycStatus == (byte)2) ||
-                                         (request.KycUnderReview && x.KycStatus == (byte)1) ||
-                                         (request.KycDraft && x.KycStatus == (byte)0) ||
-                                         (request.KycDisabled && x.KycStatus == (byte)10) ||
+            resList = resList.Where(x => (request.KycFormal && x.KycStatus == (short)KycStatusEnum.PASSED_KYC_FORMAL_MEMBER) ||
+                                         (request.KycUnderReview && x.KycStatus == (short)KycStatusEnum.WAITING_VERIFIED_KYC) ||
+                                         (request.KycDraft && x.KycStatus == (short)KycStatusEnum.DRAFT_MEMBER) ||
+                                         (request.KycDisabled && x.KycStatus == (short)KycStatusEnum.FAILED_KYC) ||
                                          (request.LevelVIP && x.Level == (byte)1) ||
                                          (request.LevelNormal && x.Level == (byte)0) ||
                                          (request.LevelRisk && x.Level == (byte)9));
@@ -84,7 +85,7 @@ namespace Richviet.Services.Services
             return userList;
         }
 
-        public UserDetailDTO GetUserDetail(int userId)
+        public UserDetailDTO GetUserDetail(long userId)
         {
             var res = from u in dbContext.User where u.Id == userId
                       join a in dbContext.UserArc on u.Id equals a.UserId

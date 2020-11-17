@@ -12,7 +12,7 @@ namespace Frontend.DB.EF.Models
         }
 
         public long Id { get; set; }
-        public byte ArcStatus { get; set; }
+        public short ArcStatus { get; set; }
         public DateTime ScanTime { get; set; }
         public string Description { get; set; }
 

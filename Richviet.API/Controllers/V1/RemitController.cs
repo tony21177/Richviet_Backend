@@ -121,7 +121,7 @@ namespace Richviet.API.Controllers.V1
                 return BadRequest();
             }
             // KYC passed?
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
             if (!CheckIfKYCPassed(userArc))
                 return BadRequest(new MessageModel<RemitRecordDTO>
@@ -130,17 +130,17 @@ namespace Richviet.API.Controllers.V1
                     Success = false,
                     Msg = "KYC process Has not been passed"
                 });
-            RemitRecord record = remitRecordService.GetOngoingRemitRecordByUserId(userId);
+            RemitRecord record = remitRecordService.GetOngoingRemitRecordByUserArc(userArc);
             if (record == null)
             {
-                record = remitRecordService.CreateRemitRecordByUserId(userId,PayeeTypeEnum.Bank);
+                record = remitRecordService.CreateRemitRecordByUserArc(userArc, PayeeTypeEnum.Bank);
                 return Ok(new MessageModel<RemitRecordDTO>
                 {
                     Data = _mapper.Map<RemitRecordDTO>(record)
 
                 });
             }
-            else if (record.TransactionStatus != (byte)RemitTransactionStatusEnum.Draft)
+            else if (record.TransactionStatus != (short)RemitTransactionStatusEnum.Draft)
             {
                 return BadRequest(new MessageModel<RemitRecordDTO>
                 {
@@ -172,7 +172,7 @@ namespace Richviet.API.Controllers.V1
             {
                 return BadRequest();
             }
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
             if (!CheckIfKYCPassed(userArc))
                 return BadRequest(new MessageModel<RemitRecordDTO>
@@ -225,7 +225,7 @@ namespace Richviet.API.Controllers.V1
                 return BadRequest();
             }
             // KYC passed?
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
             if(!CheckIfKYCPassed(userArc))
                 return BadRequest(new MessageModel<RemitRecordDTO>
@@ -421,7 +421,7 @@ namespace Richviet.API.Controllers.V1
         private bool CheckIfKYCPassed(UserArc userArc)
         {
 
-            if (userArc != null && userArc.KycStatus == (byte)KycStatusEnum.PASSED_KYC_FORMAL_MEMBER)
+            if (userArc != null && userArc.KycStatus == (short)KycStatusEnum.PASSED_KYC_FORMAL_MEMBER)
             {
                 return true;
             }

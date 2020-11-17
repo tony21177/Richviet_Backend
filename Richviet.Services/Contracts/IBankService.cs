@@ -14,6 +14,6 @@ namespace Richviet.Services.Contracts
 
         bool ModifyReceiveBank(ReceiveBank modifyBank);
 
-        bool DeleteReceiveBank(int id);
+        bool DeleteReceiveBank(long id);
     }
 }
