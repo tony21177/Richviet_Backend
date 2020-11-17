@@ -9,5 +9,7 @@ namespace Richviet.Services.Contracts
     {
         List<ExchangeRate> GetExchangeRate();
 
+        ExchangeRate GetExchangeRateByCurrencyName(String currencyName);
+
     }
 }

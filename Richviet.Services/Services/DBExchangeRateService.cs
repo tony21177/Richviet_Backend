@@ -23,5 +23,10 @@ namespace Richviet.Services.Services
         {
             return dbContext.ExchangeRate.ToList<ExchangeRate>();
         }
+
+        public ExchangeRate GetExchangeRateByCurrencyName(String currencyName)
+        {
+            return dbContext.ExchangeRate.Where(rate => rate.CurrencyName.Equals(currencyName.ToUpper())).FirstOrDefault();
+        }
     }
 }

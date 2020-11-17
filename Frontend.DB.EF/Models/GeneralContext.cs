@@ -24,6 +24,7 @@ namespace Frontend.DB.EF.Models
         public virtual DbSet<OftenBeneficiar> OftenBeneficiar { get; set; }
         public virtual DbSet<PayeeRelationType> PayeeRelationType { get; set; }
         public virtual DbSet<PayeeType> PayeeType { get; set; }
+        public virtual DbSet<PushNotificationSetting> PushNotificationSetting { get; set; }
         public virtual DbSet<ReceiveBank> ReceiveBank { get; set; }
         public virtual DbSet<RemitRecord> RemitRecord { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -53,6 +54,10 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
+                entity.Property(e => e.Event)
+                    .HasColumnName("event")
+                    .HasComment("事件0:註冊,1:匯款");
+
                 entity.Property(e => e.ScanTime)
                     .HasColumnName("scan_time")
                     .HasColumnType("datetime")
@@ -67,9 +72,13 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.ArcStatus)
                     .HasColumnName("arc_status")
-                    .HasComment("系統移民屬ARC驗證,0:未確認,1:資料符合,2:資料不符,3:系統驗證失敗");
+                    .HasComment("系統移民屬ARC驗證-2:系統驗證失敗,-1:資料不符,0:未確認,1:資料符合");
 
                 entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.Event)
+                    .HasColumnName("event")
+                    .HasComment("事件0:註冊,1:匯款");
 
                 entity.Property(e => e.ScanTime)
                     .HasColumnName("scan_time")
@@ -313,6 +322,47 @@ namespace Frontend.DB.EF.Models
                     .HasComment("收款方式");
             });
 
+            modelBuilder.Entity<PushNotificationSetting>(entity =>
+            {
+                entity.ToTable("push_notification_setting");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("uq_push_notification_setting_user_id")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("create_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.IsTurnOn)
+                    .HasColumnName("is_turn_on")
+                    .HasDefaultValueSql("((1))")
+                    .HasComment("使用者通知開關\\\\n1:開啟\\\\n0:關閉\\\\n");
+
+                entity.Property(e => e.MobileToken)
+                    .HasColumnName("mobile_token")
+                    .HasMaxLength(256)
+                    .HasComment("推播通知所需的裝置識別token");
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnName("update_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasComment("對應user的pk");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.PushNotificationSetting)
+                    .HasForeignKey<PushNotificationSetting>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_push_notification_setting");
+            });
+
             modelBuilder.Entity<ReceiveBank>(entity =>
             {
                 entity.ToTable("receive_bank");
@@ -404,7 +454,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.ESignature)
                     .IsRequired()
-                    .HasColumnName("e-signature")
+                    .HasColumnName("e_signature")
                     .HasMaxLength(512)
                     .HasDefaultValueSql("('')");
 
@@ -470,7 +520,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.TransactionStatus)
                     .HasColumnName("transaction_status")
-                    .HasComment("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待審核(系統進入arc_status流程),2: 待繳款,3: 已繳款,4:處理完成");
+                    .HasComment("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待arc審核,2待AML審核,3: 待繳款,4: 已繳款,5:處理完成");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")

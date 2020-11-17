@@ -190,7 +190,7 @@ namespace Richviet.Services
 
         }
 
-        public void SystemVerifyArc(long userId)
+        public void SystemVerifyArcForRegisterProcess(long userId)
         {
             UserArc userArc = GetUserArcById(userId);
             if(userArc.ArcIssueDate == null || userArc.ArcExpireDate == null)
@@ -206,7 +206,8 @@ namespace Richviet.Services
                 {
                     ArcStatus = (short)SystemArcVerifyStatusEnum.PASS,
                     ScanTime = DateTime.UtcNow,
-                    Description = arcValidationResult.Result
+                    Description = arcValidationResult.Result,
+                    Event = (byte)ArcScanEvent.Register
                 };
                 userArc.KycStatus = (short)KycStatusEnum.ARC_PASS_VERIFY;
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
@@ -218,11 +219,50 @@ namespace Richviet.Services
                 {
                     ArcStatus = (short)SystemArcVerifyStatusEnum.FAIL,
                     ScanTime = DateTime.UtcNow,
-                    Description = arcValidationResult.Result
+                    Description = arcValidationResult.Result,
+                    Event = (byte)ArcScanEvent.Register
                 };
                 userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
                 arcScanRecordService.AddScanRecordForRegiterProcess(record, userArc);
+            }
+        }
+
+        public void SystemVerifyArcForRemitProcess(RemitRecord remitRecord, long userId)
+        {
+            UserArc userArc = GetUserArcById(userId);
+            if (userArc.ArcIssueDate == null || userArc.ArcExpireDate == null)
+            {
+                throw new Exception("ARC Data not sufficient");
+            }
+            ArcValidationResult arcValidationResult = arcValidationTask.Validate(userArc.ArcNo, ((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"), ((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"), userArc.BackSequence).Result;
+            if (arcValidationResult.IsSuccessful)
+            {
+                ArcScanRecord record = new ArcScanRecord()
+                {
+                    ArcStatus = (short)SystemArcVerifyStatusEnum.PASS,
+                    ScanTime = DateTime.UtcNow,
+                    Description = arcValidationResult.Result,
+                    Event = (byte)ArcScanEvent.Remit
+                };
+                userArc.KycStatus = (short)KycStatusEnum.ARC_PASS_VERIFY;
+                userArc.KycStatusUpdateTime = DateTime.UtcNow;
+                remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.WaitingAmlVerifying;
+                arcScanRecordService.AddScanRecordForRemitProcess(record, userArc,remitRecord);
+            }
+            else
+            {
+                ArcScanRecord record = new ArcScanRecord()
+                {
+                    ArcStatus = (short)SystemArcVerifyStatusEnum.FAIL,
+                    ScanTime = DateTime.UtcNow,
+                    Description = arcValidationResult.Result,
+                    Event = (byte)ArcScanEvent.Remit
+                };
+                remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.FailedVerified;
+                userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
+                userArc.KycStatusUpdateTime = DateTime.UtcNow;
+                arcScanRecordService.AddScanRecordForRemitProcess(record, userArc, remitRecord);
             }
         }
     }

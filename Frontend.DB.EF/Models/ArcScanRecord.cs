@@ -15,6 +15,7 @@ namespace Frontend.DB.EF.Models
         public short ArcStatus { get; set; }
         public DateTime ScanTime { get; set; }
         public string Description { get; set; }
+        public byte Event { get; set; }
 
         public virtual ICollection<RemitRecord> RemitRecord { get; set; }
         public virtual ICollection<UserArc> UserArc { get; set; }

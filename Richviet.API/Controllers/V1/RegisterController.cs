@@ -109,7 +109,7 @@ namespace Richviet.API.Controllers.V1
             accessToken = jwtHandler.CreateAccessToken(userModel.Id, userModel.Email, userModel.ArcName);
 
             // 系統掃ARC No.
-            BackgroundJob.Enqueue(() => userService.SystemVerifyArc(int.Parse(User.FindFirstValue("id"))));
+            BackgroundJob.Enqueue(() => userService.SystemVerifyArcForRegisterProcess(int.Parse(User.FindFirstValue("id"))));
 
             //return Ok(new MessageModel<UserInfoDTO>
             //{

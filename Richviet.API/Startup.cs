@@ -181,6 +181,9 @@ namespace Richviet.API
                         QueuePollInterval = TimeSpan.Zero,
                         UseRecommendedIsolationLevel = true,
                         DisableGlobalLocks = true
+                    }).UseSerializerSettings(new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     }));
                 // Add the processing server as IHostedService
                 services.AddHangfireServer();

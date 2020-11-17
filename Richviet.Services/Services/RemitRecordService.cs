@@ -60,6 +60,7 @@ namespace Richviet.Services.Services
 
         public RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord)
         {
+            modifiedRemitRecord.UpdateTime = DateTime.UtcNow;
             dbContext.RemitRecord.Update(modifiedRemitRecord);
             dbContext.SaveChanges();
             dbContext.Entry(modifiedRemitRecord).Reference(record => record.Beneficiar).Query()

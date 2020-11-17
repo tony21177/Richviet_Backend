@@ -35,7 +35,7 @@ namespace Richviet.API.DataContracts.Dto
         public byte PayeeRelationType { get; set; }
         [SwaggerSchema("收款人關係0:父母,1:兄弟,2:子女")]
         public string PayeeRelationTypeDescription { get; set; }
-        [SwaggerSchema("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待審核(系統進入arc_status流程),2: 待繳款,3: 已繳款,4:處理完成")]
+        [SwaggerSchema("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待arc審核,2待AML審核,3: 待繳款,4: 已繳款,5:處理完成")]
         public short TransactionStatus { get; set; }
         [SwaggerSchema("繳款碼")]
         public string PaymentCode { get; set; }

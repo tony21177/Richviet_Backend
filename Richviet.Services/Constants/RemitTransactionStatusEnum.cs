@@ -9,9 +9,10 @@ namespace Richviet.Services.Constants
         OtherError = -10,
         Draft = 0,
         FailedVerified = -9,
-        WaitingVerifying = 1,
-        WaitingPaying = 2,
-        Paid = 3,
-        Complete = 4
+        WaitingArcVerifying = 1,
+        WaitingAmlVerifying = 2,
+        WaitingPaying = 3,
+        Paid = 4,
+        Complete = 5
     }
 }
