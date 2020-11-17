@@ -68,7 +68,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.ArcStatus)
                     .HasColumnName("arc_status")
-                    .HasComment("系統移民屬ARC驗證,0:未確認,1:資料符合,2:資料不符,3:系統驗證失敗");
+                    .HasComment("系統移民屬ARC驗證-2:系統驗證失敗,-1:資料不符,0:未確認,1:資料符合");
 
                 entity.Property(e => e.Description).HasColumnName("description");
 

@@ -45,5 +45,21 @@ namespace Richviet.API.Controllers.V1
                 Data = result
             };
         }
+
+        /// <summary>
+        /// 開關使用者通知
+        /// </summary>
+        [HttpPost("switch")]
+        //[AllowAnonymous]
+        public MessageModel<bool> SwitchNotification([FromBody] NotificationSettingRequest request)
+        {
+            var userId = int.Parse(User.FindFirstValue("id"));
+            //int userId = 1;
+            bool result = firebaseService.SwitchNotification(userId, request.IsTurnOn);
+            return new MessageModel<bool>
+            {
+                Data = result
+            };
+        }
     }
 }

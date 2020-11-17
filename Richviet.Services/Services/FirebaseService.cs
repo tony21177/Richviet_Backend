@@ -98,6 +98,34 @@ namespace Richviet.Services.Services
 			return false;
         }
 
-        
+        public bool SwitchNotification(int userId, bool switchFlag)
+        {
+			try
+			{
+				PushNotificationSetting setting = dbContext.PushNotificationSetting.SingleOrDefault(x => x.UserId == userId);
+				if (setting != null)
+				{
+					setting.IsTurnOn = switchFlag ? (byte)1 : (byte)0;
+					dbContext.SaveChanges();
+					return true;
+				}
+				else
+				{
+					PushNotificationSetting newSetting = new PushNotificationSetting
+					{
+						UserId = userId,
+						IsTurnOn = switchFlag ? (byte)1 : (byte)0
+					};
+					dbContext.PushNotificationSetting.Add(newSetting);
+					dbContext.SaveChanges();
+					return true;
+				}
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return false;
+		}
     }
 }

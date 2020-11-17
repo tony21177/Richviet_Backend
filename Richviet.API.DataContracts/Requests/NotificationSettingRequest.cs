@@ -11,7 +11,7 @@ namespace Richviet.API.DataContracts.Requests
         [SwaggerSchema("用於Firebase message識別裝置的token")]
         public string MobileToken { get; set; }
 
-        [SwaggerSchema("是否關閉通知")]
+        [SwaggerSchema("是否關閉通知，true = 1，false = 0")]
         public bool IsTurnOn { get; set; }
     }
 }

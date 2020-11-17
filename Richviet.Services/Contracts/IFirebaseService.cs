@@ -9,5 +9,7 @@ namespace Richviet.Services.Contracts
         void SendPush(string mobileToken, string title, string body);
 
         bool UpdateMobileToken(int userId, string mobileToken);
+
+        bool SwitchNotification(int userId, bool switchFlag);
     }
 }
