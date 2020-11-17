@@ -15,23 +15,20 @@ namespace Richviet.Services.Services
 
         private readonly ILogger logger;
         private readonly GeneralContext dbContext;
-        private readonly IUserService userService;
 
-        public RemitRecordService(ILogger<RemitRecordService> logger, GeneralContext dbContext, IUserService userService)
+        public RemitRecordService(ILogger<RemitRecordService> logger, GeneralContext dbContext)
         {
             this.logger = logger;
             this.dbContext = dbContext;
-            this.userService = userService;
         }
 
 
-        public RemitRecord CreateRemitRecordByUserId(int userId,PayeeTypeEnum payeeTypeEnum)
+        public RemitRecord CreateRemitRecordByUserArc(UserArc userArc, PayeeTypeEnum payeeTypeEnum)
         {
-            UserArc userArc = userService.GetUserArcById(userId);
 
             RemitRecord newRemitRecord = new RemitRecord()
             {
-                UserId = userId,
+                UserId = userArc.UserId,
                 ArcName = userArc.ArcName,
                 ArcNo = userArc.ArcNo,
                 PayeeType = (byte)payeeTypeEnum,
@@ -41,17 +38,17 @@ namespace Richviet.Services.Services
             return newRemitRecord;
         }
 
-        public RemitRecord GetOngoingRemitRecordByUserId(int userId)
+        public RemitRecord GetOngoingRemitRecordByUserArc(UserArc userArc)
         {
-            byte[] completedStatus = 
+            short[] completedStatus = 
             {
-                (byte)RemitTransactionStatusEnum.Complete,(byte)RemitTransactionStatusEnum.FailedVerified,(byte)RemitTransactionStatusEnum.OtherError
+                (short)RemitTransactionStatusEnum.Complete,(short)RemitTransactionStatusEnum.FailedVerified,(short)RemitTransactionStatusEnum.OtherError
             };
-            List<byte> completedStatusList = completedStatus.ToList();
-            return dbContext.RemitRecord.Where<RemitRecord>(record => record.UserId==userId&& !completedStatusList.Contains(record.TransactionStatus)).FirstOrDefault();
+            List<short> completedStatusList = completedStatus.ToList();
+            return dbContext.RemitRecord.Where<RemitRecord>(record => record.UserId== userArc.UserId && !completedStatusList.Contains(record.TransactionStatus)).FirstOrDefault();
         }
 
-        public RemitRecord GetRemitRecordById(int id)
+        public RemitRecord GetRemitRecordById(long id)
         {
             RemitRecord record = dbContext.RemitRecord.Find(id);
             dbContext.Entry(record).Reference(record=>record.Beneficiar).Query()

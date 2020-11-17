@@ -38,7 +38,7 @@ namespace Richviet.Services
             return;
         }
 
-        public List<OftenBeneficiar> GetAllBeneficiars(int userId)
+        public List<OftenBeneficiar> GetAllBeneficiars(long userId)
         {
             List<OftenBeneficiar> beneficiars = dbContext.OftenBeneficiar.Where(beneficiar => beneficiar.UserId == userId).ToList<OftenBeneficiar>();
             beneficiars.ForEach(beneficiar => {
@@ -48,7 +48,7 @@ namespace Richviet.Services
             return beneficiars;
         }
 
-        public OftenBeneficiar GetBeneficiarById(int id)
+        public OftenBeneficiar GetBeneficiarById(long id)
         {
             return dbContext.OftenBeneficiar.Find(id);
         }

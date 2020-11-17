@@ -6,12 +6,12 @@ namespace Richviet.Services.Constants
 {
     public enum RemitTransactionStatusEnum
     {
-        OtherError = 99,
-        Draft = 98,
-        FailedVerified = 9,
-        WaitingVerifying = 0,
-        WaitingPaying = 1,
-        Paid = 2,
-        Complete = 3
+        OtherError = -10,
+        Draft = 0,
+        FailedVerified = -9,
+        WaitingVerifying = 1,
+        WaitingPaying = 2,
+        Paid = 3,
+        Complete = 4
     }
 }

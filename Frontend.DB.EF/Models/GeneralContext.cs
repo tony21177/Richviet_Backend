@@ -15,6 +15,7 @@ namespace Frontend.DB.EF.Models
         {
         }
 
+        public virtual DbSet<AmlScanRecord> AmlScanRecord { get; set; }
         public virtual DbSet<ArcScanRecord> ArcScanRecord { get; set; }
         public virtual DbSet<BussinessUnitRemitSetting> BussinessUnitRemitSetting { get; set; }
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
@@ -43,6 +44,22 @@ namespace Frontend.DB.EF.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AmlScanRecord>(entity =>
+            {
+                entity.ToTable("aml_scan_record");
+
+                entity.HasComment("會員AML系統掃描紀錄");
+
+                entity.Property(e => e.AmlStatus).HasColumnName("aml_status");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.ScanTime)
+                    .HasColumnName("scan_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+            });
+
             modelBuilder.Entity<ArcScanRecord>(entity =>
             {
                 entity.ToTable("arc_scan_record");
@@ -150,7 +167,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.UseStatus)
                     .HasColumnName("use_status")
-                    .HasComment("0:可使用,1:已使用,2:無效");
+                    .HasComment("-1:無效,0:可使用,1:已使用");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -378,6 +395,10 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.AmlScanRecordId)
+                    .HasColumnName("aml_scan_record_id")
+                    .HasComment("對應的系統掃描AML紀錄id");
+
                 entity.Property(e => e.ApplyExchangeRate)
                     .HasColumnName("apply_exchange_rate")
                     .HasComment("使用者申請時當下匯率");
@@ -392,7 +413,9 @@ namespace Frontend.DB.EF.Models
                     .HasColumnName("arc_no")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.ArcScanRecordId).HasColumnName("arc_scan_record_id");
+                entity.Property(e => e.ArcScanRecordId)
+                    .HasColumnName("arc_scan_record_id")
+                    .HasComment("對應的系統掃描arc紀錄id");
 
                 entity.Property(e => e.BeneficiarId).HasColumnName("beneficiar_id");
 
@@ -475,8 +498,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.TransactionStatus)
                     .HasColumnName("transaction_status")
-                    .HasDefaultValueSql("((98))")
-                    .HasComment("99:其他錯誤\\\\\\\\98:草稿\\\\\\\\n9: 審核失敗\\\\\\\\n0: 待審核(系統進入arc_status流程)\\\\\\\\n1: 待繳款\\\\\\\\n2: 已繳款\\\\\\\\n3:處理完成");
+                    .HasComment("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待審核(系統進入arc_status流程),2: 待繳款,3: 已繳款,4:處理完成");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -642,7 +664,7 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.KycStatus)
                     .HasColumnName("kyc_status")
                     .HasDefaultValueSql("((0))")
-                    .HasComment("KYC審核狀態, 10:禁用,9:KYC未通過,8:AML未通過 ,0:草稿會員,1:待審核(註冊完),2:ARC驗證成功,3:AML通過,4:正式會員(KYC審核通過);\\\\n");
+                    .HasComment("KYC審核狀態, -10:禁用,-9:KYC未通過,-8:AML未通過 ,0:草稿會員,1:待審核(註冊完),2:ARC驗證成功,3:AML通過,4:正式會員(KYC審核通過)");
 
                 entity.Property(e => e.KycStatusUpdateTime)
                     .HasColumnName("kyc_status_update_time")

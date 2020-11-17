@@ -38,7 +38,7 @@ namespace Richviet.Services
             return false;          
         }
 
-        public bool DeleteReceiveBank(int id)
+        public bool DeleteReceiveBank(long id)
         {
             try
             {

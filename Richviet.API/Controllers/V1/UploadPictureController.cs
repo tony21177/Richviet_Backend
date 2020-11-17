@@ -27,13 +27,15 @@ namespace Richviet.API.Controllers.V1
         private readonly ILogger logger;
         private readonly FolderHandler folderHandler;
         private readonly IUserService userService;
+        private readonly IRemitRecordService remitRecordService;
         private readonly IUploadPic uploadPic;
 
-        public UploadPictureController(IUserService userService,ILogger<UploadPictureController> logger, FolderHandler folderHandler, IUploadPic uploadPic)
+        public UploadPictureController(IUserService userService, IRemitRecordService remitRecordService, ILogger<UploadPictureController> logger, FolderHandler folderHandler, IUploadPic uploadPic)
         {
             this.logger = logger;
             this.folderHandler = folderHandler;
             this.userService = userService;
+            this.remitRecordService = remitRecordService;
             this.uploadPic = uploadPic;
         }
 
@@ -45,9 +47,13 @@ namespace Richviet.API.Controllers.V1
         [Authorize]
         public async Task<ActionResult<MessageModel<UploadedFileDTO>>> UploadPicture([FromForm] CommonFileRequest file) {
             //Logger.LogInformation(file.ImageType.ToString());
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
+            string fileName = null;
             UserArc userArc = userService.GetUserArcById(userId);
-            if (userArc.KycStatus != (byte)KycStatusEnum.DRAFT_MEMBER)
+            // for member register process
+            if (file.ImageType == (byte)PictureTypeEnum.Front || file.ImageType == (byte)PictureTypeEnum.Back)
+            {
+                if (userArc.KycStatus != (short)KycStatusEnum.DRAFT_MEMBER)
                 return BadRequest(new MessageModel<UploadedFileDTO>
                 {
                     Status = (int)HttpStatusCode.BadRequest,
@@ -55,13 +61,37 @@ namespace Richviet.API.Controllers.V1
                     Msg = "Can not upload!"
                 });
 
-            String fileName = await uploadPic.SavePic(userArc,file.ImageType,file.Image);
-            if(file.ImageType == (byte) PictureTypeEnum.Front || file.ImageType == (byte)PictureTypeEnum.Back)
-            {
-                logger.LogInformation("update pic................................");
-                userService.UpdatePicFileNameOfUserInfo(userArc, file.ImageType, fileName);
-            }
+                fileName = await uploadPic.SavePic(userArc,file.ImageType,file.Image);
+                // pic for register process
             
+                userService.UpdatePicFileNameOfUserInfo(userArc, (PictureTypeEnum)file.ImageType, fileName);
+            }
+            // for draft remit apply
+            if (file.ImageType == (byte)PictureTypeEnum.Instant || file.ImageType == (byte)PictureTypeEnum.Signature)
+            {
+                if (userArc.KycStatus != (short)KycStatusEnum.PASSED_KYC_FORMAL_MEMBER)
+                    return BadRequest(new MessageModel<UploadedFileDTO>
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Success = false,
+                        Msg = "You are not formal member,can not upload!"
+                    });
+                fileName = await uploadPic.SavePic(userArc, file.ImageType, file.Image);
+                // pic for register process
+                RemitRecord onGoingRemitRecord = remitRecordService.GetOngoingRemitRecordByUserArc(userArc);
+                if (onGoingRemitRecord.TransactionStatus != (short)RemitTransactionStatusEnum.Draft)
+                {
+                    return BadRequest(new MessageModel<UploadedFileDTO>
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Success = false,
+                        Msg = "You can upload pictures only when draft remit process"
+                    });
+                }
+                userService.UpdatePicFileNameOfDraftRemit(onGoingRemitRecord, (PictureTypeEnum)file.ImageType, fileName);
+
+            }
+
             return Ok(new MessageModel<Object>
             {
                 Data = new UploadedFileDTO

@@ -10,6 +10,6 @@ namespace Richviet.Services.Contracts
     {
         PayeeType GetPayeeTypeByType(PayeeTypeEnum payeeType);
 
-        PayeeType GetPayeeTypeById(int id);
+        PayeeType GetPayeeTypeById(long id);
     }
 }

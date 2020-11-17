@@ -85,7 +85,7 @@ namespace Richviet.API.Controllers.V1
                 Data = new RegisterResponseDTO()
                 {
                     Jwt = accessToken.Token,
-                    kycStatus = (byte)loginUser.KycStatus
+                    kycStatus = (short)loginUser.KycStatus
                 }
             });
         }

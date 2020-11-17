@@ -9,7 +9,7 @@ namespace Richviet.Services.Contracts
     {
         List<CurrencyCode> GetCurrencyByCountry(string country);
         
-        public CurrencyCode GetCurrencyById(int id);
+        public CurrencyCode GetCurrencyById(long id);
         
         List<CurrencyCode> GetCurrencyList();
 
@@ -17,6 +17,6 @@ namespace Richviet.Services.Contracts
 
         bool ModifyCurrency(CurrencyCode modifyCurrency);
 
-        bool DeleteCurrency(int id);
+        bool DeleteCurrency(long id);
     }
 }

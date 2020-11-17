@@ -8,11 +8,11 @@ namespace Richviet.Services.Contracts
 {
     public interface IRemitRecordService
     {
-        RemitRecord GetOngoingRemitRecordByUserId(int userId);
+        RemitRecord GetOngoingRemitRecordByUserArc(UserArc userArc);
 
-        RemitRecord GetRemitRecordById(int id);
+        RemitRecord GetRemitRecordById(long id);
 
-        RemitRecord CreateRemitRecordByUserId(int userId, PayeeTypeEnum payeeTypeEnum);
+        RemitRecord CreateRemitRecordByUserArc(UserArc userArc, PayeeTypeEnum payeeTypeEnum);
 
         public RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord);
     }

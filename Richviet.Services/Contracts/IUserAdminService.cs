@@ -13,6 +13,6 @@ namespace Richviet.Services.Contracts
 
         List<UserAdminListDTO> GetUserFilterList(UserFilterListRequest request);
 
-        UserDetailDTO GetUserDetail(int userId);
+        UserDetailDTO GetUserDetail(long userId);
     }
 }

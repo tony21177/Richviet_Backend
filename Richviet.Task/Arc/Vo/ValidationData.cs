@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 
 namespace Richviet.BackgroudTask.vo
 {
-    [ToString]
     class ValidationData
     { 
         [JsonPropertyName("IDNO")]

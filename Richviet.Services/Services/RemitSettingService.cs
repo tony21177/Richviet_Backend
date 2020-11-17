@@ -45,7 +45,7 @@ namespace Richviet.Services.Services
             return false;
         }
 
-        public bool DeleteRemitSetting(int id)
+        public bool DeleteRemitSetting(long id)
         {
             try
             {

@@ -10,9 +10,9 @@ namespace Richviet.Services.Contracts
     {
         OftenBeneficiar AddBeneficiar(OftenBeneficiar beneficiar);
 
-        OftenBeneficiar GetBeneficiarById(int id);
+        OftenBeneficiar GetBeneficiarById(long id);
 
-        List<OftenBeneficiar> GetAllBeneficiars(int userId);
+        List<OftenBeneficiar> GetAllBeneficiars(long userId);
 
         OftenBeneficiar ModifyBeneficiar(OftenBeneficiar modifyBeneficiar, OftenBeneficiar originalBeneficiar);
 

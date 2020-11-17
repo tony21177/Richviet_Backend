@@ -49,9 +49,9 @@ namespace Richviet.API.Controllers.V1
             Tools.Utility.TokenResource accessToken = null;
 
             
-            var userId = int.Parse(User.FindFirstValue("id"));
+            var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
-            if (userArc.KycStatus != (byte)KycStatusEnum.DRAFT_MEMBER)
+            if (userArc.KycStatus != (short)KycStatusEnum.DRAFT_MEMBER)
             {
                 return BadRequest(new MessageModel<RegisterResponseDTO>
                 {
@@ -87,8 +87,8 @@ namespace Richviet.API.Controllers.V1
             userArc.BackSequence = registerReq.backCode;
             userArc.ArcIssueDate = registerReq.issue;
             userArc.ArcExpireDate = registerReq.expiry;
-            userArc.KycStatus = 1;
-            userArc.KycStatusUpdateTime = DateTime.Now;
+            userArc.KycStatus = (short)KycStatusEnum.WAITING_VERIFIED_KYC;
+            userArc.KycStatusUpdateTime = DateTime.UtcNow;
 
             //update UserRegisterType data
             userRegisterType.RegisterTime = DateTime.Now;
@@ -121,7 +121,7 @@ namespace Richviet.API.Controllers.V1
                 Data = new RegisterResponseDTO
                 {
                     Jwt = accessToken.Token,
-                    kycStatus = (byte)userModel.KycStatus
+                    kycStatus = (short)userModel.KycStatus
                 }
             });
         }
