@@ -13,6 +13,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Net;
 using System.Security.Claims;
+using Hangfire;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -44,8 +45,12 @@ namespace Richviet.API.Controllers.V1
 
         private readonly IUploadPic uploadPicService;
 
+        private readonly IExchangeRateService exchangeRateService;
+
+
+
         public RemitController(ILogger<RemitController> logger, IMapper mapper, IRemitSettingService remitSettingService, IRemitRecordService remitRecordService, IBeneficiarService beneficiarService
-            , IUserService userService, IDiscountService discountService, ICurrencyService currencyService, IUploadPic uploadPicService)
+            , IUserService userService, IDiscountService discountService, ICurrencyService currencyService, IUploadPic uploadPicService, IExchangeRateService exchangeRateService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this._mapper = mapper;
@@ -56,6 +61,7 @@ namespace Richviet.API.Controllers.V1
             this.uploadPicService = uploadPicService;
             this.currencyService = currencyService;
             this.remitRecordService = remitRecordService;
+            this.exchangeRateService = exchangeRateService;
         }
 
         /// <summary>
@@ -216,14 +222,15 @@ namespace Richviet.API.Controllers.V1
         /// <summary>
         /// 使用者送出正式匯款申請
         /// </summary>
-        [HttpPost]
+        [HttpPost("formal/{id}")]
         [Authorize]
-        public ActionResult<MessageModel<RemitRecordDTO>> ApplyRemitRecord([FromBody] RemitRequest remitRequest)
+        public ActionResult<MessageModel<RemitRecordDTO>> ApplyRemitRecord([FromBody] RemitRequest remitRequest, [FromRoute, SwaggerParameter("草稿匯款的id", Required = true)] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+            
             // KYC passed?
             var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
@@ -235,72 +242,41 @@ namespace Richviet.API.Controllers.V1
                     Msg = "KYC process Has not been passed"
 
                 });
-            string error = null;
-            // check amount
-            error = CheckIfAmountOutOfRange(remitRequest.FromAmount, "TW");
-            if (error!=null) 
-                return BadRequest(new MessageModel<RemitRecordDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = error
 
-                });
-            // check beneficiar
-            error = CheckBenificiarExistence(remitRequest.BeneficiarId);
-            if (error != null)
+            // get draft remit
+            RemitRecord record = remitRecordService.GetRemitRecordById(id);
+            if(record==null && record.TransactionStatus != (short)RemitTransactionStatusEnum.Draft)
             {
                 return BadRequest(new MessageModel<RemitRecordDTO>
                 {
                     Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
-                    Msg = error
+                    Msg = "This Draft Remit doesn't exit or wrong status"
 
                 });
             }
 
-            // check uploaded picture
-            error = CheckPhotoFileExistence(userArc, remitRequest.PhotoFilename);
-            if (error != null)
+            string validationResult = ValidateFormalRemitRequestAndUpdateRemitRecord(remitRequest,record,userArc,remitRequest.Country??"TW");
+            if (validationResult != null)
             {
                 return BadRequest(new MessageModel<RemitRecordDTO>
                 {
                     Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
-                    Msg = error
+                    Msg = validationResult
 
                 });
             }
-            error = CheckSignatureFileExistence(userArc, remitRequest.SignatureFilename);
-            if (error != null)
-            {
-                return BadRequest(new MessageModel<RemitRecordDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = error
+            
+            RemitRecord modifiedRecord = remitRecordService.ModifyRemitRecord(record);
+            RemitRecordDTO recordDTO = _mapper.Map<RemitRecordDTO>(modifiedRecord);
 
-                });
-            }
-            // TBD
+            // 系統掃ARC No.
+            BackgroundJob.Enqueue(() => userService.SystemVerifyArcForRemitProcess(modifiedRecord, userId));
 
             return Ok(new MessageModel<RemitRecordDTO>
             {
-                Data = new RemitRecordDTO() {
-                    Id = 101,
-                    CreateTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    ToCurrency = "VND",
-                    FromAmount = 10000,
-                    ToAmount = 7960000,
-                    TransactionExchangeRate = 800,
-                    Fee = 150,
-                    DiscountAmount = 100,
-                    PayeeName = "爸爸",
-                    PayeeAddress = "XXXXXXXXXX456",
-                    PayeeRelationType = 0,
-                    PayeeRelationTypeDescription = "父母",
-                    TransactionStatus = 0
-                }
+                Data = recordDTO
             });
         }
 
@@ -374,7 +350,7 @@ namespace Richviet.API.Controllers.V1
             return null;
         }
 
-        private string CheckBenificiarExistence(int id)
+        private string CheckBenificiarExistence(long id)
         {
             OftenBeneficiar beneficiar = beneficiarService.GetBeneficiarById(id);
             if (beneficiar == null)
@@ -394,6 +370,17 @@ namespace Richviet.API.Controllers.V1
             return null;
         }
 
+        private string CheckDiscountExistence(RemitRequest remitRequest) 
+        {
+            Discount discount = discountService.GetDoscountById((long)remitRequest.DiscountId);
+            if (discount == null)
+            {
+                return "discount does not exist!";
+            }
+            remitRequest.DiscountAmount = discount.Value;
+            return null;
+        }
+
         private string CheckCurrencyExistence(int id)
         {
             CurrencyCode currency = currencyService.GetCurrencyById(id);
@@ -401,6 +388,19 @@ namespace Richviet.API.Controllers.V1
             {
                 return "currency does not exist!";
             }
+            return null;
+        }
+
+        private string CheckCurrencyExistence(RemitRequest remitRequest)
+        {
+            CurrencyCode currency = currencyService.GetCurrencyById(remitRequest.ToCurrencyId);
+            if (currency == null)
+            {
+                return "currency does not exist!";
+            }
+            remitRequest.ToCurrency = currency.CurrencyName;
+            remitRequest.FeeType = currency.FeeType;
+            remitRequest.Fee = currency.Fee;
             return null;
         }
 
@@ -445,19 +445,6 @@ namespace Richviet.API.Controllers.V1
                 remitRecord.BeneficiarId = draftRemitRequest.BeneficiarId;
             }
                 
-            if (draftRemitRequest.PhotoFilename != null)
-            {
-                error = CheckPhotoFileExistence(userArc, (string)draftRemitRequest.PhotoFilename);
-                if (error != null) return error;
-                remitRecord.RealTimePic = draftRemitRequest.PhotoFilename;
-            }
-                
-            if (draftRemitRequest.SignatureFilename != null)
-            {
-                error = CheckSignatureFileExistence(userArc,(string)draftRemitRequest.SignatureFilename);
-                if (error != null) return error;
-                remitRecord.ESignature = draftRemitRequest.SignatureFilename;
-            }
                 
             if (draftRemitRequest.DiscountId != null)
             {
@@ -473,6 +460,50 @@ namespace Richviet.API.Controllers.V1
                 remitRecord.ToCurrencyId = draftRemitRequest.ToCurrencyId;
             }
             return null;
+        }
+
+        private string ValidateFormalRemitRequestAndUpdateRemitRecord(RemitRequest remitRequest,RemitRecord remitRecord,UserArc userArc,String country)
+        {
+            string error = null;
+
+            // check ToCurrency
+            error = CheckCurrencyExistence(remitRequest);
+            if (error != null) return error;
+            remitRecord.FeeType = remitRequest.FeeType;
+            remitRecord.Fee = remitRequest.Fee;
+            remitRecord.ToCurrencyId = remitRequest.ToCurrencyId;
+            
+            // check amount
+            error = CheckIfAmountOutOfRange(remitRequest.FromAmount, "TW");
+            if (error != null) return error;
+            ExchangeRate applyExchangeRate= exchangeRateService.GetExchangeRateByCurrencyName(remitRequest.ToCurrency);
+            remitRecord.FromAmount = remitRequest.FromAmount;
+            remitRecord.ApplyExchangeRate = applyExchangeRate.Rate;
+            remitRecord.FromCurrencyId = currencyService.GetCurrencyByCountry(country)[0].Id;
+
+            // check beneficiar
+            error = CheckBenificiarExistence(remitRequest.BeneficiarId);
+            if (error != null) return error;
+            remitRecord.BeneficiarId = remitRequest.BeneficiarId;
+
+            // check uploaded picture
+            error = CheckPhotoFileExistence(userArc, remitRecord.RealTimePic);
+            if (error != null) return error;
+            error = CheckSignatureFileExistence(userArc, remitRecord.ESignature);
+            if (error != null) return error;
+
+            // check discount
+            if (remitRequest.DiscountId != null)
+            {
+                error = CheckDiscountExistence(remitRequest);
+                if (error != null) return error;
+                remitRecord.DiscountId = remitRequest.DiscountId;
+                remitRecord.DiscountAmount = remitRequest.DiscountAmount;
+            }
+
+            remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.WaitingArcVerifying;
+
+            return error;
         }
 
         

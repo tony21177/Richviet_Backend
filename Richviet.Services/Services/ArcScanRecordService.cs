@@ -47,6 +47,30 @@ namespace Richviet.Services.Services
                 transaction.Rollback();
             }
         }
-        
+
+        public void AddScanRecordForRemitProcess(ArcScanRecord record, UserArc userArc,RemitRecord remitRecord)
+        {
+            using var transaction = dbContext.Database.BeginTransaction();
+            try
+            {
+
+                dbContext.ArcScanRecord.Add(record);
+                dbContext.SaveChanges();
+                userArc.LastArcScanRecordId = record.Id;
+                userArc.UpdateTime = DateTime.UtcNow;
+                dbContext.SaveChanges();
+                remitRecord.ArcScanRecordId = record.Id;
+                dbContext.RemitRecord.Update(remitRecord);
+                dbContext.SaveChanges();
+                transaction.Commit();
+                return;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, null);
+                transaction.Rollback();
+            }
+        }
+
     }
 }

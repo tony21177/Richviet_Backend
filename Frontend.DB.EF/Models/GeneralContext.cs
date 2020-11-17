@@ -54,6 +54,10 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
+                entity.Property(e => e.Event)
+                    .HasColumnName("event")
+                    .HasComment("事件0:註冊,1:匯款");
+
                 entity.Property(e => e.ScanTime)
                     .HasColumnName("scan_time")
                     .HasColumnType("datetime")
@@ -71,6 +75,10 @@ namespace Frontend.DB.EF.Models
                     .HasComment("系統移民屬ARC驗證-2:系統驗證失敗,-1:資料不符,0:未確認,1:資料符合");
 
                 entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.Event)
+                    .HasColumnName("event")
+                    .HasComment("事件0:註冊,1:匯款");
 
                 entity.Property(e => e.ScanTime)
                     .HasColumnName("scan_time")
@@ -446,7 +454,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.ESignature)
                     .IsRequired()
-                    .HasColumnName("e-signature")
+                    .HasColumnName("e_signature")
                     .HasMaxLength(512)
                     .HasDefaultValueSql("('')");
 
@@ -512,7 +520,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.TransactionStatus)
                     .HasColumnName("transaction_status")
-                    .HasComment("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待審核(系統進入arc_status流程),2: 待繳款,3: 已繳款,4:處理完成");
+                    .HasComment("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待arc審核,2待AML審核,3: 待繳款,4: 已繳款,5:處理完成");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")

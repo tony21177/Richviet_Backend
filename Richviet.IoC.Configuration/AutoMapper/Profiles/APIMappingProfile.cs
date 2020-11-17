@@ -8,6 +8,7 @@ using C = Richviet.API.DataContracts.Dto;
 using M = Frontend.DB.EF.Models;
 using R = Richviet.API.DataContracts.Requests;
 using A = Richviet.Admin.API.DataContracts.Dto;
+using Richviet.Services.Constants;
 
 namespace Richviet.IoC.Configuration.AutoMapper.Profiles
 {
@@ -40,13 +41,6 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<BussinessUnitRemitSetting,RemitSettingDTO>().ReverseMap();
 
             CreateMap<RemitRecord,RemitRecordDTO>().ReverseMap();
-            CreateMap<DraftRemitRequest, RemitRecord>().ForMember(
-              dest => dest.RealTimePic
-              , opt => opt.MapFrom(src => src.PhotoFilename)
-            ).ForMember(
-              dest => dest.ESignature
-              , opt => opt.MapFrom(src => src.SignatureFilename)
-            ).ReverseMap().ForMember(src=>src.Country,opt=>opt.Ignore());
 
             CreateMap<RemitRecord, RemitRecordDTO>().ForMember(
               dest => dest.PayeeName

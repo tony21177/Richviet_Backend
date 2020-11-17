@@ -76,10 +76,9 @@ namespace Richviet.API.Controllers.V1
                         Success = false,
                         Msg = "You are not formal member,can not upload!"
                     });
-                fileName = await uploadPic.SavePic(userArc, file.ImageType, file.Image);
                 // pic for register process
                 RemitRecord onGoingRemitRecord = remitRecordService.GetOngoingRemitRecordByUserArc(userArc);
-                if (onGoingRemitRecord.TransactionStatus != (short)RemitTransactionStatusEnum.Draft)
+                if (onGoingRemitRecord == null || onGoingRemitRecord.TransactionStatus != (short)RemitTransactionStatusEnum.Draft)
                 {
                     return BadRequest(new MessageModel<UploadedFileDTO>
                     {
@@ -88,9 +87,11 @@ namespace Richviet.API.Controllers.V1
                         Msg = "You can upload pictures only when draft remit process"
                     });
                 }
+                fileName = await uploadPic.SavePic(userArc, file.ImageType, file.Image);
                 userService.UpdatePicFileNameOfDraftRemit(onGoingRemitRecord, (PictureTypeEnum)file.ImageType, fileName);
 
             }
+            
 
             return Ok(new MessageModel<Object>
             {
