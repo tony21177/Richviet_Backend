@@ -13,7 +13,7 @@ namespace Richviet.Services.Constants
         WAITING_VERIFIED_KYC = 1,
         ARC_PASS_VERIFY = 2,
         AML_PASS_VERIFY = 3,
-        PASSED_KYC_FORMAL_MEMBER = 4
+        PASSED_KYC_FORMAL_MEMBER = 9
 
     }
 }
