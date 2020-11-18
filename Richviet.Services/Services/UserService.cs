@@ -247,7 +247,7 @@ namespace Richviet.Services
                 };
                 userArc.KycStatus = (short)KycStatusEnum.ARC_PASS_VERIFY;
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
-                remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.WaitingAmlVerifying;
+                remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulArcVerification;
                 arcScanRecordService.AddScanRecordForRemitProcess(record, userArc,remitRecord);
             }
             else
