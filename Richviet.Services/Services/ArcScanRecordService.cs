@@ -22,12 +22,6 @@ namespace Richviet.Services.Services
 
         public void AddScanRecordForRegiterProcess(ArcScanRecord record, UserArc userArc)
         {
-            //dbContext.Entry(record).State = EntityState.Added;
-            //dbContext.Entry(userArc).State = EntityState.Modified;
-            //userArc.LastArcScanRecord = record;
-            //userArc.UpdateTime = DateTime.UtcNow;
-            //dbContext.UserArc.Update(userArc);
-            //dbContext.SaveChanges();
 
             using var transaction = dbContext.Database.BeginTransaction();
             try
@@ -36,7 +30,8 @@ namespace Richviet.Services.Services
                 dbContext.ArcScanRecord.Add(record);
                 dbContext.SaveChanges();
                 userArc.LastArcScanRecordId = record.Id;       
-                userArc.UpdateTime = DateTime.UtcNow;           
+                userArc.UpdateTime = DateTime.UtcNow;
+                dbContext.UserArc.Update(userArc);
                 dbContext.SaveChanges();
                 transaction.Commit();
                 return;
@@ -58,6 +53,7 @@ namespace Richviet.Services.Services
                 dbContext.SaveChanges();
                 userArc.LastArcScanRecordId = record.Id;
                 userArc.UpdateTime = DateTime.UtcNow;
+                dbContext.UserArc.Update(userArc);
                 dbContext.SaveChanges();
                 remitRecord.ArcScanRecordId = record.Id;
                 dbContext.RemitRecord.Update(remitRecord);

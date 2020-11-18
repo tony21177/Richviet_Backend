@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Frontend.DB.EF\Frontend.DB.EF.csproj" />
+    <ProjectReference Include="..\Richviet.API.DataContracts\Richviet.API.DataContracts.csproj" />
+    <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
+  </ItemGroup>
+
+</Project>

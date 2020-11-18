@@ -1,5 +1,4 @@
 ﻿using Richviet.API.Common.Attributes;
-using Richviet.API.Common.Middlewares;
 using Richviet.API.Common.Settings;
 using Richviet.API.Swagger;
 using Richviet.IoC.Configuration.DI;

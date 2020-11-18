@@ -11,6 +11,7 @@ using Richviet.Services.Users.Command.Adapter.Repositories;
 using Richviet.Services.Users.Command.UseCase;
 using Richviet.Services.Users.Query;
 using Richviet.BackgroudTask.Arc;
+using Richviet.API.Helper;
 
 namespace Richviet.IoC.Configuration.DI
 {
@@ -43,6 +44,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<ArcValidationTask>();
                 services.AddScoped<IArcScanRecordService,ArcScanRecordService>();
                 services.AddTransient<IFirebaseService, FirebaseService>();
+                services.AddTransient<RemitValidationHelper>();
             }
         }
 

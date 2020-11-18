@@ -51,10 +51,13 @@ namespace Richviet.Services.Services
         public RemitRecord GetRemitRecordById(long id)
         {
             RemitRecord record = dbContext.RemitRecord.Find(id);
-            dbContext.Entry(record).Reference(record=>record.Beneficiar).Query()
-            .Include(beneficiar => beneficiar.PayeeRelation)
-            .Load();
-            dbContext.Entry(record).Reference(record => record.ToCurrency).Load();
+            if (record != null)
+            {
+                dbContext.Entry(record).Reference(record => record.Beneficiar).Query()
+                .Include(beneficiar => beneficiar.PayeeRelation)
+                .Load();
+                dbContext.Entry(record).Reference(record => record.ToCurrency).Load();
+            }
             return record;
         }
 
@@ -66,7 +69,13 @@ namespace Richviet.Services.Services
             dbContext.Entry(modifiedRemitRecord).Reference(record => record.Beneficiar).Query()
             .Include(beneficiar => beneficiar.PayeeRelation)
             .Load();
+            dbContext.Entry(modifiedRemitRecord).Reference(record => record.ToCurrency).Load();
             return modifiedRemitRecord;
+        }
+
+        public List<RemitRecord> GetRemitRecordsByUserId(long userId)
+        {
+            return dbContext.RemitRecord.Include(record=>record.Beneficiar).ThenInclude(beneficiar=>beneficiar.PayeeRelation).Include("ToCurrency").Where(record => record.UserId == userId).ToList();
         }
     }
 }
