@@ -16,22 +16,23 @@ namespace Richviet.Tools.Utility
     {
         private readonly IConfiguration _configuration;
 
+
         public FolderHandler(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public DirectoryInfo CreateFolder(string folderName)
+        public DirectoryInfo CreateFolder(string workingRootPath,string folderName)
         {
-            return Directory.CreateDirectory(".."+Path.DirectorySeparatorChar + _configuration["StoredFilesPath"]+ Path.DirectorySeparatorChar + folderName);
+            return Directory.CreateDirectory( workingRootPath + Path.DirectorySeparatorChar + ".." + Path.DirectorySeparatorChar + _configuration["StoredFilesPath"]+ Path.DirectorySeparatorChar + folderName);
         }
 
-        public bool IsFileExists(string filePath)
+        public bool IsFileExists(string workingRootPath, string filePath)
         {
-            return File.Exists(".." + Path.DirectorySeparatorChar + _configuration["StoredFilesPath"] + Path.DirectorySeparatorChar + filePath);
+            return File.Exists(workingRootPath + Path.DirectorySeparatorChar + ".." + Path.DirectorySeparatorChar + _configuration["StoredFilesPath"] + Path.DirectorySeparatorChar + filePath);
         }
 
-        public void SaveImageFromUri(string fileNamePath, ImageFormat format, String uri,String cookieName,String cookieValue)
+        public void SaveImageFromUri(string workingRootPath,string fileNamePath, ImageFormat format, String uri,String cookieName,String cookieValue)
         {
             CookieAwareWebClient client = new CookieAwareWebClient();
             if(cookieName!=null && cookieValue != null)
@@ -43,7 +44,7 @@ namespace Richviet.Tools.Utility
 
             if (bitmap != null)
             {
-                DirectoryInfo directoryInfo = CreateFolder("validation");
+                DirectoryInfo directoryInfo = CreateFolder(workingRootPath, "validation");
                 bitmap.Save(fileNamePath, format);
             }
 

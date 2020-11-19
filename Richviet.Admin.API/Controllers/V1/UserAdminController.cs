@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Frontend.DB.EF.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Richviet.Admin.API.DataContracts.Dto;
 using Richviet.Admin.API.DataContracts.Requests;
 using Richviet.Admin.API.DataContracts.Responses;
+using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -22,14 +24,18 @@ namespace Richviet.Admin.API.Controllers.V1
         private readonly ILogger Logger;
         private readonly IMapper mapper;
         private readonly IUserAdminService userAdminService;
+        private readonly IUploadPic uploadPicToLocalService;
+        private readonly IUserService userService;
 
         public UserAdminController(ILogger<UserAdminController> logger, 
             IMapper mapper, 
-            IUserAdminService userAdminService)
+            IUserAdminService userAdminService, IUploadPic uploadPicToLocalService, IUserService userService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper;
             this.userAdminService = userAdminService;
+            this.uploadPicToLocalService = uploadPicToLocalService;
+            this.userService = userService;
         }
 
         /// <summary>
@@ -71,6 +77,28 @@ namespace Richviet.Admin.API.Controllers.V1
             };
         }
 
+        [HttpGet("/image/{userId}/{type}")]
+        public async Task<IActionResult> GetUserImage([FromRoute, SwaggerParameter("id,可從/useradmin取得", Required = true)] long userId,
+            [FromRoute, SwaggerParameter("2:證件正面照,3:證件反面照", Required = true)] byte type)
+        {
+            UserArc userArc = userService.GetUserArcById(userId);
+            string imageFileName = null;
+            switch (type)
+            {
+                case (byte)PictureTypeEnum.Front:
+                    imageFileName = userArc.IdImageA;
+                    break;
+                case (byte)PictureTypeEnum.Back:
+                    imageFileName = userArc.IdImageB;
+                    break;
+            }
+
+            var imageFilePath = uploadPicToLocalService.GetPictureAbsolutePath(userArc,type, imageFileName);
+            var image = System.IO.File.OpenRead(imageFilePath);
+            return File(image, "image/jpeg");
+        }
+
+        
 
 
     }
