@@ -32,7 +32,7 @@ namespace Richviet.BackgroudTask.Arc
             this._configuration = configuration;
         }
 
-        public async Task<ArcValidationResult> Validate(String arcNo,String issueDate,String expiredDate,String backCode)
+        public async Task<ArcValidationResult> Validate(string workingRootPath,String arcNo,String issueDate,String expiredDate,String backCode)
         {
             try{
                 
@@ -44,7 +44,7 @@ namespace Richviet.BackgroudTask.Arc
                 validationData.ReNext = "查詢";
 
                 await SetSessionId(validationData);
-                var verificationImgPath = DownloadVerficationImg(validationData);
+                var verificationImgPath = DownloadVerficationImg(workingRootPath,validationData);
                 await SetVerificationCode(validationData, verificationImgPath, _configuration["Anticaptcha_client_key"]);
                 await SetHiddenValue(validationData);
                 var result = await PostValidationData(validationData);
@@ -67,7 +67,7 @@ namespace Richviet.BackgroudTask.Arc
                             };
                         case "驗證碼錯誤":
                         case "請重新輸入驗證碼":
-                            verificationImgPath = DownloadVerficationImg(validationData);
+                            verificationImgPath = DownloadVerficationImg(workingRootPath,validationData);
                             await SetVerificationCode(validationData, verificationImgPath, _configuration["Anticaptcha_client_key"]);
                             result = await PostValidationData(validationData);
                             logger.LogInformation("retry Anticaptcha result : {result}", new string[] { result });
@@ -162,10 +162,10 @@ namespace Richviet.BackgroudTask.Arc
             }
         }
 
-        private string DownloadVerficationImg(ValidationData validationData)
+        private string DownloadVerficationImg(string workingRootPath,ValidationData validationData)
         {
-            var saveToFilePath = folderHandler.CreateFolder("validation").FullName + Path.DirectorySeparatorChar + "arcValidation.png";
-            folderHandler.SaveImageFromUri(saveToFilePath, ImageFormat.Png,"https://icinfo.immigration.gov.tw/NIL_WEB/ValidateCode.ashx", "ASP.NET_SessionId", validationData.SessionId);
+            var saveToFilePath = folderHandler.CreateFolder(workingRootPath,"validation").FullName + Path.DirectorySeparatorChar + "arcValidation.png";
+            folderHandler.SaveImageFromUri(workingRootPath,saveToFilePath, ImageFormat.Png,"https://icinfo.immigration.gov.tw/NIL_WEB/ValidateCode.ashx", "ASP.NET_SessionId", validationData.SessionId);
             return saveToFilePath;
         }
 

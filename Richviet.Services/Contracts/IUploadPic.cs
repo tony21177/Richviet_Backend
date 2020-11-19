@@ -12,6 +12,8 @@ namespace Richviet.Services.Contracts
     {
         Task<string> SavePic(UserArc userArc,byte imageType,IFormFile formFile);
 
-        public bool CheckUploadFileExistence(UserArc userArc, PictureTypeEnum type, String fileName);
+        string GetPictureAbsolutePath(UserArc userArc, byte imageType, string imageFileName);
+
+        bool CheckUploadFileExistence(UserArc userArc, PictureTypeEnum type, String fileName);
     }
 }
