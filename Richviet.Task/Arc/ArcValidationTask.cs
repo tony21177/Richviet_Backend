@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Richviet.BackgroudTask.Arc.Vo;
 using System.Threading.Tasks;
 using Richviet.BackgroudTask.vo;
+using static Anticaptcha.Api.ImageToText;
 
 namespace Richviet.BackgroudTask.Arc
 {
@@ -172,7 +173,7 @@ namespace Richviet.BackgroudTask.Arc
         {
             DebugHelper.VerboseMode = true;
 
-            var api = new ImageToText
+            var api = new ImageToText(NumericOption.NumbersOnly,0)
             {
                 ClientKey = clientKey,
                 FilePath = picFilePath
