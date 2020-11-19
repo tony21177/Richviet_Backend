@@ -15,6 +15,7 @@ using System.Security.Claims;
 using Hangfire;
 using Richviet.API.Helper;
 using System.Collections.Generic;
+using System.Linq;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -117,7 +118,16 @@ namespace Richviet.API.Controllers.V1
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = string.Join(",", errors)
+                }); ;
             }
             // KYC passed?
             var userId = long.Parse(User.FindFirstValue("id"));
