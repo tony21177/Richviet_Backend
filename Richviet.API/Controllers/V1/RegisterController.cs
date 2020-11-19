@@ -17,6 +17,7 @@ using System.Net;
 using Richviet.BackgroudTask.Arc;
 using System.Threading.Tasks;
 using Hangfire;
+using System.Linq;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -47,8 +48,21 @@ namespace Richviet.API.Controllers.V1
         {
             UserInfoDTO userModel = null;
             Tools.Utility.TokenResource accessToken = null;
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
 
-            
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = string.Join(",", errors)
+                });
+            }
+
+
             var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
             if (userArc.KycStatus != (short)KycStatusEnum.DRAFT_MEMBER)
