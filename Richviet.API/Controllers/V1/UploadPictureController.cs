@@ -16,6 +16,7 @@ using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
 using Frontend.DB.EF.Models;
 using Richviet.Tools.Utility;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -29,8 +30,8 @@ namespace Richviet.API.Controllers.V1
         private readonly IUserService userService;
         private readonly IRemitRecordService remitRecordService;
         private readonly IUploadPic uploadPic;
-
-        public UploadPictureController(IUserService userService, IRemitRecordService remitRecordService, ILogger<UploadPictureController> logger, FolderHandler folderHandler, IUploadPic uploadPic)
+        public UploadPictureController(IUserService userService, IRemitRecordService remitRecordService, ILogger<UploadPictureController> logger, FolderHandler folderHandler, IUploadPic uploadPic
+            )
         {
             this.logger = logger;
             this.folderHandler = folderHandler;

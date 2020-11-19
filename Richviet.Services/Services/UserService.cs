@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using AutoMapper;
 using Richviet.BackgroudTask.Arc.Vo;
 using Richviet.BackgroudTask.Arc;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Richviet.Services
 {
@@ -23,10 +24,12 @@ namespace Richviet.Services
         private readonly ILogger logger;
         private readonly IMapper mapper;
         private readonly ArcValidationTask arcValidationTask;
+        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly string workingRootPath;
 
 
-
-        public UserService(IEnumerable<IAuthService> authServices, IArcScanRecordService arcScanRecordService, IRemitRecordService remitRecordService, GeneralContext dbContext, ILogger<UserService> logger, IMapper mapper, ArcValidationTask arcValidationTask)
+        public UserService(IEnumerable<IAuthService> authServices, IArcScanRecordService arcScanRecordService, IRemitRecordService remitRecordService,
+            GeneralContext dbContext, ILogger<UserService> logger, IMapper mapper, ArcValidationTask arcValidationTask, IWebHostEnvironment webHostEnvironment)
         {
             this.authServices = authServices;
             this.arcScanRecordService = arcScanRecordService;
@@ -35,6 +38,8 @@ namespace Richviet.Services
             this.logger =  logger;
             this.mapper = mapper;
             this.arcValidationTask =  arcValidationTask;
+            this.webHostEnvironment = webHostEnvironment;
+            this.workingRootPath = webHostEnvironment.ContentRootPath;
         }
 
         public async Task<bool> AddNewUserInfo(UserRegisterType loginUser)
@@ -197,7 +202,7 @@ namespace Richviet.Services
             {
                 throw new Exception("ARC Data not sufficient");
             }
-            ArcValidationResult arcValidationResult =  arcValidationTask.Validate(userArc.ArcNo,((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"),((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"),userArc.BackSequence).Result;
+            ArcValidationResult arcValidationResult =  arcValidationTask.Validate(workingRootPath,userArc.ArcNo,((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"),((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"),userArc.BackSequence).Result;
             logger.LogInformation("IsSuccessful:{1}", arcValidationResult.IsSuccessful);
             logger.LogInformation("result:{1}", arcValidationResult.Result);
             if (arcValidationResult.IsSuccessful)
@@ -235,7 +240,7 @@ namespace Richviet.Services
             {
                 throw new Exception("ARC Data not sufficient");
             }
-            ArcValidationResult arcValidationResult = arcValidationTask.Validate(userArc.ArcNo, ((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"), ((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"), userArc.BackSequence).Result;
+            ArcValidationResult arcValidationResult = arcValidationTask.Validate(workingRootPath,userArc.ArcNo, ((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"), ((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"), userArc.BackSequence).Result;
             if (arcValidationResult.IsSuccessful)
             {
                 ArcScanRecord record = new ArcScanRecord()
