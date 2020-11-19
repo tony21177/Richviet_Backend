@@ -34,10 +34,10 @@ namespace Richviet.Services.Services
                 // for demo
                 if(configuration["IsDemo"]!=null && bool.Parse(configuration["IsDemo"]) == true)
                 {
-                    if (userArc.ArcNo.Equals("ZZ00000000"))
+                    if (userArc.ArcNo.Equals("ZC00000000"))
                     {
                         
-                    }else if (userArc.ArcNo.Equals("ZZ11111111"))
+                    }else if (userArc.ArcNo.Equals("ZC11111111"))
                     {
                         userArc.KycStatus = (short)KycStatusEnum.AML_PASS_VERIFY;
                     }
@@ -67,11 +67,11 @@ namespace Richviet.Services.Services
                 // for demo
                 if (configuration["IsDemo"] != null && bool.Parse(configuration["IsDemo"]) == true)
                 {
-                    if (userArc.ArcNo.Equals("ZZ00000000"))
+                    if (userArc.ArcNo.Equals("ZC00000000"))
                     {
 
                     }
-                    else if (userArc.ArcNo.Equals("ZZ11111111"))
+                    else if (userArc.ArcNo.Equals("ZC11111111"))
                     {
                         userArc.KycStatus = (short)KycStatusEnum.AML_PASS_VERIFY;
                         remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulAmlVerification;

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -44,7 +45,7 @@ namespace Richviet.API.Controllers.V1
         /// 取得登入的使用者相關資訊
         /// </summary>
         [HttpGet("info")]
-        public MessageModel<UserInfoDTO> getOwnUserInfo()
+        public ActionResult<MessageModel<UserInfoDTO>> getOwnUserInfo()
         {
             UserInfoDTO userModel = null;
 
@@ -55,6 +56,16 @@ namespace Richviet.API.Controllers.V1
                 var userID = identity.FindFirst("id").Value;
                 Console.WriteLine(identity.FindFirst("id").Value);
                 UserInfoView userInfo = userService.GetUserInfoById(int.Parse(userID));
+                if(userInfo == null)
+                {
+                    return BadRequest(new MessageModel<UserInfoDTO>
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Success = false,
+                        Msg = "user does not exist!"
+                    });
+                }
+
                 // 將 user 置換成 ViewModel
                 userModel = mapper.Map<UserInfoDTO>(userInfo);
             }

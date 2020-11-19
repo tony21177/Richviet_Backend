@@ -14,13 +14,13 @@ namespace Anticaptcha.Api
             AnyLettersExceptNumbers
         }
 
-        public ImageToText()
+        public ImageToText(NumericOption numericOption,int isMath)
         {
             BodyBase64 = "";
             Phrase = false;
             Case = false;
-            Numeric = NumericOption.NoRequirements;
-            Math = 0;
+            Numeric = numericOption;
+            Math = isMath;
             MinLength = 0;
             MaxLength = 0;
         }
