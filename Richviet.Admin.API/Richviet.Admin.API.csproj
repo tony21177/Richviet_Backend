@@ -45,6 +45,7 @@
 	  <ProjectReference Include="..\Richviet.Admin.API.DataContracts\Richviet.Admin.API.DataContracts.csproj" />
 	  <ProjectReference Include="..\Richviet.IoC.Configuration\Richviet.IoC.Configuration.csproj" />
 	  <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
+	  <ProjectReference Include="..\Users.Domains\Users.Domains.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -7,11 +7,11 @@ using System.Reflection;
 using Richviet.Tools.Utility;
 using Richviet.Services.Services;
 using System.Collections.Generic;
-using Richviet.Services.Users.Command.Adapter.Repositories;
-using Richviet.Services.Users.Command.UseCase;
-using Richviet.Services.Users.Query;
 using Richviet.BackgroudTask.Arc;
 using Richviet.API.Helper;
+using Users.Domains.Users.Command.Adapter.Repositories;
+using Users.Domains.Users.Command.UseCase;
+using Users.Domains.Users.Query;
 
 namespace Richviet.IoC.Configuration.DI
 {
