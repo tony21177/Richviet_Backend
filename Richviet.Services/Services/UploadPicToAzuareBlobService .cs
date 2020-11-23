@@ -10,23 +10,38 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using System.Net;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure;
+using System.Collections;
 
 namespace Richviet.Services.Services
 {
     public class UploadPicToAzuareBlobService : IUploadPic
     {
         public IConfiguration Configuration { get; }
-        string accessKey = string.Empty;
+        string connectionString = string.Empty;
 
 
         public UploadPicToAzuareBlobService(IConfiguration configuration)
         {
             Configuration = configuration;
-            accessKey = Configuration.GetConnectionString("AccessKey");
+            connectionString = Configuration.GetConnectionString("AccessKey");
 
+        }
+
+        public async Task<List<String>> GetBlobList(String containerName)
+        {
+            BlobContainerClient blobContainer = await GetOrCreateCloudBlobContainer(containerName, PublicAccessType.Blob);
+            Pageable<BlobItem> blobItems = blobContainer.GetBlobs();
+            var containerUri = blobContainer.Uri.AbsoluteUri;
+            List<String> result = new List<string>();
+            
+            foreach (BlobItem blobItem in blobItems){
+                result.Add(containerUri +"/"+ WebUtility.UrlEncode(blobItem.Name));
+            }
+            return result;
         }
 
         public async Task<string> SavePic(UserArc userArc, byte imageType,IFormFile image)
@@ -46,14 +61,15 @@ namespace Richviet.Services.Services
 
             try
             {
-                CloudBlobContainer cloudBlobContainer = await GetOrCreateCloudBlobContainer();
+                BlobContainerClient blobContainer = await GetOrCreateCloudBlobContainer(GetUploadPicContainerName(), PublicAccessType.None);
 
                 if (fileFullName != null && image != null)
                 {
-                    CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileFullName);
-                    cloudBlockBlob.Properties.ContentType = image.ContentType;
-                    await cloudBlockBlob.UploadFromStreamAsync(image.OpenReadStream(), image.Length);
-                    return cloudBlockBlob.Uri.AbsoluteUri;
+                   
+                    BlobClient blobClient = blobContainer.GetBlobClient(fileFullName);
+                    await blobClient.UploadAsync(image.OpenReadStream());
+                    
+                    return blobClient.Uri.AbsoluteUri;
                 }
                 return "";
             }
@@ -67,34 +83,36 @@ namespace Richviet.Services.Services
         {
             String [] imageUriArray = imageFileUri.Split('/');
             String imageFileName = WebUtility.UrlDecode(imageUriArray[imageUriArray.Length - 1]);
-            CloudBlobContainer cloudBlobContainer = await GetOrCreateCloudBlobContainer();
-            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(imageFileName);
- 
-            return await cloudBlockBlob.OpenReadAsync();
+            BlobContainerClient blobContainer = await GetOrCreateCloudBlobContainer(GetUploadPicContainerName(), PublicAccessType.None);
+            BlobClient imageBlob = blobContainer.GetBlobClient(imageFileName);
+            return await imageBlob.OpenReadAsync();
         }
 
         public async Task<bool> CheckUploadFileExistence(UserArc userArc, PictureTypeEnum typeEnum, String imageFileUri)
         {
             String[] imageUriArray = imageFileUri.Split('/');
             String imageFileName = WebUtility.UrlDecode(imageUriArray[imageUriArray.Length - 1]);
-            CloudBlobContainer cloudBlobContainer = await GetOrCreateCloudBlobContainer();
-            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(imageFileName);
-            bool isExist = await cloudBlockBlob.ExistsAsync();
+            BlobContainerClient blobContainer = await GetOrCreateCloudBlobContainer(GetUploadPicContainerName(),PublicAccessType.None);
+            BlobClient imageBlob = blobContainer.GetBlobClient(imageFileName);
+            bool isExist = await imageBlob.ExistsAsync();
             return isExist;
         }
 
-        private async Task<CloudBlobContainer> GetOrCreateCloudBlobContainer()
+        private async Task<BlobContainerClient> GetOrCreateCloudBlobContainer(String strContainerName, PublicAccessType type)
         {
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(accessKey);
-            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            string strContainerName = Configuration["StoredFilesPath"];
-            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(strContainerName);
-
-            if (await cloudBlobContainer.CreateIfNotExistsAsync())
-            {
-                await cloudBlobContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Off });
-            }
-            return cloudBlobContainer;
+  
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
+            
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(strContainerName);
+            await containerClient.CreateIfNotExistsAsync(publicAccessType: type);
+            return containerClient;
         }
+
+        private string GetUploadPicContainerName()
+        {
+            return Configuration["StoredFilesPath"];
+        }
+
+        
     }
 }
