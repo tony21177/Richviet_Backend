@@ -93,8 +93,8 @@ namespace Richviet.Admin.API.Controllers.V1
                     break;
             }
 
-            var imageFilePath = uploadPicToLocalService.GetPictureAbsolutePath(userArc,type, imageFileName);
-            var image = System.IO.File.OpenRead(imageFilePath);
+            var image = await uploadPicToLocalService.LoadImage(userArc,type, imageFileName);
+            
             return File(image, "image/jpeg");
         }
 

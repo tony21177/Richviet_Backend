@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Richviet.Services.Contracts
 {
@@ -12,8 +13,8 @@ namespace Richviet.Services.Contracts
     {
         Task<string> SavePic(UserArc userArc,byte imageType,IFormFile formFile);
 
-        string GetPictureAbsolutePath(UserArc userArc, byte imageType, string imageFileName);
+        Task<Stream> LoadImage(UserArc userArc, byte imageType, string imageFileName);
 
-        bool CheckUploadFileExistence(UserArc userArc, PictureTypeEnum type, String fileName);
+        Task<bool> CheckUploadFileExistence(UserArc userArc, PictureTypeEnum type, String fileName);
     }
 }

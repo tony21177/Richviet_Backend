@@ -8,4 +8,5 @@
 # Visual Studio Code
 .vscode
 
-uploadFile
+uploaded-file-folder/
+uploadFile/

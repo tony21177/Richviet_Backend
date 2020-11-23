@@ -98,14 +98,14 @@ namespace Richviet.API.Helper
 
         private string CheckPhotoFileExistence(UserArc userArc, string filename)
         {
-            if (!uploadPicService.CheckUploadFileExistence(userArc, PictureTypeEnum.Instant, filename))
+            if (!uploadPicService.CheckUploadFileExistence(userArc, PictureTypeEnum.Instant, filename).Result)
                 return "Photo file does not exist!";
             return null;
         }
 
         private string CheckSignatureFileExistence(UserArc userArc, string filename)
         {
-            if (!uploadPicService.CheckUploadFileExistence(userArc, PictureTypeEnum.Signature, filename))
+            if (!uploadPicService.CheckUploadFileExistence(userArc, PictureTypeEnum.Signature, filename).Result)
                 return "Signature file does not exist!";
             return null;
         }

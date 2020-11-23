@@ -48,7 +48,7 @@ namespace Richviet.Services.Services
             return resultFileName;
         }
 
-        public string GetPictureAbsolutePath(UserArc userArc,byte imageType,string imageFileName)
+        public async Task<Stream> LoadImage(UserArc userArc,byte imageType,string imageFileName)
         {
             string mainFolder = imageType switch
             {
@@ -61,14 +61,16 @@ namespace Richviet.Services.Services
             string folder =  mainFolder + Path.DirectorySeparatorChar + userArc.UserId;
             DirectoryInfo directoryInfo = folderHandler.CreateFolder(workingRootPath, folder);
             var filePath = Path.Combine(directoryInfo.FullName, imageFileName);
-            return filePath;
+            return System.IO.File.OpenRead(filePath);
         }
 
-        public bool CheckUploadFileExistence(UserArc userArc, PictureTypeEnum typeEnum, String fileName)
+        public async Task<bool> CheckUploadFileExistence(UserArc userArc, PictureTypeEnum typeEnum, String fileName)
         {
             String folder = typeEnum.ToString().ToLower() + Path.DirectorySeparatorChar + userArc.UserId;
             var filePath = Path.Combine(folder, fileName);
             return folderHandler.IsFileExists(workingRootPath,filePath);
         }
+
+        
     }
 }
