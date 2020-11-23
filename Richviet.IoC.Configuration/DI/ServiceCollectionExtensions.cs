@@ -30,7 +30,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IPayeeTypeService, PayeeTypeService>();
                 services.AddSingleton(typeof(FolderHandler));
                 services.AddSingleton(typeof(ArcValidationTask));
-                services.AddSingleton<IUploadPic, UploadPicToLocalService>();
+                services.AddSingleton<IUploadPic, UploadPicToAzuareBlobService>();
                 services.AddScoped<ICurrencyService,CurrencyService>();
                 services.AddScoped<IExchangeRateService, DBExchangeRateService>();
                 services.AddScoped<IRemitSettingService, RemitSettingService>();
