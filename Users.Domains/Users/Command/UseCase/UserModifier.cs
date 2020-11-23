@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Frontend.DB.EF.Models;
-using Richviet.Admin.API.DataContracts.Requests;
-using Richviet.Services.Users.Command.Adapter.Repositories;
-using Richviet.Services.Users.Query;
+﻿using Frontend.DB.EF.Models;
+using Users.Domains.Users.Command.Adapter.Repositories;
+using Users.Domains.Users.Command.Request;
+using Users.Domains.Users.Query;
 
-namespace Richviet.Services.Users.Command.UseCase
+namespace Users.Domains.Users.Command.UseCase
 {
     public class UserModifier
     {
@@ -19,13 +16,13 @@ namespace Richviet.Services.Users.Command.UseCase
             this.queryRepositories = queryRepositories;
         }
 
-        public void Modify(UserModifyRequest modifyRequest)
+        public void Modify(UserVoRequest modifyRequest)
         {
            var user =  MapToUser(modifyRequest);
            commandRepository.Modify(user);
         }
 
-        public void ModifyUserLevel(UserLevelModifyRequest request)
+        public void ModifyUserLevel(UserLevelModifyVoRequest request)
         {
             var user = this.queryRepositories.FindById(request.Id);
             user.Level = request.Level;
@@ -33,7 +30,7 @@ namespace Richviet.Services.Users.Command.UseCase
         }
 
 
-        private User MapToUser(UserModifyRequest modifyRequest)
+        private User MapToUser(UserVoRequest modifyRequest)
         {
             var user = queryRepositories.FindById(modifyRequest.Id);
 

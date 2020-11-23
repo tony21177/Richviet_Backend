@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Richviet.API.Helper\Richviet.API.Helper.csproj" />
     <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
     <ProjectReference Include="..\Richviet.Task\Richviet.BackgroudTask.csproj" />
+    <ProjectReference Include="..\Users.Domains\Users.Domains.csproj" />
   </ItemGroup>
 
 </Project>

@@ -48,7 +48,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Task", "Task", "{09413445-3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.BackgroudTask", "Richviet.Task\Richviet.BackgroudTask.csproj", "{882678DA-F7E0-4AAD-B0DC-B0BD538EB17E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Richviet.API.Helper", "Richviet.API.Helper\Richviet.API.Helper.csproj", "{F6B486B4-72A9-45CB-87BA-D214AAFABAB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.API.Helper", "Richviet.API.Helper\Richviet.API.Helper.csproj", "{F6B486B4-72A9-45CB-87BA-D214AAFABAB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Task.Services", "Task.Services", "{7D25F0FC-8AD6-478C-9B10-E64838B61F1C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure.Functions", "Azure.Functions", "{D90897EE-4E15-486E-B17D-EFDEC5334CC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Domains", "Users.Domains\Users.Domains.csproj", "{5B3DB1D2-8DED-4B5F-9609-6F833A67DB4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,6 +122,10 @@ Global
 		{F6B486B4-72A9-45CB-87BA-D214AAFABAB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6B486B4-72A9-45CB-87BA-D214AAFABAB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6B486B4-72A9-45CB-87BA-D214AAFABAB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B3DB1D2-8DED-4B5F-9609-6F833A67DB4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B3DB1D2-8DED-4B5F-9609-6F833A67DB4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B3DB1D2-8DED-4B5F-9609-6F833A67DB4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B3DB1D2-8DED-4B5F-9609-6F833A67DB4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,6 +146,7 @@ Global
 		{4B964054-2096-45EF-B7F8-8FF93DE21DFC} = {C1464784-6826-4859-AFE5-22110CD7B8FC}
 		{882678DA-F7E0-4AAD-B0DC-B0BD538EB17E} = {09413445-3ECE-4D11-83DB-5E1CB1A4288B}
 		{F6B486B4-72A9-45CB-87BA-D214AAFABAB1} = {B5DA07C3-76DB-42DF-B2BC-D4D0FE81F5F1}
+		{5B3DB1D2-8DED-4B5F-9609-6F833A67DB4F} = {9D1A5FBB-23AF-4224-88C7-DF7BA85354B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {756538D4-5347-479B-8083-19EF5CC5850C}

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Richviet.Admin.API.DataContracts.Requests;
 using Richviet.Admin.API.DataContracts.Responses;
-using Richviet.Services.Users.Command.UseCase;
+using Users.Domains.Users.Command.UseCase;
+using AutoMapper;
+using Users.Domains.Users.Command.Request;
 
 namespace Richviet.Admin.API.Controllers.V1
 {
@@ -15,16 +17,26 @@ namespace Richviet.Admin.API.Controllers.V1
     public class UserCommandController : ControllerBase
     {
         private readonly UserModifier modifier;
+        private readonly IMapper mapper;
 
         public UserCommandController(UserModifier modifier)
         {
             this.modifier = modifier;
+
+            var configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserModifyRequest, UserVoRequest>();
+                cfg.CreateMap<UserLevelModifyRequest, UserLevelModifyVoRequest>();
+            });
+
+            this.mapper = configuration.CreateMapper();
         }
 
         [HttpPost("modify")]
         public MessageModel<string> ModifyUser(UserModifyRequest request)
         {
-            this.modifier.Modify(request);
+            var userVoRequest =  this.mapper.Map<UserVoRequest>(request);
+            this.modifier.Modify(userVoRequest);
 
             return new MessageModel<string>()
             {
@@ -35,7 +47,9 @@ namespace Richviet.Admin.API.Controllers.V1
         [HttpPost("modifyLevel")]
         public MessageModel<string> ModifyLevel(UserLevelModifyRequest request)
         {
-            this.modifier.ModifyUserLevel(request);
+            var levelVoRequest = this.mapper.Map<UserLevelModifyVoRequest>(request);
+
+            this.modifier.ModifyUserLevel(levelVoRequest);
             return new MessageModel<string>()
             {
                 Data = "modify success"
