@@ -45,6 +45,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IArcScanRecordService,ArcScanRecordService>();
                 services.AddTransient<IFirebaseService, FirebaseService>();
                 services.AddTransient<RemitValidationHelper>();
+                services.AddScoped<IBannerService,BannerService>();
             }
         }
 

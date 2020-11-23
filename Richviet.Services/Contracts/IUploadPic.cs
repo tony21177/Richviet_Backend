@@ -16,5 +16,7 @@ namespace Richviet.Services.Contracts
         Task<Stream> LoadImage(UserArc userArc, byte imageType, string imageFileName);
 
         Task<bool> CheckUploadFileExistence(UserArc userArc, PictureTypeEnum type, String fileName);
+
+        Task<List<String>> GetBlobList(String containerName);
     }
 }

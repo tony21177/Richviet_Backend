@@ -71,6 +71,9 @@ namespace Richviet.Services.Services
             return folderHandler.IsFileExists(workingRootPath,filePath);
         }
 
-        
+        public Task<List<string>> GetBlobList(string containerName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
