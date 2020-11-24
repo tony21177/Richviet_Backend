@@ -32,6 +32,7 @@ namespace Frontend.DB.EF.Models
         public string PaymentCode { get; set; }
         public long? ArcScanRecordId { get; set; }
         public long? AmlScanRecordId { get; set; }
+        public DateTime? FormalApplyTime { get; set; }
 
         public virtual ArcScanRecord ArcScanRecord { get; set; }
         public virtual OftenBeneficiar Beneficiar { get; set; }

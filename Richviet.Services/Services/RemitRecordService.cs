@@ -69,8 +69,13 @@ namespace Richviet.Services.Services
             return record;
         }
 
-        public RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord)
+        public RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord,DateTime? applyTime)
         {
+            if (applyTime != null)
+            {
+                modifiedRemitRecord.FormalApplyTime = applyTime;
+            }
+
             modifiedRemitRecord.UpdateTime = DateTime.UtcNow;
             dbContext.RemitRecord.Update(modifiedRemitRecord);
             dbContext.SaveChanges();
