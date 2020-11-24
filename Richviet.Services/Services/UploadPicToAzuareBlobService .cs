@@ -39,7 +39,8 @@ namespace Richviet.Services.Services
             List<String> result = new List<string>();
             
             foreach (BlobItem blobItem in blobItems){
-                result.Add(containerUri +"/"+ WebUtility.UrlEncode(blobItem.Name));
+                var name = Uri.EscapeDataString(blobItem.Name);
+                result.Add(containerUri +"/"+ name);
             }
             return result;
         }
