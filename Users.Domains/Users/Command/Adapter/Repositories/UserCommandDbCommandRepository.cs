@@ -25,7 +25,7 @@ namespace Users.Domains.Users.Command.Adapter.Repositories
 
         public int DeleteDraftUser()
         {
-            int numberOfEffectRow = _context.User.Where(x => x.Id == 1).DeleteFromQuery();
+            int numberOfEffectRow = _context.User.Where(x => x.UserArc.KycStatus == 0).DeleteFromQuery();
 
             _context.SaveChanges();
             return numberOfEffectRow;
