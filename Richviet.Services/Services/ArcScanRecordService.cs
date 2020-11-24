@@ -3,6 +3,7 @@ using Frontend.DB.EF.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using RemitRecords.Domains.RemitRecords.Constants;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
 using System;

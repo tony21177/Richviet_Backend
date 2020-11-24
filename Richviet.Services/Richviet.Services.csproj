@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Admin.DB.EF\Admin.DB.EF.csproj" />
     <ProjectReference Include="..\Frontend.DB.EF\Frontend.DB.EF.csproj" />
+    <ProjectReference Include="..\Remit.Domains\RemitRecords.Domains.csproj" />
     <ProjectReference Include="..\Richviet.Admin.API.DataContracts\Richviet.Admin.API.DataContracts.csproj" />
     <ProjectReference Include="..\Richviet.Task\Richviet.BackgroudTask.csproj" />
     <ProjectReference Include="..\Richviet.Tools\Richviet.Tools.csproj" />

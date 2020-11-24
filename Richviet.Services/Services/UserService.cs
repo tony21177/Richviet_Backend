@@ -12,6 +12,7 @@ using AutoMapper;
 using Richviet.BackgroudTask.Arc.Vo;
 using Richviet.BackgroudTask.Arc;
 using Microsoft.AspNetCore.Hosting;
+using RemitRecords.Domains.RemitRecords.Constants;
 
 namespace Richviet.Services
 {

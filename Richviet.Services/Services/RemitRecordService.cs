@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RemitRecords.Domains.RemitRecords.Constants;
 
 namespace Richviet.Services.Services
 {
@@ -38,15 +39,22 @@ namespace Richviet.Services.Services
             return newRemitRecord;
         }
 
-        public RemitRecord GetOngoingRemitRecordByUserArc(UserArc userArc)
+        public List<RemitRecord> GetOngoingRemitRecordsByUserArc(UserArc userArc)
         {
             short[] completedStatus = 
             {
-                (short)RemitTransactionStatusEnum.Complete,(short)RemitTransactionStatusEnum.FailedVerified,(short)RemitTransactionStatusEnum.OtherError
+                (short)RemitTransactionStatusEnum.Complete,(short)RemitTransactionStatusEnum.FailedVerified,(short)RemitTransactionStatusEnum.OtherError,
             };
             List<short> completedStatusList = completedStatus.ToList();
-            return dbContext.RemitRecord.Where<RemitRecord>(record => record.UserId== userArc.UserId && !completedStatusList.Contains(record.TransactionStatus)).FirstOrDefault();
+            return dbContext.RemitRecord.Where<RemitRecord>(record => record.UserId== userArc.UserId && !completedStatusList.Contains(record.TransactionStatus)).ToList();
         }
+
+        public RemitRecord GetDraftRemitRecordByUserArc(UserArc userArc)
+        {
+            List<RemitRecord> onGogingRemitRecords = GetOngoingRemitRecordsByUserArc(userArc);
+            return onGogingRemitRecords.Find(record => record.TransactionStatus == (short)RemitTransactionStatusEnum.Draft);
+        }
+
 
         public RemitRecord GetRemitRecordById(long id)
         {
@@ -76,6 +84,12 @@ namespace Richviet.Services.Services
         public List<RemitRecord> GetRemitRecordsByUserId(long userId)
         {
             return dbContext.RemitRecord.Include(record=>record.Beneficiar).ThenInclude(beneficiar=>beneficiar.PayeeRelation).Include("ToCurrency").Where(record => record.UserId == userId).ToList();
+        }
+
+        public void DeleteRmitRecord(RemitRecord record)
+        {
+            dbContext.RemitRecord.Remove(record);
+            dbContext.SaveChanges();
         }
     }
 }
