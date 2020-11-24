@@ -264,7 +264,7 @@ namespace Richviet.API.Controllers.V1
             }
             else
             {
-                remitRecordService.ModifyRemitRecord(record);
+                remitRecordService.ModifyRemitRecord(record,null);
                 RemitRecordDTO remitRecordDTO = _mapper.Map<RemitRecordDTO>(record);
                 return Ok(new MessageModel<RemitRecordDTO>
                 {
@@ -321,8 +321,9 @@ namespace Richviet.API.Controllers.V1
 
                 });
             }
-            
-            RemitRecord modifiedRecord = remitRecordService.ModifyRemitRecord(record);
+
+            DateTime now = DateTime.UtcNow;
+            RemitRecord modifiedRecord = remitRecordService.ModifyRemitRecord(record, now);
             RemitRecordDTO recordDTO = _mapper.Map<RemitRecordDTO>(modifiedRecord);
 
             // 系統掃ARC No.

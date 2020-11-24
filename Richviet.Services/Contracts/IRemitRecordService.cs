@@ -20,6 +20,6 @@ namespace Richviet.Services.Contracts
 
         RemitRecord CreateRemitRecordByUserArc(UserArc userArc, PayeeTypeEnum payeeTypeEnum);
 
-        RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord);
+        RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord, DateTime? applyTime);
     }
 }

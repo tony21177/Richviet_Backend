@@ -7,9 +7,9 @@ namespace RemitRecords.Domains.RemitRecords.Query
 {
     public interface IRemitRecordQueryRepositories
     {
-         RemitRecordsDailySumVo QueryDailyRemitValidAmount(long userId);
+        RemitAvailableAmountSumVo QueryMonthlyAvailableAmount(long userId, string country);
 
-         RemitRecordsMonthlySumVo QueryMonthlyRemitValidAmount(long userId);
+        RemitAvailableAmountSumVo QueryYearlyAvailableAmount(long userId, string country);
 
     }
 }

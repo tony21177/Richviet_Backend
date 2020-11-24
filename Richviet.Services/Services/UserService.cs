@@ -192,7 +192,7 @@ namespace Richviet.Services
                     remitRecord.ESignature = fileName;
                     break;
             }
-            remitRecordService.ModifyRemitRecord(remitRecord);
+            remitRecordService.ModifyRemitRecord(remitRecord,null);
 
         }
 
