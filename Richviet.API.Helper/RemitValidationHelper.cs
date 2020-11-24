@@ -1,4 +1,5 @@
 ﻿using Frontend.DB.EF.Models;
+using RemitRecords.Domains.RemitRecords.Constants;
 using Richviet.API.DataContracts.Requests;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;

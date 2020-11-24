@@ -17,6 +17,7 @@ using Richviet.Services.Contracts;
 using Frontend.DB.EF.Models;
 using Richviet.Tools.Utility;
 using Microsoft.AspNetCore.Hosting;
+using RemitRecords.Domains.RemitRecords.Constants;
 
 namespace Richviet.API.Controllers.V1
 {
@@ -42,7 +43,8 @@ namespace Richviet.API.Controllers.V1
 
 
         /// <summary>
-        /// 上傳照片 content-type為multipart/formdata且body的ImageType為0:及時照,1:簽名照,2:證件正面照,3:證件反面照
+        /// 上傳照片 content-type為multipart/formdata且body的ImageType為0:及時照,1:簽名照,2:證件正面照,3:證件反面照,
+        /// 當imageType為0或1時,須帶入匯款的id for draftRemitRecordId
         /// </summary>
         [HttpPost]
         [Authorize]
@@ -77,19 +79,30 @@ namespace Richviet.API.Controllers.V1
                         Success = false,
                         Msg = "You are not formal member,can not upload!"
                     });
-                // pic for register process
-                RemitRecord onGoingRemitRecord = remitRecordService.GetOngoingRemitRecordByUserArc(userArc);
-                if (onGoingRemitRecord == null || onGoingRemitRecord.TransactionStatus != (short)RemitTransactionStatusEnum.Draft)
+                // check draft remit record exist
+                if(file.DraftRemitRecordId == null)
                 {
                     return BadRequest(new MessageModel<UploadedFileDTO>
                     {
                         Status = (int)HttpStatusCode.BadRequest,
                         Success = false,
-                        Msg = "You can upload pictures only when draft remit process"
+                        Msg = "draftRemitRecordId is required!"
+                    });
+
+                }
+                RemitRecord draftRemitRecord = remitRecordService.GetRemitRecordById((long)file.DraftRemitRecordId);
+                if (draftRemitRecord == null || draftRemitRecord.TransactionStatus != (short) RemitTransactionStatusEnum.Draft)
+                {
+                    return BadRequest(new MessageModel<UploadedFileDTO>
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Success = false,
+                        Msg = "the draft Remit Record does not exist!"
                     });
                 }
+
                 fileName = await uploadPic.SavePic(userArc, file.ImageType, file.Image);
-                userService.UpdatePicFileNameOfDraftRemit(onGoingRemitRecord, (PictureTypeEnum)file.ImageType, fileName);
+                userService.UpdatePicFileNameOfDraftRemit(draftRemitRecord, (PictureTypeEnum)file.ImageType, fileName);
 
             }
             

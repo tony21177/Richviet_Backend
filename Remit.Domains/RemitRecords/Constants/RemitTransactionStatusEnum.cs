@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Richviet.Services.Constants
+namespace RemitRecords.Domains.RemitRecords.Constants
 {
     public enum RemitTransactionStatusEnum
     {
