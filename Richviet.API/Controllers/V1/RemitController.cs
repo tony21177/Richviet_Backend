@@ -16,6 +16,7 @@ using Hangfire;
 using Richviet.API.Helper;
 using System.Collections.Generic;
 using System.Linq;
+using RemitRecords.Domains.RemitRecords.Constants;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -110,6 +111,63 @@ namespace Richviet.API.Controllers.V1
         }
 
         /// <summary>
+        /// 取得使用者目前的草稿
+        /// </summary>
+        [HttpGet("draft")]
+        [Authorize]
+        public ActionResult<MessageModel<RemitRecordDTO>> GetDraftRemitRecord()
+        {
+            // KYC passed?
+            var userId = long.Parse(User.FindFirstValue("id"));
+            UserArc userArc = userService.GetUserArcById(userId);
+            if (!helper.CheckIfKYCPassed(userArc))
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = KYC_NOT_PASSED
+                });
+            RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
+            return Ok(new MessageModel<RemitRecordDTO>
+            {
+                Data = _mapper.Map<RemitRecordDTO>(draftRemitRecord)
+            });
+        }
+        /// <summary>
+        /// 刪除使用者目前的草稿
+        /// </summary>
+        [HttpDelete("draft")]
+        [Authorize]
+        public ActionResult<MessageModel<RemitRecordDTO>> RemoveDraftRemitRecord()
+        {
+            // KYC passed?
+            var userId = long.Parse(User.FindFirstValue("id"));
+            UserArc userArc = userService.GetUserArcById(userId);
+            if (!helper.CheckIfKYCPassed(userArc))
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = KYC_NOT_PASSED
+                });
+            RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
+            if(draftRemitRecord == null)
+            {
+                return BadRequest(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Success = false,
+                    Msg = "draft remit record does not exist!"
+                }); ;
+            }
+            remitRecordService.DeleteRmitRecord(draftRemitRecord);
+            return Ok(new MessageModel<RemitRecordDTO>
+            {
+                Data = null
+            }); ;
+        }
+
+        /// <summary>
         /// 申請匯款草稿
         /// </summary>
         [HttpPost("draft")]
@@ -127,7 +185,7 @@ namespace Richviet.API.Controllers.V1
                     Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
                     Msg = string.Join(",", errors)
-                }); ;
+                });
             }
             // KYC passed?
             var userId = long.Parse(User.FindFirstValue("id"));
@@ -139,23 +197,15 @@ namespace Richviet.API.Controllers.V1
                     Success = false,
                     Msg = KYC_NOT_PASSED
                 });
-            RemitRecord record = remitRecordService.GetOngoingRemitRecordByUserArc(userArc);
-            if (record == null)
+            // Get draft
+            RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
+            if (draftRemitRecord == null)
             {
-                record = remitRecordService.CreateRemitRecordByUserArc(userArc, PayeeTypeEnum.Bank);
+                draftRemitRecord = remitRecordService.CreateRemitRecordByUserArc(userArc, PayeeTypeEnum.Bank);
                 return Ok(new MessageModel<RemitRecordDTO>
                 {
-                    Data = _mapper.Map<RemitRecordDTO>(record)
+                    Data = _mapper.Map<RemitRecordDTO>(draftRemitRecord)
 
-                });
-            }
-            else if (record.TransactionStatus != (short)RemitTransactionStatusEnum.Draft)
-            {
-                return BadRequest(new MessageModel<RemitRecordDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = "your remit application is under processing"
                 });
             }
             else
@@ -214,7 +264,7 @@ namespace Richviet.API.Controllers.V1
             }
             else
             {
-                remitRecordService.ModifyRemitRecord(record);
+                remitRecordService.ModifyRemitRecord(record,null);
                 RemitRecordDTO remitRecordDTO = _mapper.Map<RemitRecordDTO>(record);
                 return Ok(new MessageModel<RemitRecordDTO>
                 {
@@ -271,8 +321,9 @@ namespace Richviet.API.Controllers.V1
 
                 });
             }
-            
-            RemitRecord modifiedRecord = remitRecordService.ModifyRemitRecord(record);
+
+            DateTime now = DateTime.UtcNow;
+            RemitRecord modifiedRecord = remitRecordService.ModifyRemitRecord(record, now);
             RemitRecordDTO recordDTO = _mapper.Map<RemitRecordDTO>(modifiedRecord);
 
             // 系統掃ARC No.

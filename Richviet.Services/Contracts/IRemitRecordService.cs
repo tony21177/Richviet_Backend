@@ -8,14 +8,18 @@ namespace Richviet.Services.Contracts
 {
     public interface IRemitRecordService
     {
-        RemitRecord GetOngoingRemitRecordByUserArc(UserArc userArc);
+        List<RemitRecord> GetOngoingRemitRecordsByUserArc(UserArc userArc);
+
+        RemitRecord GetDraftRemitRecordByUserArc(UserArc userArc);
 
         RemitRecord GetRemitRecordById(long id);
+
+        void DeleteRmitRecord(RemitRecord record);
 
         List<RemitRecord> GetRemitRecordsByUserId(long userId);
 
         RemitRecord CreateRemitRecordByUserArc(UserArc userArc, PayeeTypeEnum payeeTypeEnum);
 
-        public RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord);
+        RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord, DateTime? applyTime);
     }
 }

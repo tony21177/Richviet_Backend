@@ -124,6 +124,10 @@ namespace Frontend.DB.EF.Models
                     .HasColumnName("update_time")
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.YearlyMax)
+                    .HasColumnName("yearly_max")
+                    .HasComment("一年最大限額");
             });
 
             modelBuilder.Entity<CurrencyCode>(entity =>
@@ -473,6 +477,11 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.FeeType)
                     .HasColumnName("fee_type")
                     .HasComment("手續費計算方式\\n0:數量\\n1:百分比");
+
+                entity.Property(e => e.FormalApplyTime)
+                    .HasColumnName("formal_apply_time")
+                    .HasColumnType("datetime")
+                    .HasComment("送出匯款申請時間");
 
                 entity.Property(e => e.FromAmount).HasColumnName("from_amount");
 
