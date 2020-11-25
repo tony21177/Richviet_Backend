@@ -33,6 +33,11 @@ namespace Richviet.Services.Services
             
             dbContext.RemitRecord.Add(remitRecord);
             dbContext.SaveChanges();
+            dbContext.Entry(remitRecord).Reference(record => record.Beneficiar).Query()
+                .Include(beneficiar => beneficiar.PayeeRelation)
+                .Load();
+            dbContext.Entry(remitRecord).Reference(record => record.ToCurrency).Load();
+
             return remitRecord;
         }
 
@@ -45,6 +50,8 @@ namespace Richviet.Services.Services
             List<short> completedStatusList = completedStatus.ToList();
             return dbContext.RemitRecord.Where<RemitRecord>(record => record.UserId== userArc.UserId && !completedStatusList.Contains(record.TransactionStatus)).ToList();
         }
+
+
 
         public RemitRecord GetDraftRemitRecordByUserArc(UserArc userArc)
         {
@@ -87,6 +94,8 @@ namespace Richviet.Services.Services
         {
             return dbContext.RemitRecord.Include(record=>record.Beneficiar).ThenInclude(beneficiar=>beneficiar.PayeeRelation).Include("ToCurrency").Where(record => record.UserId == userId).ToList();
         }
+
+
 
         public void DeleteRmitRecord(RemitRecord record)
         {
