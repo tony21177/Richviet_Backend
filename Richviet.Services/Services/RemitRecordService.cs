@@ -24,19 +24,16 @@ namespace Richviet.Services.Services
         }
 
 
-        public RemitRecord CreateRemitRecordByUserArc(UserArc userArc, PayeeTypeEnum payeeTypeEnum)
+        public RemitRecord CreateRemitRecordByUserArc(UserArc userArc,RemitRecord remitRecord, PayeeTypeEnum payeeTypeEnum)
         {
-
-            RemitRecord newRemitRecord = new RemitRecord()
-            {
-                UserId = userArc.UserId,
-                ArcName = userArc.ArcName,
-                ArcNo = userArc.ArcNo,
-                PayeeType = (byte)payeeTypeEnum,
-            };
-            dbContext.RemitRecord.Add(newRemitRecord);
+            remitRecord.UserId = userArc.UserId;
+            remitRecord.ArcName = userArc.ArcName;
+            remitRecord.ArcNo = userArc.ArcNo;
+            remitRecord.PayeeType = (byte)payeeTypeEnum;
+            
+            dbContext.RemitRecord.Add(remitRecord);
             dbContext.SaveChanges();
-            return newRemitRecord;
+            return remitRecord;
         }
 
         public List<RemitRecord> GetOngoingRemitRecordsByUserArc(UserArc userArc)

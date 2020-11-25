@@ -1,5 +1,7 @@
 ﻿using Frontend.DB.EF.Models;
 using RemitRecords.Domains.RemitRecords.Constants;
+using RemitRecords.Domains.RemitRecords.Query;
+using RemitRecords.Domains.RemitRecords.Vo;
 using Richviet.API.DataContracts.Requests;
 using Richviet.Services.Constants;
 using Richviet.Services.Contracts;
@@ -24,8 +26,16 @@ namespace Richviet.API.Helper
 
         private readonly IUploadPic uploadPicService;
 
+        private readonly IRemitRecordQueryRepositories remitRecordQueryRepositories;
+
+        private readonly string OUT_OF_RANGE = "amount out of range";
+
+        private readonly string OUT_OF_MONTHLY_MAX = "amount out of monthly maximum";
+
+        private readonly string OUT_OF_YEARLY_MAX = "amount out of yearly maximum";
+
         public RemitValidationHelper(IExchangeRateService exchangeRateService, ICurrencyService currencyService, IRemitSettingService remitSettingService,
-            IDiscountService discountService, IBeneficiarService beneficiarService, IUploadPic uploadPicService)
+            IDiscountService discountService, IBeneficiarService beneficiarService, IUploadPic uploadPicService, IRemitRecordQueryRepositories remitRecordQueryRepositories)
         {
             this.exchangeRateService = exchangeRateService;
             this.currencyService = currencyService;
@@ -33,13 +43,17 @@ namespace Richviet.API.Helper
             this.discountService = discountService;
             this.beneficiarService = beneficiarService;
             this.uploadPicService = uploadPicService;
+            this.remitRecordQueryRepositories = remitRecordQueryRepositories;
         }
 
-        private string CheckIfAmountOutOfRange(int amount, string country)
+        private string CheckIfAmountOutOfRange(long userId,int amount, string country)
         {
             BussinessUnitRemitSetting remitSetting = remitSettingService.GetRemitSettingByCountry(country);
             if (remitSetting == null) return "no remit setting for {country}";
-            if (amount < remitSetting.RemitMin || amount > remitSetting.RemitMax) return "amount out of range";
+            if (amount < remitSetting.RemitMin || amount > remitSetting.RemitMax) return OUT_OF_RANGE;
+            RemitAvailableAmountSumVo amountSumVo = remitRecordQueryRepositories.QueryRemitAvailableAmount(userId, country);
+            if (amountSumVo.MonthlyAvailableRemitAmount != null && amount > amountSumVo.MonthlyAvailableRemitAmount) return OUT_OF_MONTHLY_MAX;
+            if (amountSumVo.YearlyAvailableRemitAmount != null && amount > amountSumVo.YearlyAvailableRemitAmount) return OUT_OF_YEARLY_MAX;
             return null;
         }
 
@@ -126,7 +140,7 @@ namespace Richviet.API.Helper
             string error = null;
             if (draftRemitRequest.FromAmount != null)
             {
-                error = CheckIfAmountOutOfRange((int)draftRemitRequest.FromAmount, country);
+                error = CheckIfAmountOutOfRange(userArc.UserId,(int)draftRemitRequest.FromAmount, country);
                 if (error != null) return error;
                 remitRecord.FromAmount = (double)draftRemitRequest.FromAmount;
             }
@@ -167,7 +181,7 @@ namespace Richviet.API.Helper
             remitRecord.ToCurrencyId = remitRequest.ToCurrencyId;
 
             // check amount
-            error = CheckIfAmountOutOfRange(remitRequest.FromAmount, "TW");
+            error = CheckIfAmountOutOfRange(userArc.UserId,remitRequest.FromAmount, "TW");
             if (error != null) return error;
             ExchangeRate applyExchangeRate = exchangeRateService.GetExchangeRateByCurrencyName(remitRequest.ToCurrency);
             remitRecord.FromAmount = remitRequest.FromAmount;
