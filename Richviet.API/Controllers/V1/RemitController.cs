@@ -123,7 +123,7 @@ namespace Richviet.API.Controllers.V1
         /// 使用者可匯款的月額度,年額度
         /// </summary>
         [HttpGet("availableAmount")]
-        [AllowAnonymous]
+        [Authorize]
         public MessageModel<RemitAvailableAmount> GetAvailableAmount()
         {
             var userId = long.Parse(User.FindFirstValue("id"));
