@@ -48,6 +48,8 @@ namespace Richviet.API.Controllers.V1
 
         private readonly string KYC_NOT_PASSED = "KYC process has not been passed or failed!";
 
+        private readonly string NOT_AUTHORIZED = "Unauthorized Operation";
+
         private readonly string COUNTRY = "TW";
 
         private readonly IRemitRecordQueryRepositories remitRecordQueryRepositories;
@@ -118,77 +120,101 @@ namespace Richviet.API.Controllers.V1
         }
 
         /// <summary>
-        /// 取得使用者目前的草稿,和剩餘可匯款月限額跟年限額(不包括此筆草稿的金額)
+        /// 使用者可匯款的月額度,年額度
         /// </summary>
-        [HttpGet("draft")]
-        [Authorize]
-        public ActionResult<MessageModel<DraftRemitDTO>> GetDraftRemitRecord()
+        [HttpGet("availableAmount")]
+        [AllowAnonymous]
+        public MessageModel<RemitAvailableAmount> GetAvailableAmount()
         {
-            // KYC passed?
             var userId = long.Parse(User.FindFirstValue("id"));
-            UserArc userArc = userService.GetUserArcById(userId);
-            if (!helper.CheckIfKYCPassed(userArc))
-                return BadRequest(new MessageModel<DraftRemitDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = KYC_NOT_PASSED
-                });
-            RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
             RemitAvailableAmountSumVo amountSumVo = remitRecordQueryRepositories.QueryRemitAvailableAmount(userId, COUNTRY);
-            DraftRemitDTO data = new DraftRemitDTO()
+
+
+            return new MessageModel<RemitAvailableAmount>
             {
-                RemitRecordDTO = _mapper.Map<RemitRecordDTO>(draftRemitRecord),
-                MonthlyAvailableRemitAmount = (int)amountSumVo.MonthlyAvailableRemitAmount,
-                YearlyAvailableRemitAmount = (int)amountSumVo.YearlyAvailableRemitAmount
+                Data = new RemitAvailableAmount
+                {
+                    MonthlyAvailableRemitAmount = (int) amountSumVo.MonthlyAvailableRemitAmount,
+                    YearlyAvailableRemitAmount =  (int) amountSumVo.YearlyAvailableRemitAmount
+                }
             };
 
-
-            return Ok(new MessageModel<DraftRemitDTO>
-            {
-                Data = data
-            });
-        }
-        /// <summary>
-        /// 刪除使用者目前的草稿
-        /// </summary>
-        [HttpDelete("draft")]
-        [Authorize]
-        public ActionResult<MessageModel<RemitRecordDTO>> RemoveDraftRemitRecord()
-        {
-            // KYC passed?
-            var userId = long.Parse(User.FindFirstValue("id"));
-            UserArc userArc = userService.GetUserArcById(userId);
-            if (!helper.CheckIfKYCPassed(userArc))
-                return BadRequest(new MessageModel<RemitRecordDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = KYC_NOT_PASSED
-                });
-            RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
-            if(draftRemitRecord == null)
-            {
-                return BadRequest(new MessageModel<RemitRecordDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = "draft remit record does not exist!"
-                }); ;
-            }
-            remitRecordService.DeleteRmitRecord(draftRemitRecord);
-            return Ok(new MessageModel<RemitRecordDTO>
-            {
-                Data = null
-            }); ;
         }
 
+        ///// <summary>
+        ///// 取得使用者目前的草稿,和剩餘可匯款月限額跟年限額(不包括此筆草稿的金額)
+        ///// </summary>
+        //[HttpGet("draft")]
+        //[Authorize]
+        //public ActionResult<MessageModel<DraftRemitDTO>> GetDraftRemitRecord()
+        //{
+        //    // KYC passed?
+        //    var userId = long.Parse(User.FindFirstValue("id"));
+        //    UserArc userArc = userService.GetUserArcById(userId);
+        //    if (!helper.CheckIfKYCPassed(userArc))
+        //        return BadRequest(new MessageModel<DraftRemitDTO>
+        //        {
+        //            Status = (int)HttpStatusCode.BadRequest,
+        //            Success = false,
+        //            Msg = KYC_NOT_PASSED
+        //        });
+        //    RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
+        //    RemitAvailableAmountSumVo amountSumVo = remitRecordQueryRepositories.QueryRemitAvailableAmount(userId, COUNTRY);
+        //    DraftRemitDTO data = new DraftRemitDTO()
+        //    {
+        //        RemitRecordDTO = _mapper.Map<RemitRecordDTO>(draftRemitRecord),
+        //        MonthlyAvailableRemitAmount = (int)amountSumVo.MonthlyAvailableRemitAmount,
+        //        YearlyAvailableRemitAmount = (int)amountSumVo.YearlyAvailableRemitAmount
+        //    };
+
+
+        //    return Ok(new MessageModel<DraftRemitDTO>
+        //    {
+        //        Data = data
+        //    });
+        //}
+
+
+        ///// <summary>
+        ///// 刪除使用者目前的草稿
+        ///// </summary>
+        //[HttpDelete("draft")]
+        //[Authorize]
+        //public ActionResult<MessageModel<RemitRecordDTO>> RemoveDraftRemitRecord()
+        //{
+        //    // KYC passed?
+        //    var userId = long.Parse(User.FindFirstValue("id"));
+        //    UserArc userArc = userService.GetUserArcById(userId);
+        //    if (!helper.CheckIfKYCPassed(userArc))
+        //        return BadRequest(new MessageModel<RemitRecordDTO>
+        //        {
+        //            Status = (int)HttpStatusCode.BadRequest,
+        //            Success = false,
+        //            Msg = KYC_NOT_PASSED
+        //        });
+        //    RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
+        //    if(draftRemitRecord == null)
+        //    {
+        //        return BadRequest(new MessageModel<RemitRecordDTO>
+        //        {
+        //            Status = (int)HttpStatusCode.BadRequest,
+        //            Success = false,
+        //            Msg = "draft remit record does not exist!"
+        //        }); ;
+        //    }
+        //    remitRecordService.DeleteRmitRecord(draftRemitRecord);
+        //    return Ok(new MessageModel<RemitRecordDTO>
+        //    {
+        //        Data = null
+        //    }); ;
+        //}
+
         /// <summary>
-        /// 申請匯款草稿,response為此筆草稿內容,和剩餘可匯款月限額跟年限額(不包括此筆草稿的金額)
+        /// 申請匯款草稿
         /// </summary>
         [HttpPost("draft")]
         [Authorize]
-        public ActionResult<MessageModel<DraftRemitDTO>> CreateDraftRemitRecord([FromBody] DraftRemitRequest draftRemitRequest)
+        public ActionResult<MessageModel<RemitRecordDTO>> CreateDraftRemitRecord([FromBody] DraftRemitRequest draftRemitRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -196,7 +222,7 @@ namespace Richviet.API.Controllers.V1
                            .Where(y => y.Count > 0)
                            .ToList();
 
-                return BadRequest(new MessageModel<DraftRemitDTO>
+                return BadRequest(new MessageModel<RemitRecordDTO>
                 {
                     Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
@@ -207,7 +233,7 @@ namespace Richviet.API.Controllers.V1
             var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
             if (!helper.CheckIfKYCPassed(userArc))
-                return BadRequest(new MessageModel<DraftRemitDTO>
+                return BadRequest(new MessageModel<RemitRecordDTO>
                 {
                     Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
@@ -215,79 +241,13 @@ namespace Richviet.API.Controllers.V1
                 });
             // Get draft
             RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
-            if (draftRemitRecord == null)
+            if (draftRemitRecord != null)
             {
-                draftRemitRecord = new RemitRecord();
-                string error = helper.CheckAndSetDraftRemitProperty(userArc, draftRemitRecord, draftRemitRequest, draftRemitRequest.Country ?? "TW");
-                if (error != null)
-                {
-                    return BadRequest(new MessageModel<DraftRemitDTO>
-                    {
-                        Status = (int)HttpStatusCode.BadRequest,
-                        Success = false,
-                        Msg = error
-                    });
-                }
-                draftRemitRecord = remitRecordService.CreateRemitRecordByUserArc(userArc, draftRemitRecord, PayeeTypeEnum.Bank);
-                RemitAvailableAmountSumVo amountSumVo =  remitRecordQueryRepositories.QueryRemitAvailableAmount(userId, COUNTRY);
-                DraftRemitDTO data = new DraftRemitDTO()
-                {
-                    RemitRecordDTO = _mapper.Map<RemitRecordDTO>(draftRemitRecord),
-                    MonthlyAvailableRemitAmount = (int)amountSumVo.MonthlyAvailableRemitAmount,
-                    YearlyAvailableRemitAmount = (int)amountSumVo.YearlyAvailableRemitAmount
-                };
-
-                return Ok(new MessageModel<DraftRemitDTO>
-                {
-                    Data = data
-
-                });
+                remitRecordService.DeleteRmitRecord(draftRemitRecord);
             }
-            else
-            {
-                return BadRequest(new MessageModel<RemitRecordDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = "the draft already exists"
-                });
-            }
-        }
 
-
-        /// <summary>
-        /// 修改匯款草稿(HTTP PATCH method)
-        /// </summary>
-        [HttpPatch("draft/{id}")]
-        [Authorize]
-        public ActionResult<MessageModel<RemitRecordDTO>> PatchDraftRemitRecord([FromRoute, SwaggerParameter("草稿匯款的id", Required = true)] int id, [FromBody] DraftRemitRequest draftRemitRequest)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            // KYC passed?
-            var userId = long.Parse(User.FindFirstValue("id"));
-            UserArc userArc = userService.GetUserArcById(userId);
-            if (!helper.CheckIfKYCPassed(userArc))
-                return BadRequest(new MessageModel<RemitRecordDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = KYC_NOT_PASSED
-                });
-            // check existence
-            RemitRecord record = remitRecordService.GetRemitRecordById(id);
-            if (record == null)
-            {
-                return BadRequest(new MessageModel<RemitRecordDTO>
-                {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Success = false,
-                    Msg = "Not exists"
-                });
-            }
-            string error = helper.CheckAndSetDraftRemitProperty(userArc,record,draftRemitRequest, draftRemitRequest.Country??"TW");
+            draftRemitRecord = new RemitRecord();
+            string error = helper.CheckAndSetDraftRemitProperty(userArc, draftRemitRecord, draftRemitRequest, draftRemitRequest.Country ?? "TW");
             if (error != null)
             {
                 return BadRequest(new MessageModel<RemitRecordDTO>
@@ -297,21 +257,76 @@ namespace Richviet.API.Controllers.V1
                     Msg = error
                 });
             }
-            else
+            draftRemitRecord = remitRecordService.CreateRemitRecordByUserArc(userArc, draftRemitRecord, PayeeTypeEnum.Bank);
+                
+
+            return Ok(new MessageModel<RemitRecordDTO>
             {
-                remitRecordService.ModifyRemitRecord(record,null);
-                RemitRecordDTO remitRecordDTO = _mapper.Map<RemitRecordDTO>(record);
-                return Ok(new MessageModel<RemitRecordDTO>
-                {
-                    Data = remitRecordDTO
-                });
-            }
+                Data = _mapper.Map<RemitRecordDTO>(draftRemitRecord)
+
+            });
+            
+            
         }
+
+
+        ///// <summary>
+        ///// 修改匯款草稿(HTTP PATCH method)
+        ///// </summary>
+        //[HttpPatch("draft/{id}")]
+        //[Authorize]
+        //public ActionResult<MessageModel<RemitRecordDTO>> PatchDraftRemitRecord([FromRoute, SwaggerParameter("草稿匯款的id", Required = true)] int id, [FromBody] DraftRemitRequest draftRemitRequest)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    // KYC passed?
+        //    var userId = long.Parse(User.FindFirstValue("id"));
+        //    UserArc userArc = userService.GetUserArcById(userId);
+        //    if (!helper.CheckIfKYCPassed(userArc))
+        //        return BadRequest(new MessageModel<RemitRecordDTO>
+        //        {
+        //            Status = (int)HttpStatusCode.BadRequest,
+        //            Success = false,
+        //            Msg = KYC_NOT_PASSED
+        //        });
+        //    // check existence
+        //    RemitRecord record = remitRecordService.GetRemitRecordById(id);
+        //    if (record == null)
+        //    {
+        //        return BadRequest(new MessageModel<RemitRecordDTO>
+        //        {
+        //            Status = (int)HttpStatusCode.BadRequest,
+        //            Success = false,
+        //            Msg = "Not exists"
+        //        });
+        //    }
+        //    string error = helper.CheckAndSetDraftRemitProperty(userArc,record,draftRemitRequest, draftRemitRequest.Country??"TW");
+        //    if (error != null)
+        //    {
+        //        return BadRequest(new MessageModel<RemitRecordDTO>
+        //        {
+        //            Status = (int)HttpStatusCode.BadRequest,
+        //            Success = false,
+        //            Msg = error
+        //        });
+        //    }
+        //    else
+        //    {
+        //        remitRecordService.ModifyRemitRecord(record,null);
+        //        RemitRecordDTO remitRecordDTO = _mapper.Map<RemitRecordDTO>(record);
+        //        return Ok(new MessageModel<RemitRecordDTO>
+        //        {
+        //            Data = remitRecordDTO
+        //        });
+        //    }
+        //}
 
         /// <summary>
         /// 使用者送出正式匯款申請
         /// </summary>
-        [HttpPost("formal/{id}")]
+        [HttpPost("formalRemit/{id}")]
         [Authorize]
         public ActionResult<MessageModel<RemitRecordDTO>> ApplyRemitRecord([FromBody] RemitRequest remitRequest, [FromRoute, SwaggerParameter("草稿匯款的id", Required = true)] int id)
         {
@@ -376,7 +391,7 @@ namespace Richviet.API.Controllers.V1
         /// 
         [HttpGet("payment/{id}")]
         [Authorize]
-        public ActionResult<MessageModel<PaymentCodeDTO>> GetPaymentCode([FromRoute, SwaggerParameter("交易紀錄id", Required = true)] int id)
+        public ActionResult<MessageModel<PaymentCodeDTO>> GetPaymentCode([FromRoute, SwaggerParameter("交易紀錄id", Required = true)] long id)
         {
             return Ok(new MessageModel<PaymentCodeDTO>()
             {
@@ -384,6 +399,35 @@ namespace Richviet.API.Controllers.V1
                 {
                     Code = "WEFQEWFEFQEQGRGRG009233"
                 }
+            });
+        }
+
+
+        /// <summary>
+        /// 取得該筆匯款紀錄明細
+        /// </summary>
+        /// 
+        [HttpGet("remitRecords/{id}")]
+        [Authorize]
+        public ActionResult<MessageModel<RemitRecordDTO>> GetRemitRecordById([FromRoute, SwaggerParameter("交易紀錄id", Required = true)] long id)
+        {
+            var userId = long.Parse(User.FindFirstValue("id"));
+            UserArc userArc = userService.GetUserArcById(userId);
+            RemitRecord record = remitRecordService.GetRemitRecordById(id);
+            if(record!=null && record.UserId != userId)
+            {
+                return Unauthorized(new MessageModel<RemitRecordDTO>
+                {
+                    Status = (int)HttpStatusCode.Unauthorized,
+                    Success = false,
+                    Msg = NOT_AUTHORIZED
+                });
+            }
+
+
+            return Ok(new MessageModel<RemitRecordDTO>()
+            {
+                Data = _mapper.Map<RemitRecordDTO>(record)
             });
         }
 
