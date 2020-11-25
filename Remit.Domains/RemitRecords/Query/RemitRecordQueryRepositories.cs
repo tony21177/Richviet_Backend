@@ -17,10 +17,11 @@ namespace RemitRecords.Domains.RemitRecords.Query
             _context = context;
         }
 
-        public RemitAvailableAmountSumVo QueryMonthlyAvailableAmount(long userId,string country)
+        public RemitAvailableAmountSumVo QueryRemitAvailableAmount(long userId,string country)
         {
             BussinessUnitRemitSetting setting = _context.BussinessUnitRemitSetting.Where(setting=>setting.Country.Equals(country.ToUpper())).FirstOrDefault();
             var nowMonth = DateTime.UtcNow.Month;
+            var nowYear = DateTime.UtcNow.Year;
 
             var monthlyAvailableAmountList = from u in _context.UserArc.Where(userArc=>userArc.UserId == userId)
                                          join r in _context.RemitRecord.Where(record => record.UserId == userId) on u.UserId equals r.UserId
@@ -32,31 +33,29 @@ namespace RemitRecords.Domains.RemitRecords.Query
                                              UserId = g.Key,
                                              MonthlyAvailableRemitAmount = (int)(setting.MonthlyMax - g.Sum(ele=>ele.FromAmount))
                                          };
+            var yearlyAvailableAmountList = from u in _context.UserArc.Where(userArc => userArc.UserId == userId)
+                                             join r in _context.RemitRecord.Where(record => record.UserId == userId) on u.UserId equals r.UserId
+                                             where (r.TransactionStatus > 0 && ((DateTime)r.FormalApplyTime).Year == nowYear)
+                                             || (r.TransactionStatus >= (short)RemitTransactionStatusEnum.Paid && ((DateTime)r.PaymentTime).Year == nowYear)
+                                             || (r.TransactionStatus > 0 && r.TransactionStatus < (short)RemitTransactionStatusEnum.Paid && ((DateTime)r.FormalApplyTime).Year == nowYear - 1)
+                                             group r by (r.UserId) into g
+                                             select new
+                                             {
+                                                 UserId = g.Key,
+                                                 YearlyAvailableRemitAmount = (int)(setting.YearlyMax - g.Sum(ele => ele.FromAmount))
+                                             };
+
             var monthlyAvailableAmount = monthlyAvailableAmountList.FirstOrDefault();
-            if (monthlyAvailableAmount == null)
+            var yearlyAvailableRemitAmount = yearlyAvailableAmountList.FirstOrDefault();
+            var result = new RemitAvailableAmountSumVo
             {
-                return new RemitAvailableAmountSumVo
-                {
-                    UserId = userId,
-                    DailyAvailableRemitAmount = setting.DailyMax,
-                    MonthlyAvailableRemitAmount = setting.MonthlyMax,
-                    YearlyAvailableRemitAmount = setting.YearlyMax
-                };
-            }
-            RemitAvailableAmountSumVo remitAvailableAmountSumVo = new RemitAvailableAmountSumVo
-            {
-                UserId = monthlyAvailableAmount.UserId,
-                MonthlyAvailableRemitAmount = monthlyAvailableAmount.MonthlyAvailableRemitAmount
+                UserId = userId,
+                MonthlyAvailableRemitAmount = monthlyAvailableAmount == null ? setting.MonthlyMax : monthlyAvailableAmount.MonthlyAvailableRemitAmount,
+                YearlyAvailableRemitAmount = yearlyAvailableRemitAmount == null ? setting.YearlyMax : yearlyAvailableRemitAmount.YearlyAvailableRemitAmount
             };
-
-            return remitAvailableAmountSumVo;
+            
+            return result;
         }
 
-
-
-        public RemitAvailableAmountSumVo QueryYearlyAvailableAmount(long userId, string country)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

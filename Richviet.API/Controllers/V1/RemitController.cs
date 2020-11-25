@@ -17,6 +17,8 @@ using Richviet.API.Helper;
 using System.Collections.Generic;
 using System.Linq;
 using RemitRecords.Domains.RemitRecords.Constants;
+using RemitRecords.Domains.RemitRecords.Query;
+using RemitRecords.Domains.RemitRecords.Vo;
 
 #pragma warning disable 1591
 namespace Richviet.API.Controllers.V1
@@ -46,9 +48,13 @@ namespace Richviet.API.Controllers.V1
 
         private readonly string KYC_NOT_PASSED = "KYC process has not been passed or failed!";
 
+        private readonly string COUNTRY = "TW";
+
+        private readonly IRemitRecordQueryRepositories remitRecordQueryRepositories;
+
 
         public RemitController(ILogger<RemitController> logger, IMapper mapper, IRemitSettingService remitSettingService, IRemitRecordService remitRecordService, IBeneficiarService beneficiarService
-            , IUserService userService, IDiscountService discountService, RemitValidationHelper helper)
+            , IUserService userService, IDiscountService discountService, IRemitRecordQueryRepositories remitRecordQueryRepositories, RemitValidationHelper helper)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this._mapper = mapper;
@@ -57,6 +63,7 @@ namespace Richviet.API.Controllers.V1
             this.discountService = discountService;
             this.remitRecordService = remitRecordService;
             this.helper = helper;
+            this.remitRecordQueryRepositories = remitRecordQueryRepositories;
         }
 
         /// <summary>
@@ -111,26 +118,35 @@ namespace Richviet.API.Controllers.V1
         }
 
         /// <summary>
-        /// 取得使用者目前的草稿
+        /// 取得使用者目前的草稿,和剩餘可匯款月限額跟年限額(不包括此筆草稿的金額)
         /// </summary>
         [HttpGet("draft")]
         [Authorize]
-        public ActionResult<MessageModel<RemitRecordDTO>> GetDraftRemitRecord()
+        public ActionResult<MessageModel<DraftRemitDTO>> GetDraftRemitRecord()
         {
             // KYC passed?
             var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
             if (!helper.CheckIfKYCPassed(userArc))
-                return BadRequest(new MessageModel<RemitRecordDTO>
+                return BadRequest(new MessageModel<DraftRemitDTO>
                 {
                     Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
                     Msg = KYC_NOT_PASSED
                 });
             RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
-            return Ok(new MessageModel<RemitRecordDTO>
+            RemitAvailableAmountSumVo amountSumVo = remitRecordQueryRepositories.QueryRemitAvailableAmount(userId, COUNTRY);
+            DraftRemitDTO data = new DraftRemitDTO()
             {
-                Data = _mapper.Map<RemitRecordDTO>(draftRemitRecord)
+                RemitRecordDTO = _mapper.Map<RemitRecordDTO>(draftRemitRecord),
+                MonthlyAvailableRemitAmount = (int)amountSumVo.MonthlyAvailableRemitAmount,
+                YearlyAvailableRemitAmount = (int)amountSumVo.YearlyAvailableRemitAmount
+            };
+
+
+            return Ok(new MessageModel<DraftRemitDTO>
+            {
+                Data = data
             });
         }
         /// <summary>
@@ -168,11 +184,11 @@ namespace Richviet.API.Controllers.V1
         }
 
         /// <summary>
-        /// 申請匯款草稿
+        /// 申請匯款草稿,response為此筆草稿內容,和剩餘可匯款月限額跟年限額(不包括此筆草稿的金額)
         /// </summary>
         [HttpPost("draft")]
         [Authorize]
-        public ActionResult<MessageModel<RemitRecordDTO>> CreateDraftRemitRecord()
+        public ActionResult<MessageModel<DraftRemitDTO>> CreateDraftRemitRecord([FromBody] DraftRemitRequest draftRemitRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -180,7 +196,7 @@ namespace Richviet.API.Controllers.V1
                            .Where(y => y.Count > 0)
                            .ToList();
 
-                return BadRequest(new MessageModel<RemitRecordDTO>
+                return BadRequest(new MessageModel<DraftRemitDTO>
                 {
                     Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
@@ -191,7 +207,7 @@ namespace Richviet.API.Controllers.V1
             var userId = long.Parse(User.FindFirstValue("id"));
             UserArc userArc = userService.GetUserArcById(userId);
             if (!helper.CheckIfKYCPassed(userArc))
-                return BadRequest(new MessageModel<RemitRecordDTO>
+                return BadRequest(new MessageModel<DraftRemitDTO>
                 {
                     Status = (int)HttpStatusCode.BadRequest,
                     Success = false,
@@ -201,10 +217,29 @@ namespace Richviet.API.Controllers.V1
             RemitRecord draftRemitRecord = remitRecordService.GetDraftRemitRecordByUserArc(userArc);
             if (draftRemitRecord == null)
             {
-                draftRemitRecord = remitRecordService.CreateRemitRecordByUserArc(userArc, PayeeTypeEnum.Bank);
-                return Ok(new MessageModel<RemitRecordDTO>
+                draftRemitRecord = new RemitRecord();
+                string error = helper.CheckAndSetDraftRemitProperty(userArc, draftRemitRecord, draftRemitRequest, draftRemitRequest.Country ?? "TW");
+                if (error != null)
                 {
-                    Data = _mapper.Map<RemitRecordDTO>(draftRemitRecord)
+                    return BadRequest(new MessageModel<DraftRemitDTO>
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Success = false,
+                        Msg = error
+                    });
+                }
+                draftRemitRecord = remitRecordService.CreateRemitRecordByUserArc(userArc, draftRemitRecord, PayeeTypeEnum.Bank);
+                RemitAvailableAmountSumVo amountSumVo =  remitRecordQueryRepositories.QueryRemitAvailableAmount(userId, COUNTRY);
+                DraftRemitDTO data = new DraftRemitDTO()
+                {
+                    RemitRecordDTO = _mapper.Map<RemitRecordDTO>(draftRemitRecord),
+                    MonthlyAvailableRemitAmount = (int)amountSumVo.MonthlyAvailableRemitAmount,
+                    YearlyAvailableRemitAmount = (int)amountSumVo.YearlyAvailableRemitAmount
+                };
+
+                return Ok(new MessageModel<DraftRemitDTO>
+                {
+                    Data = data
 
                 });
             }

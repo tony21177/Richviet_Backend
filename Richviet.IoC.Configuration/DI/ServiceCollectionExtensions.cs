@@ -12,6 +12,7 @@ using Richviet.API.Helper;
 using Users.Domains.Users.Command.Adapter.Repositories;
 using Users.Domains.Users.Command.UseCase;
 using Users.Domains.Users.Query;
+using RemitRecords.Domains.RemitRecords.Query;
 
 namespace Richviet.IoC.Configuration.DI
 {
@@ -46,6 +47,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<IFirebaseService, FirebaseService>();
                 services.AddTransient<RemitValidationHelper>();
                 services.AddScoped<IBannerService,BannerService>();
+                services.AddTransient<IRemitRecordQueryRepositories, RemitRecordQueryRepositories>();
             }
         }
 
