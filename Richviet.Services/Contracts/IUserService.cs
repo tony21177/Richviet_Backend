@@ -32,8 +32,8 @@ namespace Richviet.Services.Contracts
 
         void UpdatePicFileNameOfDraftRemit(RemitRecord remitRecord, PictureTypeEnum pictureType, String fileName);
 
-        void SystemVerifyArcForRegisterProcess(long userId);
+        Task SystemVerifyArcForRegisterProcess(long userId);
 
-        void SystemVerifyArcForRemitProcess(RemitRecord remitRecord, long userId);
+        Task SystemVerifyArcForRemitProcess(RemitRecord remitRecord, long userId);
     }
 }

@@ -13,6 +13,8 @@ using Users.Domains.Users.Command.Adapter.Repositories;
 using Users.Domains.Users.Command.UseCase;
 using Users.Domains.Users.Query;
 using RemitRecords.Domains.RemitRecords.Query;
+using Email.Notifier;
+using Microsoft.Extensions.Options;
 
 namespace Richviet.IoC.Configuration.DI
 {
@@ -48,6 +50,13 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<RemitValidationHelper>();
                 services.AddScoped<IBannerService,BannerService>();
                 services.AddTransient<IRemitRecordQueryRepositories, RemitRecordQueryRepositories>();
+                IOptions<SendGridEmailSenderOptions> sendGridoptions = Options.Create(new SendGridEmailSenderOptions()
+                {
+                    ApiKey = configuration["SendGridKey"],
+                    SenderEmail = configuration["SendGridSenderEmail"],
+                    SenderName = configuration["SendGridSenderName"]
+                });
+                services.AddSingleton<IEmailSender>(sender=>new SendGridEmailSender(sendGridoptions));
             }
         }
 
