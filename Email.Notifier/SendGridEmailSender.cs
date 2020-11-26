@@ -11,9 +11,9 @@ namespace Email.Notifier
         public SendGridEmailSenderOptions Options { get; set; }
 
 
-        public async Task SendEmailAsync(SendEmailVo vo)
+        public async Task<Response> SendEmailAsync(SendEmailVo vo)
         {
-            await Execute(Options.ApiKey, vo.Subject, vo.Message, vo.Email);
+            return await Execute(Options.ApiKey, vo.Subject, vo.Message, vo.Email);
         }
 
         public SendGridEmailSender(
