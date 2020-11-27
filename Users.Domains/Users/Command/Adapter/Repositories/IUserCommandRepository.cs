@@ -9,5 +9,7 @@ namespace Users.Domains.Users.Command.Adapter.Repositories
         void Modify(User user);
 
         int DeleteDraftUser();
+
+        int DeleteDraftUserAfterDays(int days);
     }
 }

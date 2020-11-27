@@ -19,8 +19,8 @@ namespace Frontend.DB.EF.Models
         public string IdImageC { get; set; }
         public short? KycStatus { get; set; }
         public DateTime? KycStatusUpdateTime { get; set; }
-        public DateTime? CreateTime { get; set; }
-        public DateTime? UpdateTime { get; set; }
+        public DateTime CreateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
         public long? LastArcScanRecordId { get; set; }
 
         public virtual ArcScanRecord LastArcScanRecord { get; set; }

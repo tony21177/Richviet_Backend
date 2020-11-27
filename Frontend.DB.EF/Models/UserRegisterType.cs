@@ -12,8 +12,8 @@ namespace Frontend.DB.EF.Models
         public byte RegisterType { get; set; }
         public string Email { get; set; }
         public DateTime? RegisterTime { get; set; }
-        public DateTime? CreateTime { get; set; }
-        public DateTime? UpdateTime { get; set; }
+        public DateTime CreateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
 
         public virtual User User { get; set; }
     }

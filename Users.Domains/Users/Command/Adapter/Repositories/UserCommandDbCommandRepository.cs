@@ -30,5 +30,14 @@ namespace Users.Domains.Users.Command.Adapter.Repositories
             _context.SaveChanges();
             return numberOfEffectRow;
         }
+
+        public int DeleteDraftUserAfterDays(int days)
+        {
+            DateTime now = DateTime.UtcNow;
+            //int numberOfEffectRow = _context.User.Where(x => x.UserArc.KycStatus == 0 && now.Subtract(x.UserArc.CreateTime)).DeleteFromQuery();
+
+            _context.SaveChanges();
+            return 0;
+        }
     }
 }
