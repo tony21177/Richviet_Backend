@@ -60,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemitRecords.Domains", "Rem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DraftUser.Remover", "DraftUser.Remover\DraftUser.Remover.csproj", "{CC5BBB81-CEF5-4B13-87B3-7BCA5359EC39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.Notifier", "Email.Notifier\Email.Notifier.csproj", "{A4AC7481-7DAE-4115-AEF5-522DA6043248}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Email.Notifier", "Email.Notifier\Email.Notifier.csproj", "{A4AC7481-7DAE-4115-AEF5-522DA6043248}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

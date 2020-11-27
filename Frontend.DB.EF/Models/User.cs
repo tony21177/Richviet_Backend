@@ -10,7 +10,6 @@ namespace Frontend.DB.EF.Models
             Discount = new HashSet<Discount>();
             OftenBeneficiar = new HashSet<OftenBeneficiar>();
             RemitRecord = new HashSet<RemitRecord>();
-            UserLoginLog = new HashSet<UserLoginLog>();
             UserRegisterType = new HashSet<UserRegisterType>();
         }
 
@@ -29,7 +28,6 @@ namespace Frontend.DB.EF.Models
         public virtual ICollection<Discount> Discount { get; set; }
         public virtual ICollection<OftenBeneficiar> OftenBeneficiar { get; set; }
         public virtual ICollection<RemitRecord> RemitRecord { get; set; }
-        public virtual ICollection<UserLoginLog> UserLoginLog { get; set; }
         public virtual ICollection<UserRegisterType> UserRegisterType { get; set; }
     }
 }

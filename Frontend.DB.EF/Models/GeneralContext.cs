@@ -702,7 +702,6 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.KycStatus)
                     .HasColumnName("kyc_status")
-                    .HasDefaultValueSql("((0))")
                     .HasComment("KYC審核狀態, -10:禁用,-9:KYC未通過,-8:AML未通過 ,0:草稿會員,1:待審核(註冊完),2:ARC驗證成功,3:AML通過,9:正式會員(KYC審核通過)");
 
                 entity.Property(e => e.KycStatusUpdateTime)
@@ -739,7 +738,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.UserArc)
                     .HasForeignKey<UserArc>(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_UserArc");
             });
 
@@ -890,12 +888,6 @@ namespace Frontend.DB.EF.Models
                     .HasComment("0:平台本身\\\\n1:FB\\\\n2:apple\\\\n3:google\\\\n4:zalo");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserLoginLog)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_user_login_log_user");
             });
 
             modelBuilder.Entity<UserRegisterType>(entity =>
@@ -955,7 +947,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserRegisterType)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_user_register");
             });
 

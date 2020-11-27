@@ -21,7 +21,7 @@ namespace Frontend.DB.EF.Models
         public string IdImageA { get; set; }
         public string IdImageB { get; set; }
         public string IdImageC { get; set; }
-        public short? KycStatus { get; set; }
+        public short KycStatus { get; set; }
         public DateTime? KycStatusUpdateTime { get; set; }
         public DateTime? ArcIssueDate { get; set; }
         public DateTime? ArcExpireDate { get; set; }

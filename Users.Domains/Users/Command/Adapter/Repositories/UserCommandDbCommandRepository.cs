@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Frontend.DB.EF.Models;
 using Microsoft.EntityFrameworkCore;
-using Z.EntityFramework.Plus;
 
 namespace Users.Domains.Users.Command.Adapter.Repositories
 {
@@ -34,7 +35,10 @@ namespace Users.Domains.Users.Command.Adapter.Repositories
         public int DeleteDraftUserAfterDays(int days)
         {
             DateTime now = DateTime.UtcNow;
-            //int numberOfEffectRow = _context.User.Where(x => x.UserArc.KycStatus == 0 && now.Subtract(x.UserArc.CreateTime)).DeleteFromQuery();
+            DateTime deletedDate = now.AddDays(-days);
+            //List<User> userList = _context.User.Include(user => user.UserArc).Where(user => user.UserArc.KycStatus == 0 && System.Data.Entity.DbFunctions.DiffDays(user.UserArc.CreateTime, now) >= days).Include(user=>user.UserRegisterType).ToList();
+            List<User> userList = _context.User.Include(user => user.UserArc).Where(user => user.UserArc.KycStatus == 0 && user.UserArc.CreateTime< deletedDate).Include(user => user.UserRegisterType).ToList();
+            _context.User.RemoveRange(userList);
 
             _context.SaveChanges();
             return 0;
