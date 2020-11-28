@@ -18,9 +18,9 @@ namespace Users.Domains.Users.Command.UseCase
             this.queryRepositories = queryRepositories;
         }
 
-        public int Execute()
+        public int Execute(int days)
         {
-            return commandRepository.DeleteDraftUser();
+            return commandRepository.DeleteDraftUserAfterDays(days);
         }
     }
 }

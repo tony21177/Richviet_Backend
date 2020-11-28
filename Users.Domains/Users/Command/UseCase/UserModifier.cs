@@ -45,7 +45,7 @@ namespace Users.Domains.Users.Command.UseCase
             user.UserArc.ArcName = modifyRequest.ArcName;
             user.UserArc.BackSequence = modifyRequest.BackSequence;
             user.UserArc.Country = modifyRequest.Country;
-            user.UserArc.KycStatus = modifyRequest.KycStatus;
+            user.UserArc.KycStatus = (short)modifyRequest.KycStatus;
             user.UserArc.PassportId = modifyRequest.PassportId;
 
             return user;
