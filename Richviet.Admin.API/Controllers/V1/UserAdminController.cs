@@ -94,6 +94,7 @@ namespace Richviet.Admin.API.Controllers.V1
             }
 
             var image = await uploadPicToLocalService.LoadImage(userArc,type, imageFileName);
+            if (image == null) return NotFound();
             
             return File(image, "image/jpeg");
         }

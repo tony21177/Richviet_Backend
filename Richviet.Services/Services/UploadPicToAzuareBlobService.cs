@@ -86,6 +86,7 @@ namespace Richviet.Services.Services
             String imageFileName = WebUtility.UrlDecode(imageUriArray[imageUriArray.Length - 1]);
             BlobContainerClient blobContainer = await GetOrCreateCloudBlobContainer(GetUploadPicContainerName(), PublicAccessType.None);
             BlobClient imageBlob = blobContainer.GetBlobClient(imageFileName);
+            if (!imageBlob.Exists()) return null;
             return await imageBlob.OpenReadAsync();
         }
 
