@@ -42,7 +42,7 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
 
             CreateMap<RemitRecord,RemitRecordDTO>().ReverseMap();
 
-            CreateMap<RemitRecord, RemitRecordDTO>().ForMember(
+            _ = CreateMap<RemitRecord, RemitRecordDTO>().ForMember(
               dest => dest.PayeeName
               , opt => opt.MapFrom(src => src.Beneficiar.Name)
             ).ForMember(
@@ -50,14 +50,18 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
               , opt => opt.MapFrom(src => src.Beneficiar.PayeeAddress)
             ).ForMember(
               dest => dest.PayeeRelationType
-              , opt => opt.MapFrom(src => src.Beneficiar.PayeeRelation.Type )
+              , opt => opt.MapFrom(src => src.Beneficiar.PayeeRelation.Type)
             ).ForMember(
               dest => dest.PayeeRelationTypeDescription
               , opt => opt.MapFrom(src => src.Beneficiar.PayeeRelation.Description)
             ).ForMember(
               dest => dest.ToCurrency
               , opt => opt.MapFrom(src => src.ToCurrency.CurrencyName)
+            ).ForMember(
+              dest => dest.PaymentCode
+              , opt => opt.MapFrom(src => src.PaymentCode.Split(',', StringSplitOptions.None))
             ).ReverseMap();
+
 
             CreateMap<M.PushNotificationSetting, C.NotificationDTO>().ReverseMap();
 

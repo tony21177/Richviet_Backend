@@ -21,5 +21,6 @@ namespace Richviet.Services.Contracts
         RemitRecord CreateRemitRecordByUserArc(UserArc userArc, RemitRecord remitRecord, PayeeTypeEnum payeeTypeEnum);
 
         RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord, DateTime? applyTime);
+        List<string> GeneratePaymentCode(RemitRecord modifiedRemitRecord);
     }
 }

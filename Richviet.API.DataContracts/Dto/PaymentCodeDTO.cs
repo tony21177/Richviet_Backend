@@ -8,6 +8,6 @@ namespace Richviet.API.DataContracts.Dto
     public class PaymentCodeDTO
     {
         [SwaggerSchema("繳款序號字串,由前端gen QRcode")]
-        public string Code { get; set; }
+        public string [] Code { get; set; }
     }
 }
