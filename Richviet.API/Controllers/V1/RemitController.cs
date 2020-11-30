@@ -397,7 +397,7 @@ namespace Richviet.API.Controllers.V1
             {
                 Data = new PaymentCodeDTO()
                 {
-                    Code = "WEFQEWFEFQEQGRGRG009233"
+                   Code = new string [] { "100302C72", "1231231231000000", "090673000020000" }
                 }
             });
         }
