@@ -41,8 +41,11 @@ namespace Richviet.API.Controllers.V1
             Logger.LogInformation(country);
             List<CurrencyCode> currencyCodes = currencyService.GetCurrencyByCountry(country.ToUpper());
             List<CurrencyInfoDTO> currencyInfoDTOs = mapper.Map<List<CurrencyInfoDTO>>(currencyCodes);
-
-
+            List<ExchangeRate> exchangeRates = exchangeRateService.GetExchangeRate();
+            foreach(CurrencyInfoDTO currency in currencyInfoDTOs)
+            {
+                currency.rate = exchangeRates.Find(rate => rate.CurrencyName.Equals(currency.currencyName)).Rate;
+            }
 
             return new MessageModel<List<CurrencyInfoDTO>>
             {
