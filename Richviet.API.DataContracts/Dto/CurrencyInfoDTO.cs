@@ -12,6 +12,9 @@ namespace Richviet.API.DataContracts.Dto
         public long id { set; get; }
         [SwaggerSchema("收款國家可使用的幣別")]
         public string currencyName { set; get; }
+        [SwaggerSchema("收款幣別匯率")]
+        public double rate { set; get; }
+
         [SwaggerSchema("收款國家")]
         public string country { set; get; }
 
