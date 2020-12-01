@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Richviet.API.DataContracts.Dto
 {
     [SwaggerSchema(Required = new[] { "Description" })]
-    public class UserBeneficiarDTO
+    public class UserBeneficiaryDTO
     {
         [SwaggerSchema("主鍵")]
         public int Id { get; set; }

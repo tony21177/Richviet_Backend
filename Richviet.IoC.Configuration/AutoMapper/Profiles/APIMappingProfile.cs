@@ -19,9 +19,9 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<M.UserInfoView, C.UserInfoDTO>().ReverseMap();
             CreateMap<M.ReceiveBank, C.BankDTO>().ReverseMap();
             CreateMap<M.PayeeRelationType, C.RelationDTO>().ReverseMap();
-            CreateMap<R.OftenBeneficiarRequest, M.OftenBeneficiar>().ForMember(x => x.PayeeType, opt => opt.Ignore()).ReverseMap();
+            CreateMap<R.OftenBeneficiaryRequest, M.OftenBeneficiary>().ForMember(x => x.PayeeType, opt => opt.Ignore()).ReverseMap();
 
-            CreateMap<M.OftenBeneficiar, C.UserBeneficiarDTO>().ForMember(
+            CreateMap<M.OftenBeneficiary, C.UserBeneficiaryDTO>().ForMember(
               dest => dest.PayeeType
               , opt => opt.MapFrom(src => src.PayeeType.Type)
             ).ForMember(
@@ -29,7 +29,7 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
               , opt => opt.MapFrom(src => src.PayeeRelation.Type)
             ).ReverseMap();
 
-            CreateMap<M.OftenBeneficiar, M.OftenBeneficiar>()
+            CreateMap<M.OftenBeneficiary, M.OftenBeneficiary>()
                 .ForMember(x => x.Id, opt => opt.Ignore())
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<CurrencyCode, CurrencyInfoDTO>().ReverseMap();
@@ -44,16 +44,16 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
 
             _ = CreateMap<RemitRecord, RemitRecordDTO>().ForMember(
               dest => dest.PayeeName
-              , opt => opt.MapFrom(src => src.Beneficiar.Name)
+              , opt => opt.MapFrom(src => src.Beneficiary.Name)
             ).ForMember(
               dest => dest.PayeeAddress
-              , opt => opt.MapFrom(src => src.Beneficiar.PayeeAddress)
+              , opt => opt.MapFrom(src => src.Beneficiary.PayeeAddress)
             ).ForMember(
               dest => dest.PayeeRelationType
-              , opt => opt.MapFrom(src => src.Beneficiar.PayeeRelation.Type)
+              , opt => opt.MapFrom(src => src.Beneficiary.PayeeRelation.Type)
             ).ForMember(
               dest => dest.PayeeRelationTypeDescription
-              , opt => opt.MapFrom(src => src.Beneficiar.PayeeRelation.Description)
+              , opt => opt.MapFrom(src => src.Beneficiary.PayeeRelation.Description)
             ).ForMember(
               dest => dest.ToCurrency
               , opt => opt.MapFrom(src => src.ToCurrency.CurrencyName)

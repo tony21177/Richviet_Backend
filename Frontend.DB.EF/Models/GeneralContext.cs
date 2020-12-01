@@ -21,7 +21,7 @@ namespace Frontend.DB.EF.Models
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
         public virtual DbSet<Discount> Discount { get; set; }
         public virtual DbSet<ExchangeRate> ExchangeRate { get; set; }
-        public virtual DbSet<OftenBeneficiar> OftenBeneficiar { get; set; }
+        public virtual DbSet<OftenBeneficiary> OftenBeneficiary { get; set; }
         public virtual DbSet<PayeeRelationType> PayeeRelationType { get; set; }
         public virtual DbSet<PayeeType> PayeeType { get; set; }
         public virtual DbSet<PushNotificationSetting> PushNotificationSetting { get; set; }
@@ -218,9 +218,9 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.Rate).HasColumnName("rate");
             });
 
-            modelBuilder.Entity<OftenBeneficiar>(entity =>
+            modelBuilder.Entity<OftenBeneficiary>(entity =>
             {
-                entity.ToTable("often_beneficiar");
+                entity.ToTable("often_beneficiary");
 
                 entity.HasComment("常用收款人");
 
@@ -279,22 +279,22 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.PayeeRelation)
-                    .WithMany(p => p.OftenBeneficiar)
+                    .WithMany(p => p.OftenBeneficiary)
                     .HasForeignKey(d => d.PayeeRelationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_often_beneficiar_payee_relation");
+                    .HasConstraintName("fk_often_beneficiary_payee_relation");
 
                 entity.HasOne(d => d.PayeeType)
-                    .WithMany(p => p.OftenBeneficiar)
+                    .WithMany(p => p.OftenBeneficiary)
                     .HasForeignKey(d => d.PayeeTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_often_beneficiar_payee_type");
+                    .HasConstraintName("fk_often_beneficiary_payee_type");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.OftenBeneficiar)
+                    .WithMany(p => p.OftenBeneficiary)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_often_beneficiar_user");
+                    .HasConstraintName("fk_often_beneficiary_user");
             });
 
             modelBuilder.Entity<PayeeRelationType>(entity =>
@@ -429,6 +429,11 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.AdminVerifyNote)
+                    .HasColumnName("admin_verify_note")
+                    .HasMaxLength(1000)
+                    .HasComment("營運人員審核備註");
+
                 entity.Property(e => e.AmlScanRecordId)
                     .HasColumnName("aml_scan_record_id")
                     .HasComment("對應的系統掃描AML紀錄id");
@@ -451,7 +456,7 @@ namespace Frontend.DB.EF.Models
                     .HasColumnName("arc_scan_record_id")
                     .HasComment("對應的系統掃描arc紀錄id");
 
-                entity.Property(e => e.BeneficiarId).HasColumnName("beneficiar_id");
+                entity.Property(e => e.BeneficiaryId).HasColumnName("beneficiary_id");
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnName("create_time")
@@ -537,7 +542,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.TransactionStatus)
                     .HasColumnName("transaction_status")
-                    .HasComment("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待ARC審核,2ARC審核成功,3:AML審核成功,4:營運人員確認OK,待會員繳款狀態,5: 已繳款,待營運人員處理,9:處理完成");
+                    .HasComment("-10:其他錯誤,-9: 審核失敗,-8: AML未通過,-7:交易逾期,0:草稿,1: 待ARC審核,2ARC審核成功,3:AML審核成功,4:營運人員確認OK,待會員繳款狀態,5: 已繳款,待營運人員處理,9:處理完成");
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnName("update_time")
@@ -551,10 +556,10 @@ namespace Frontend.DB.EF.Models
                     .HasForeignKey(d => d.ArcScanRecordId)
                     .HasConstraintName("fk_remit_record_arc_scan_record");
 
-                entity.HasOne(d => d.Beneficiar)
+                entity.HasOne(d => d.Beneficiary)
                     .WithMany(p => p.RemitRecord)
-                    .HasForeignKey(d => d.BeneficiarId)
-                    .HasConstraintName("FK_often_beneficiar_remit_record");
+                    .HasForeignKey(d => d.BeneficiaryId)
+                    .HasConstraintName("FK_often_beneficiary_remit_record");
 
                 entity.HasOne(d => d.ToCurrency)
                     .WithMany(p => p.RemitRecord)

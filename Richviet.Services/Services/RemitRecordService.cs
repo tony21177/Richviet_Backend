@@ -33,8 +33,8 @@ namespace Richviet.Services.Services
             
             dbContext.RemitRecord.Add(remitRecord);
             dbContext.SaveChanges();
-            dbContext.Entry(remitRecord).Reference(record => record.Beneficiar).Query()
-                .Include(beneficiar => beneficiar.PayeeRelation)
+            dbContext.Entry(remitRecord).Reference(record => record.Beneficiary).Query()
+                .Include(Beneficiary => Beneficiary.PayeeRelation)
                 .Load();
             dbContext.Entry(remitRecord).Reference(record => record.ToCurrency).Load();
 
@@ -65,8 +65,8 @@ namespace Richviet.Services.Services
             RemitRecord record = dbContext.RemitRecord.Find(id);
             if (record != null)
             {
-                dbContext.Entry(record).Reference(record => record.Beneficiar).Query()
-                .Include(beneficiar => beneficiar.PayeeRelation)
+                dbContext.Entry(record).Reference(record => record.Beneficiary).Query()
+                .Include(Beneficiary => Beneficiary.PayeeRelation)
                 .Load();
                 dbContext.Entry(record).Reference(record => record.ToCurrency).Load();
             }
@@ -83,8 +83,8 @@ namespace Richviet.Services.Services
             modifiedRemitRecord.UpdateTime = DateTime.UtcNow;
             dbContext.RemitRecord.Update(modifiedRemitRecord);
             dbContext.SaveChanges();
-            dbContext.Entry(modifiedRemitRecord).Reference(record => record.Beneficiar).Query()
-            .Include(beneficiar => beneficiar.PayeeRelation)
+            dbContext.Entry(modifiedRemitRecord).Reference(record => record.Beneficiary).Query()
+            .Include(Beneficiary => Beneficiary.PayeeRelation)
             .Load();
             dbContext.Entry(modifiedRemitRecord).Reference(record => record.ToCurrency).Load();
             return modifiedRemitRecord;
@@ -92,7 +92,7 @@ namespace Richviet.Services.Services
 
         public List<RemitRecord> GetRemitRecordsByUserId(long userId)
         {
-            return dbContext.RemitRecord.Include(record=>record.Beneficiar).ThenInclude(beneficiar=>beneficiar.PayeeRelation).Include("ToCurrency").Where(record => record.UserId == userId).ToList();
+            return dbContext.RemitRecord.Include(record=>record.Beneficiary).ThenInclude(Beneficiary=>Beneficiary.PayeeRelation).Include("ToCurrency").Where(record => record.UserId == userId).ToList();
         }
 
         public List<string> GeneratePaymentCode(RemitRecord modifiedRemitRecord)

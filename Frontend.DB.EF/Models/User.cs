@@ -8,7 +8,7 @@ namespace Frontend.DB.EF.Models
         public User()
         {
             Discount = new HashSet<Discount>();
-            OftenBeneficiar = new HashSet<OftenBeneficiar>();
+            OftenBeneficiary = new HashSet<OftenBeneficiary>();
             RemitRecord = new HashSet<RemitRecord>();
             UserRegisterType = new HashSet<UserRegisterType>();
         }
@@ -26,7 +26,7 @@ namespace Frontend.DB.EF.Models
         public virtual PushNotificationSetting PushNotificationSetting { get; set; }
         public virtual UserArc UserArc { get; set; }
         public virtual ICollection<Discount> Discount { get; set; }
-        public virtual ICollection<OftenBeneficiar> OftenBeneficiar { get; set; }
+        public virtual ICollection<OftenBeneficiary> OftenBeneficiary { get; set; }
         public virtual ICollection<RemitRecord> RemitRecord { get; set; }
         public virtual ICollection<UserRegisterType> UserRegisterType { get; set; }
     }

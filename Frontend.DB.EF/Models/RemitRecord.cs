@@ -26,16 +26,17 @@ namespace Frontend.DB.EF.Models
         public byte FeeType { get; set; }
         public long? DiscountId { get; set; }
         public double? DiscountAmount { get; set; }
-        public long? BeneficiarId { get; set; }
+        public long? BeneficiaryId { get; set; }
         public short TransactionStatus { get; set; }
         public DateTime? PaymentTime { get; set; }
         public string PaymentCode { get; set; }
         public long? ArcScanRecordId { get; set; }
         public long? AmlScanRecordId { get; set; }
         public DateTime? FormalApplyTime { get; set; }
+        public string AdminVerifyNote { get; set; }
 
         public virtual ArcScanRecord ArcScanRecord { get; set; }
-        public virtual OftenBeneficiar Beneficiar { get; set; }
+        public virtual OftenBeneficiary Beneficiary { get; set; }
         public virtual CurrencyCode ToCurrency { get; set; }
         public virtual User User { get; set; }
     }

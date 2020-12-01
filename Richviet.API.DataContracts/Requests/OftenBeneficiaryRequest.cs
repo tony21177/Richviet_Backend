@@ -8,7 +8,7 @@ namespace Richviet.API.DataContracts.Requests
 {
     [SwaggerSchema(Required = new[] { "Description" })]
 
-    public class OftenBeneficiarRequest
+    public class OftenBeneficiaryRequest
     {
 
         [Required]

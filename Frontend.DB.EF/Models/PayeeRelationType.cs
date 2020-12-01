@@ -7,13 +7,13 @@ namespace Frontend.DB.EF.Models
     {
         public PayeeRelationType()
         {
-            OftenBeneficiar = new HashSet<OftenBeneficiar>();
+            OftenBeneficiary = new HashSet<OftenBeneficiary>();
         }
 
         public long Id { get; set; }
         public byte Type { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<OftenBeneficiar> OftenBeneficiar { get; set; }
+        public virtual ICollection<OftenBeneficiary> OftenBeneficiary { get; set; }
     }
 }
