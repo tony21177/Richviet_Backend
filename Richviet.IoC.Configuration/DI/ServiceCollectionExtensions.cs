@@ -29,7 +29,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<IAuthService, FacebookAuthService>();
                 services.AddScoped<IBankService, BankService>();
                 services.AddScoped<IPayeeRelationService, PayeeRalationService>();
-                services.AddScoped<IBeneficiarService, BeneficiarService>();
+                services.AddScoped<IBeneficiaryService, BeneficiaryService>();
                 services.AddScoped<IPayeeTypeService, PayeeTypeService>();
                 services.AddSingleton(typeof(FolderHandler));
                 services.AddSingleton(typeof(ArcValidationTask));

@@ -19,7 +19,7 @@ namespace Richviet.API.DataContracts.Requests
         [SwaggerSchema("匯款金額")]
         public int FromAmount { get; set; }
         [Required]
-        [SwaggerSchema("常用收款人pk,對應/user/beneficiars回傳的pk")]
+        [SwaggerSchema("常用收款人pk,對應/user/beneficiaries回傳的pk")]
         public long BeneficiaryId { get; set; }
         [SwaggerSchema("使用折扣券pk,對應/user/discount回傳的pk")]
         public long? DiscountId { get; set; }

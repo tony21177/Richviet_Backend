@@ -28,15 +28,15 @@ namespace Richviet.API.Controllers.V1
     public class UserController : Controller
     {
         private readonly IUserService userService;
-        private readonly IBeneficiarService beneficiarService;
+        private readonly IBeneficiaryService beneficiaryService;
         private readonly IPayeeTypeService payeeTypeService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
 
-        public UserController(IUserService userService, IBeneficiarService beneficiarService, IPayeeTypeService payeeTypeService, IMapper mapper, ILogger<UserController> logger)
+        public UserController(IUserService userService, IBeneficiaryService beneficiaryService, IPayeeTypeService payeeTypeService, IMapper mapper, ILogger<UserController> logger)
         {
             this.userService = userService;
-            this.beneficiarService = beneficiarService;
+            this.beneficiaryService = beneficiaryService;
             this.payeeTypeService = payeeTypeService;
             this.mapper = mapper;
         }
@@ -87,7 +87,7 @@ namespace Richviet.API.Controllers.V1
             OftenBeneficiary.UserId = userId;
             var payeeType = payeeTypeService.GetPayeeTypeByType((PayeeTypeEnum)oftenBeneficiarRequest.PayeeType);
             OftenBeneficiary.PayeeTypeId = payeeType.Id;
-            beneficiarService.AddBeneficiar(OftenBeneficiary);
+            beneficiaryService.AddBeneficiar(OftenBeneficiary);
             UserBeneficiaryDTO userBeneficiarDTO = mapper.Map<UserBeneficiaryDTO>(OftenBeneficiary);
 
 
@@ -106,7 +106,7 @@ namespace Richviet.API.Controllers.V1
         public ActionResult<MessageModel<UserBeneficiaryDTO>> ModifyOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id,[FromBody]OftenBeneficiaryRequest oftenBeneficiarRequest)
         {
             var userId = long.Parse(User.FindFirstValue("id"));
-            OftenBeneficiary Beneficiary = beneficiarService.GetBeneficiarById(id);
+            OftenBeneficiary Beneficiary = beneficiaryService.GetBeneficiarById(id);
             if (Beneficiary == null)
             {
                 return NotFound();
@@ -126,7 +126,7 @@ namespace Richviet.API.Controllers.V1
             var payeeType = payeeTypeService.GetPayeeTypeByType((PayeeTypeEnum)oftenBeneficiarRequest.PayeeType);
             modifiedBeneficiar.PayeeTypeId = payeeType.Id;
             
-            beneficiarService.ModifyBeneficiar(modifiedBeneficiar, Beneficiary);
+            beneficiaryService.ModifyBeneficiar(modifiedBeneficiar, Beneficiary);
             UserBeneficiaryDTO userBeneficiarDTO = mapper.Map<UserBeneficiaryDTO>(Beneficiary);
 
 
@@ -145,7 +145,7 @@ namespace Richviet.API.Controllers.V1
         public ActionResult<MessageModel<UserBeneficiaryDTO>> DeleteOwnBeneficiarsInfo([FromRoute, SwaggerParameter("id,可從/user/beneficiars取得", Required = true)] int id)
         {
             var userId = long.Parse(User.FindFirstValue("id"));
-            OftenBeneficiary Beneficiary = beneficiarService.GetBeneficiarById(id);
+            OftenBeneficiary Beneficiary = beneficiaryService.GetBeneficiarById(id);
             if(Beneficiary == null)
             {
                 return NotFound();
@@ -159,7 +159,7 @@ namespace Richviet.API.Controllers.V1
                 });
 
             }
-            beneficiarService.DeleteBeneficiar(Beneficiary);
+            beneficiaryService.DeleteBeneficiar(Beneficiary);
 
             return new MessageModel<UserBeneficiaryDTO>() {  };
             
@@ -173,7 +173,7 @@ namespace Richviet.API.Controllers.V1
         public MessageModel<List<UserBeneficiaryDTO>> GetOwnBeneficiarsInfo()
         {
             var userId = long.Parse(User.FindFirstValue("id"));
-            List<OftenBeneficiary> oftenBeneficiars = beneficiarService.GetAllBeneficiars(userId);
+            List<OftenBeneficiary> oftenBeneficiars = beneficiaryService.GetAllBeneficiars(userId);
             List<UserBeneficiaryDTO> userBeneficiarDTOs = mapper.Map<List<UserBeneficiaryDTO>>(oftenBeneficiars);
 
 

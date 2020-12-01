@@ -22,7 +22,7 @@ namespace Richviet.API.Helper
 
         private readonly IDiscountService discountService;
 
-        private readonly IBeneficiarService beneficiarService;
+        private readonly IBeneficiaryService beneficiaryService;
 
         private readonly IUploadPic uploadPicService;
 
@@ -35,13 +35,13 @@ namespace Richviet.API.Helper
         private readonly string OUT_OF_YEARLY_MAX = "amount out of yearly maximum";
 
         public RemitValidationHelper(IExchangeRateService exchangeRateService, ICurrencyService currencyService, IRemitSettingService remitSettingService,
-            IDiscountService discountService, IBeneficiarService beneficiarService, IUploadPic uploadPicService, IRemitRecordQueryRepositories remitRecordQueryRepositories)
+            IDiscountService discountService, IBeneficiaryService beneficiaryService, IUploadPic uploadPicService, IRemitRecordQueryRepositories remitRecordQueryRepositories)
         {
             this.exchangeRateService = exchangeRateService;
             this.currencyService = currencyService;
             this.remitSettingService = remitSettingService;
             this.discountService = discountService;
-            this.beneficiarService = beneficiarService;
+            this.beneficiaryService = beneficiaryService;
             this.uploadPicService = uploadPicService;
             this.remitRecordQueryRepositories = remitRecordQueryRepositories;
         }
@@ -59,7 +59,7 @@ namespace Richviet.API.Helper
 
         private string CheckBenificiarExistence(long id)
         {
-            OftenBeneficiary Beneficiary = beneficiarService.GetBeneficiarById(id);
+            OftenBeneficiary Beneficiary = beneficiaryService.GetBeneficiarById(id);
             if (Beneficiary == null)
             {
                 return "Beneficiary does not exist!";

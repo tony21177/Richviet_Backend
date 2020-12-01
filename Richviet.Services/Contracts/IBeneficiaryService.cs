@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Richviet.Services.Contracts
 {
-    public interface IBeneficiarService
+    public interface IBeneficiaryService
     {
         OftenBeneficiary AddBeneficiar(OftenBeneficiary Beneficiary);
 
