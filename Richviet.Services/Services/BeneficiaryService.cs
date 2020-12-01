@@ -9,13 +9,13 @@ using System.Text;
 
 namespace Richviet.Services
 {
-    public class BeneficiarService : IBeneficiarService
+    public class BeneficiaryService : IBeneficiaryService
     {
         private readonly ILogger logger;
         private readonly GeneralContext dbContext;
         private readonly IMapper mapper;
 
-        public BeneficiarService(ILogger<BeneficiarService> logger, GeneralContext dbContext, IMapper mapper)
+        public BeneficiaryService(ILogger<BeneficiaryService> logger, GeneralContext dbContext, IMapper mapper)
         {
             this.logger = logger;
             this.dbContext = dbContext;

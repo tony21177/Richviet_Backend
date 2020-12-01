@@ -55,7 +55,7 @@ namespace Richviet.API.Controllers.V1
         private readonly IRemitRecordQueryRepositories remitRecordQueryRepositories;
 
 
-        public RemitController(ILogger<RemitController> logger, IMapper mapper, IRemitSettingService remitSettingService, IRemitRecordService remitRecordService, IBeneficiarService beneficiarService
+        public RemitController(ILogger<RemitController> logger, IMapper mapper, IRemitSettingService remitSettingService, IRemitRecordService remitRecordService, IBeneficiaryService beneficiaryService
             , IUserService userService, IDiscountService discountService, IRemitRecordQueryRepositories remitRecordQueryRepositories, RemitValidationHelper helper)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
