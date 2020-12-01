@@ -8,15 +8,15 @@ namespace Richviet.Services.Contracts
 {
     public interface IBeneficiarService
     {
-        OftenBeneficiar AddBeneficiar(OftenBeneficiar beneficiar);
+        OftenBeneficiary AddBeneficiar(OftenBeneficiary Beneficiary);
 
-        OftenBeneficiar GetBeneficiarById(long id);
+        OftenBeneficiary GetBeneficiarById(long id);
 
-        List<OftenBeneficiar> GetAllBeneficiars(long userId);
+        List<OftenBeneficiary> GetAllBeneficiars(long userId);
 
-        OftenBeneficiar ModifyBeneficiar(OftenBeneficiar modifyBeneficiar, OftenBeneficiar originalBeneficiar);
+        OftenBeneficiary ModifyBeneficiar(OftenBeneficiary modifyBeneficiar, OftenBeneficiary originalBeneficiar);
 
-        void DeleteBeneficiar(OftenBeneficiar deleteBeneficiar);
+        void DeleteBeneficiar(OftenBeneficiary deleteBeneficiar);
 
     }
 }

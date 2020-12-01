@@ -13,6 +13,8 @@ namespace Richviet.API.DataContracts.Dto
         public long CreateTime { get; set; }
         [SwaggerSchema("最後更改匯款時間")]
         public long UpdateTime { get; set; }
+        [SwaggerSchema("正式匯款申請時間")]
+        public long FormalApplyTime { get; set; }
         [SwaggerSchema("收款幣別")]
         public string ToCurrency { get; set; }
         [SwaggerSchema("饋款金額")]
@@ -35,7 +37,7 @@ namespace Richviet.API.DataContracts.Dto
         public byte PayeeRelationType { get; set; }
         [SwaggerSchema("收款人關係0:父母,1:兄弟,2:子女")]
         public string PayeeRelationTypeDescription { get; set; }
-        [SwaggerSchema("-10:其他錯誤,-9: 審核失敗,0:草稿,1: 待ARC審核,2ARC審核成功,3:AML審核成功,4:營運人員確認OK,待會員繳款狀態,5: 已繳款,待營運人員處理,9:處理完成")]
+        [SwaggerSchema("-10:其他錯誤,-9: 審核失敗,-8: AML未通過,-7:交易逾期,0:草稿,1: 待ARC審核,2ARC審核成功,3:AML審核成功,4:營運人員確認OK,待會員繳款狀態,5: 已繳款,待營運人員處理,9:處理完成")]
         public short TransactionStatus { get; set; }
         [SwaggerSchema("繳款碼")]
         public string [] PaymentCode { get; set; }

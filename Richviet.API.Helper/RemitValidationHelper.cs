@@ -59,10 +59,10 @@ namespace Richviet.API.Helper
 
         private string CheckBenificiarExistence(long id)
         {
-            OftenBeneficiar beneficiar = beneficiarService.GetBeneficiarById(id);
-            if (beneficiar == null)
+            OftenBeneficiary Beneficiary = beneficiarService.GetBeneficiarById(id);
+            if (Beneficiary == null)
             {
-                return "beneficiar does not exist!";
+                return "Beneficiary does not exist!";
             }
             return null;
         }
@@ -145,11 +145,11 @@ namespace Richviet.API.Helper
                 remitRecord.FromAmount = (double)draftRemitRequest.FromAmount;
             }
 
-            if (draftRemitRequest.BeneficiarId != null)
+            if (draftRemitRequest.BeneficiaryId != null)
             {
-                error = CheckBenificiarExistence((int)draftRemitRequest.BeneficiarId);
+                error = CheckBenificiarExistence((int)draftRemitRequest.BeneficiaryId);
                 if (error != null) return error;
-                remitRecord.BeneficiarId = draftRemitRequest.BeneficiarId;
+                remitRecord.BeneficiaryId = draftRemitRequest.BeneficiaryId;
             }
 
 
@@ -188,10 +188,10 @@ namespace Richviet.API.Helper
             remitRecord.ApplyExchangeRate = applyExchangeRate.Rate;
             remitRecord.FromCurrencyId = currencyService.GetCurrencyByCountry(country)[0].Id;
 
-            // check beneficiar
-            error = CheckBenificiarExistence(remitRequest.BeneficiarId);
+            // check Beneficiary
+            error = CheckBenificiarExistence(remitRequest.BeneficiaryId);
             if (error != null) return error;
-            remitRecord.BeneficiarId = remitRequest.BeneficiarId;
+            remitRecord.BeneficiaryId = remitRequest.BeneficiaryId;
 
             // check uploaded picture
             error = CheckPhotoFileExistence(userArc, remitRecord.RealTimePic);

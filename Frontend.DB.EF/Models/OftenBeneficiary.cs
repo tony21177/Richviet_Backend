@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Frontend.DB.EF.Models
 {
-    public partial class OftenBeneficiar
+    public partial class OftenBeneficiary
     {
-        public OftenBeneficiar()
+        public OftenBeneficiary()
         {
             RemitRecord = new HashSet<RemitRecord>();
         }

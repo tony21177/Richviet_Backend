@@ -22,47 +22,47 @@ namespace Richviet.Services
             this.mapper = mapper;
         }
 
-        public OftenBeneficiar AddBeneficiar(OftenBeneficiar beneficiar)
+        public OftenBeneficiary AddBeneficiar(OftenBeneficiary Beneficiary)
         {
-            dbContext.OftenBeneficiar.Add(beneficiar);
+            dbContext.OftenBeneficiary.Add(Beneficiary);
             dbContext.SaveChanges();
-            dbContext.Entry(beneficiar).Reference(beneficiar => beneficiar.PayeeType).Load();
-            return beneficiar;
+            dbContext.Entry(Beneficiary).Reference(Beneficiary => Beneficiary.PayeeType).Load();
+            return Beneficiary;
         }
 
-        public void DeleteBeneficiar(OftenBeneficiar deleteBeneficiar)
+        public void DeleteBeneficiar(OftenBeneficiary deleteBeneficiar)
         {
 
-            var temp = dbContext.OftenBeneficiar.Remove(deleteBeneficiar);
+            var temp = dbContext.OftenBeneficiary.Remove(deleteBeneficiar);
             dbContext.SaveChanges();
             return;
         }
 
-        public List<OftenBeneficiar> GetAllBeneficiars(long userId)
+        public List<OftenBeneficiary> GetAllBeneficiars(long userId)
         {
-            List<OftenBeneficiar> beneficiars = dbContext.OftenBeneficiar.Where(beneficiar => beneficiar.UserId == userId).ToList<OftenBeneficiar>();
-            beneficiars.ForEach(beneficiar => {
-                dbContext.Entry(beneficiar).Reference(beneficiar => beneficiar.PayeeRelation).Load();
-                dbContext.Entry(beneficiar).Reference(beneficiar => beneficiar.PayeeType).Load();
+            List<OftenBeneficiary> beneficiars = dbContext.OftenBeneficiary.Where(Beneficiary => Beneficiary.UserId == userId).ToList<OftenBeneficiary>();
+            beneficiars.ForEach(Beneficiary => {
+                dbContext.Entry(Beneficiary).Reference(Beneficiary => Beneficiary.PayeeRelation).Load();
+                dbContext.Entry(Beneficiary).Reference(Beneficiary => Beneficiary.PayeeType).Load();
             });
             return beneficiars;
         }
 
-        public OftenBeneficiar GetBeneficiarById(long id)
+        public OftenBeneficiary GetBeneficiarById(long id)
         {
-            return dbContext.OftenBeneficiar.Find(id);
+            return dbContext.OftenBeneficiary.Find(id);
         }
 
-        public OftenBeneficiar ModifyBeneficiar(OftenBeneficiar modifyBeneficiar,OftenBeneficiar originalBeneficiar)
+        public OftenBeneficiary ModifyBeneficiar(OftenBeneficiary modifyBeneficiar,OftenBeneficiary originalBeneficiar)
         {
             
             dbContext.Entry(originalBeneficiar).CurrentValues.SetValues(modifyBeneficiar);
             dbContext.Entry(originalBeneficiar).Property(x => x.CreateTime).IsModified = false;
             dbContext.Entry(originalBeneficiar).Property(x => x.UserId).IsModified = false;
-            dbContext.OftenBeneficiar.Update(originalBeneficiar);
+            dbContext.OftenBeneficiary.Update(originalBeneficiar);
             dbContext.SaveChanges();
-            dbContext.Entry(originalBeneficiar).Reference(beneficiar => beneficiar.PayeeType).Load();
-            dbContext.Entry(originalBeneficiar).Reference(beneficiar => beneficiar.PayeeRelation).Load();
+            dbContext.Entry(originalBeneficiar).Reference(Beneficiary => Beneficiary.PayeeType).Load();
+            dbContext.Entry(originalBeneficiar).Reference(Beneficiary => Beneficiary.PayeeRelation).Load();
             return originalBeneficiar;
         }
     }
