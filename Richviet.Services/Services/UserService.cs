@@ -274,8 +274,7 @@ namespace Richviet.Services
                     Description = arcValidationResult.Result,
                     Event = (byte)ArcScanEvent.Remit
                 };
-                userArc.KycStatus = (short)KycStatusEnum.ARC_PASS_VERIFY;
-                userArc.KycStatusUpdateTime = DateTime.UtcNow;
+                
                 remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulArcVerification;
                 arcScanRecordService.AddScanRecordForRemitProcess(record, userArc,remitRecord);
                 // send mail
@@ -291,7 +290,29 @@ namespace Richviet.Services
                     Event = (byte)ArcScanEvent.Remit
                 };
                 remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.FailedVerified;
-                userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
+                
+                // for demo
+                if (configuration["IsDemo"] != null && bool.Parse(configuration["IsDemo"]) == true)
+                {
+                    if (userArc.ArcNo.Equals("ZC00000000"))
+                    {
+                        remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulAmlVerification;
+                    }
+                    else if (userArc.ArcNo.Equals("ZC11111111"))
+                    {
+                        remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulAmlVerification;
+                    }
+                    else
+                    {
+                        userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
+                    }
+                }
+                //
+                else
+                {
+                    userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
+                }
+
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
                 arcScanRecordService.AddScanRecordForRemitProcess(record, userArc, remitRecord);
                 // send mail
