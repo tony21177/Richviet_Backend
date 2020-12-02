@@ -34,6 +34,5 @@ namespace Richviet.Services.Contracts
 
         Task SystemVerifyArcForRegisterProcess(long userId);
 
-        Task SystemVerifyArcForRemitProcess(RemitRecord remitRecord, long userId);
     }
 }

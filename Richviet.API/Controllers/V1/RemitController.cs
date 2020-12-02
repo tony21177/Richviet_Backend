@@ -377,7 +377,7 @@ namespace Richviet.API.Controllers.V1
             RemitRecordDTO recordDTO = _mapper.Map<RemitRecordDTO>(modifiedRecord);
 
             // 系統掃ARC No.
-            BackgroundJob.Enqueue(() => userService.SystemVerifyArcForRemitProcess(modifiedRecord, userId));
+            BackgroundJob.Enqueue(() => remitRecordService.SystemVerifyArcForRemitProcess(modifiedRecord, userId));
 
             return Ok(new MessageModel<RemitRecordDTO>
             {

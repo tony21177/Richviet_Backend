@@ -36,10 +36,6 @@ namespace Richviet.Services
         private readonly string REGISTER_ARC_PASSED_MESSAGE = "未通過arc自動審核";
         private readonly string REGISTER_ARC_NOT_PASSED_SUBJECT = "註冊流程-未通過arc自動審核";
         private readonly string REGISTER_ARC_NOT_PASSED_MESSAGE = "未通過arc自動審核";
-        private readonly string REMIT_ARC_PASSED_SUBJECT = "匯款流程-通過arc自動審核";
-        private readonly string REMIT_ARC_PASSED_MESSAGE = "未通過arc自動審核";
-        private readonly string REMIT_ARC_NOT_PASSED_SUBJECT = "匯款流程-未通過arc自動審核";
-        private readonly string REMIT_ARC_NOT_PASSED_MESSAGE = "未通過arc自動審核";
         private readonly string[] receivers;
 
         public UserService(IEnumerable<IAuthService> authServices, IArcScanRecordService arcScanRecordService, IRemitRecordService remitRecordService,
@@ -216,14 +212,15 @@ namespace Richviet.Services
         public async Task SystemVerifyArcForRegisterProcess(long userId)
         {
             UserArc userArc = GetUserArcById(userId);
-            if(userArc.ArcIssueDate == null || userArc.ArcExpireDate == null)
+            if (userArc.ArcIssueDate == null || userArc.ArcExpireDate == null)
             {
+                logger.LogError("ARC data error");
                 throw new Exception("ARC Data not sufficient");
             }
-            ArcValidationResult arcValidationResult =  arcValidationTask.Validate(workingRootPath,userArc.ArcNo,((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"),((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"),userArc.BackSequence).Result;
+            ArcValidationResult arcValidationResult = arcValidationTask.Validate(workingRootPath, userArc.ArcNo, ((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"), ((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"), userArc.BackSequence).Result;
             logger.LogInformation("IsSuccessful:{1}", arcValidationResult.IsSuccessful);
             logger.LogInformation("result:{1}", arcValidationResult.Result);
-            
+
             if (arcValidationResult.IsSuccessful)
             {
                 ArcScanRecord record = new ArcScanRecord()
@@ -233,9 +230,11 @@ namespace Richviet.Services
                     Description = arcValidationResult.Result,
                     Event = (byte)ArcScanEvent.Register
                 };
+
+
                 userArc.KycStatus = (short)KycStatusEnum.ARC_PASS_VERIFY;
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
-                arcScanRecordService.AddScanRecordForRegiterProcess(record,userArc);
+                AddScanRecordAndUpdateUserKycStatus(record, userArc);
                 // send mail
                 await SendMailForRegisterArc(true, receivers, userId);
 
@@ -251,75 +250,44 @@ namespace Richviet.Services
                 };
                 userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
-                arcScanRecordService.AddScanRecordForRegiterProcess(record, userArc);
+                AddScanRecordAndUpdateUserKycStatus(record, userArc);
                 // send mail
                 await SendMailForRegisterArc(false, receivers, userId);
             }
         }
 
-        public async Task SystemVerifyArcForRemitProcess(RemitRecord remitRecord, long userId)
+
+
+        private void AddScanRecordAndUpdateUserKycStatus(ArcScanRecord record, UserArc userArc)
         {
-            UserArc userArc = GetUserArcById(userId);
-            if (userArc.ArcIssueDate == null || userArc.ArcExpireDate == null)
+
+            using var transaction = dbContext.Database.BeginTransaction();
+            try
             {
-                throw new Exception("ARC Data not sufficient");
-            }
-            ArcValidationResult arcValidationResult = arcValidationTask.Validate(workingRootPath,userArc.ArcNo, ((DateTime)userArc.ArcIssueDate).ToString("yyyyMMdd"), ((DateTime)userArc.ArcExpireDate).ToString("yyyyMMdd"), userArc.BackSequence).Result;
-            if (arcValidationResult.IsSuccessful)
-            {
-                ArcScanRecord record = new ArcScanRecord()
-                {
-                    ArcStatus = (short)SystemArcVerifyStatusEnum.PASS,
-                    ScanTime = DateTime.UtcNow,
-                    Description = arcValidationResult.Result,
-                    Event = (byte)ArcScanEvent.Remit
-                };
-                
-                remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulArcVerification;
-                arcScanRecordService.AddScanRecordForRemitProcess(record, userArc,remitRecord);
-                // send mail
-                await SendMailForRemitArc(true, receivers, userId);
-            }
-            else
-            {
-                ArcScanRecord record = new ArcScanRecord()
-                {
-                    ArcStatus = (short)SystemArcVerifyStatusEnum.FAIL,
-                    ScanTime = DateTime.UtcNow,
-                    Description = arcValidationResult.Result,
-                    Event = (byte)ArcScanEvent.Remit
-                };
-                remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.FailedVerified;
-                
                 // for demo
                 if (configuration["IsDemo"] != null && bool.Parse(configuration["IsDemo"]) == true)
                 {
-                    if (userArc.ArcNo.Equals("ZC00000000"))
+                    var demoArcArray = configuration.GetSection("DemoArc").Get<string[]>();
+                    if (Array.IndexOf(demoArcArray, userArc.ArcNo) > -1)
                     {
-                        remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulAmlVerification;
-                    }
-                    else if (userArc.ArcNo.Equals("ZC11111111"))
-                    {
-                        remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulAmlVerification;
-                    }
-                    else
-                    {
-                        userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
+                        userArc.KycStatus = (short)KycStatusEnum.AML_PASS_VERIFY;
                     }
                 }
                 //
-                else
-                {
-                    userArc.KycStatus = (short)KycStatusEnum.FAILED_KYC;
-                }
-
-                userArc.KycStatusUpdateTime = DateTime.UtcNow;
-                arcScanRecordService.AddScanRecordForRemitProcess(record, userArc, remitRecord);
-                // send mail
-                await SendMailForRemitArc(false, receivers, userId);
+                arcScanRecordService.AddScanRecord(record);
+                userArc.LastArcScanRecordId = record.Id;
+                userArc.UpdateTime = DateTime.UtcNow;
+                dbContext.UserArc.Update(userArc);
+                dbContext.SaveChanges();
+                transaction.Commit();
+                return;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, null);
+                transaction.Rollback();
             }
         }
-
 
         private async Task SendMailForRegisterArc(bool isSuccessful,string [] mails,long userId)
         {
@@ -341,25 +309,6 @@ namespace Richviet.Services
                 Response response = await emailSender.SendEmailAsync(emailVo);
             }
         }
-        private async Task SendMailForRemitArc(bool isSuccessful, string[] mails, long userId)
-        {
-            logger.LogInformation("Send mail.......");
-            SendEmailVo emailVo = new SendEmailVo();
-            if (isSuccessful)
-            {
-                emailVo.Subject = REMIT_ARC_PASSED_SUBJECT;
-                emailVo.Message = $"使用者id:{userId}" + REMIT_ARC_PASSED_MESSAGE;
-            }
-            else
-            {
-                emailVo.Subject = REMIT_ARC_NOT_PASSED_SUBJECT;
-                emailVo.Message = $"{userId}" + REMIT_ARC_NOT_PASSED_MESSAGE;
-            }
-            foreach (var mail in mails)
-            {
-                emailVo.Email = mail;
-                await emailSender.SendEmailAsync(emailVo);
-            }
-        }
+        
     }
 }

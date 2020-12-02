@@ -26,76 +26,15 @@ namespace Richviet.Services.Services
             this.configuration = configuration;
         }
 
-        public void AddScanRecordForRegiterProcess(ArcScanRecord record, UserArc userArc)
-        {
+        
 
-            using var transaction = dbContext.Database.BeginTransaction();
-            try
-            {
-                // for demo
-                if(configuration["IsDemo"]!=null && bool.Parse(configuration["IsDemo"]) == true)
-                {
-                    if (userArc.ArcNo.Equals("ZC00000000"))
-                    {
-                        userArc.KycStatus = (short)KycStatusEnum.AML_PASS_VERIFY;
-                    }else if (userArc.ArcNo.Equals("ZC11111111"))
-                    {
-                        userArc.KycStatus = (short)KycStatusEnum.AML_PASS_VERIFY;
-                    }
-                }
-                //
-                dbContext.ArcScanRecord.Add(record);
-                dbContext.SaveChanges();
-                userArc.LastArcScanRecordId = record.Id;       
-                userArc.UpdateTime = DateTime.UtcNow;
-                dbContext.UserArc.Update(userArc);
-                dbContext.SaveChanges();
-                transaction.Commit();
-                return;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, null);
-                transaction.Rollback();
-            }
+        public void AddScanRecord(ArcScanRecord record)
+        {
+            dbContext.ArcScanRecord.Add(record);
+            dbContext.SaveChanges();
         }
 
-        public void AddScanRecordForRemitProcess(ArcScanRecord record, UserArc userArc,RemitRecord remitRecord)
-        {
-            using var transaction = dbContext.Database.BeginTransaction();
-            try
-            {
-                // for demo
-                if (configuration["IsDemo"] != null && bool.Parse(configuration["IsDemo"]) == true)
-                {
-                    if (userArc.ArcNo.Equals("ZC00000000"))
-                    {
-                        remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulAmlVerification;
-                    }
-                    else if (userArc.ArcNo.Equals("ZC11111111"))
-                    {   
-                        remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulAmlVerification;
-                    }
-                }
-                //
-                dbContext.ArcScanRecord.Add(record);
-                dbContext.SaveChanges();
-                userArc.LastArcScanRecordId = record.Id;
-                userArc.UpdateTime = DateTime.UtcNow;
-                dbContext.UserArc.Update(userArc);
-                dbContext.SaveChanges();
-                remitRecord.ArcScanRecordId = record.Id;
-                dbContext.RemitRecord.Update(remitRecord);
-                dbContext.SaveChanges();
-                transaction.Commit();
-                return;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, null);
-                transaction.Rollback();
-            }
-        }
+        
 
     }
 }
