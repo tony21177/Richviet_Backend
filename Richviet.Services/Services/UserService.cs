@@ -6,13 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Richviet.Tools.Utility;
 using Microsoft.Extensions.Logging;
-using AutoMapper;
 using Richviet.BackgroudTask.Arc.Vo;
 using Richviet.BackgroudTask.Arc;
 using Microsoft.AspNetCore.Hosting;
-using RemitRecords.Domains.RemitRecords.Constants;
 using Microsoft.Extensions.Configuration;
 using Email.Notifier;
 using SendGrid;
@@ -23,10 +20,8 @@ namespace Richviet.Services
     {
         private readonly IEnumerable<IAuthService> authServices;
         private readonly IArcScanRecordService arcScanRecordService;
-        private readonly IRemitRecordService remitRecordService;
         private readonly GeneralContext dbContext;
         private readonly ILogger logger;
-        private readonly IMapper mapper;
         private readonly ArcValidationTask arcValidationTask;
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly string workingRootPath;
@@ -38,16 +33,14 @@ namespace Richviet.Services
         private readonly string REGISTER_ARC_NOT_PASSED_MESSAGE = "未通過arc自動審核";
         private readonly string[] receivers;
 
-        public UserService(IEnumerable<IAuthService> authServices, IArcScanRecordService arcScanRecordService, IRemitRecordService remitRecordService,
-            GeneralContext dbContext, ILogger<UserService> logger, IMapper mapper, ArcValidationTask arcValidationTask
+        public UserService(IEnumerable<IAuthService> authServices, IArcScanRecordService arcScanRecordService,
+            GeneralContext dbContext, ILogger<UserService> logger, ArcValidationTask arcValidationTask
             , IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEmailSender emailSender)
         {
             this.authServices = authServices;
             this.arcScanRecordService = arcScanRecordService;
-            this.remitRecordService = remitRecordService;
             this.dbContext = dbContext;
             this.logger =  logger;
-            this.mapper = mapper;
             this.arcValidationTask =  arcValidationTask;
             this.webHostEnvironment = webHostEnvironment;
             this.workingRootPath = webHostEnvironment.ContentRootPath;
@@ -194,20 +187,7 @@ namespace Richviet.Services
             dbContext.SaveChanges();
         }
 
-        public void UpdatePicFileNameOfDraftRemit(RemitRecord remitRecord, PictureTypeEnum pictureType, String fileName)
-        {
-            switch (pictureType)
-            {
-                case PictureTypeEnum.Instant:
-                    remitRecord.RealTimePic = fileName;
-                    break;
-                case PictureTypeEnum.Signature:
-                    remitRecord.ESignature = fileName;
-                    break;
-            }
-            remitRecordService.ModifyRemitRecord(remitRecord,null);
-
-        }
+        
 
         public async Task SystemVerifyArcForRegisterProcess(long userId)
         {

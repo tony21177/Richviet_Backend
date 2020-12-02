@@ -6,7 +6,6 @@ using Frontend.DB.EF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using RemitRecords.Domains.RemitRecords.Constants;
 using System.Threading.Tasks;
 using Richviet.BackgroudTask.Arc.Vo;
@@ -22,7 +21,7 @@ namespace Richviet.Services.Services
 
         private readonly ILogger logger;
         private readonly GeneralContext dbContext;
-        private readonly UserService userService;
+        private readonly IUserService userService;
         private readonly IArcScanRecordService arcScanRecordService;
         private readonly ArcValidationTask arcValidationTask;
         private readonly IWebHostEnvironment webHostEnvironment;
@@ -35,18 +34,19 @@ namespace Richviet.Services.Services
         private readonly string REMIT_ARC_NOT_PASSED_MESSAGE = "未通過arc自動審核";
         private readonly string[] receivers;
 
-        public RemitRecordService(ILogger<RemitRecordService> logger, GeneralContext dbContext, UserService userService, IArcScanRecordService arcScanRecordService,
+        public RemitRecordService(ILogger<RemitRecordService> logger, IArcScanRecordService arcScanRecordService, IUserService userService, GeneralContext dbContext,
             IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEmailSender emailSender,ArcValidationTask arcValidationTask)
         {
             this.logger = logger;
             this.dbContext = dbContext;
-            this.userService = userService;
             this.arcScanRecordService = arcScanRecordService;
             this.arcValidationTask = arcValidationTask;
+            this.webHostEnvironment = webHostEnvironment;
             this.workingRootPath = webHostEnvironment.ContentRootPath;
             this.configuration = configuration;
             this.emailSender = emailSender;
             receivers = configuration.GetSection("ArcResultNotify").Get<string[]>();
+            this.userService = userService;
 
         }
 
@@ -115,6 +115,21 @@ namespace Richviet.Services.Services
             .Load();
             dbContext.Entry(modifiedRemitRecord).Reference(record => record.ToCurrency).Load();
             return modifiedRemitRecord;
+        }
+
+        public void UpdatePicFileNameOfDraftRemit(RemitRecord remitRecord, PictureTypeEnum pictureType, String fileName)
+        {
+            switch (pictureType)
+            {
+                case PictureTypeEnum.Instant:
+                    remitRecord.RealTimePic = fileName;
+                    break;
+                case PictureTypeEnum.Signature:
+                    remitRecord.ESignature = fileName;
+                    break;
+            }
+            ModifyRemitRecord(remitRecord, null);
+
         }
 
         public List<RemitRecord> GetRemitRecordsByUserId(long userId)

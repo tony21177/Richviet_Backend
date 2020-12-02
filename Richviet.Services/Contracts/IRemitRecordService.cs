@@ -22,6 +22,8 @@ namespace Richviet.Services.Contracts
         RemitRecord CreateRemitRecordByUserArc(UserArc userArc, RemitRecord remitRecord, PayeeTypeEnum payeeTypeEnum);
 
         RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord, DateTime? applyTime);
+
+        void UpdatePicFileNameOfDraftRemit(RemitRecord remitRecord, PictureTypeEnum pictureType, String fileName);
         List<string> GeneratePaymentCode(RemitRecord modifiedRemitRecord);
 
         Task SystemVerifyArcForRemitProcess(RemitRecord remitRecord, long userId);
