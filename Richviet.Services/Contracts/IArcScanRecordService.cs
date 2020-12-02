@@ -8,8 +8,10 @@ namespace Richviet.Services.Contracts
 {
     public interface IArcScanRecordService
     {
-       void AddScanRecordForRegiterProcess(ArcScanRecord reocrd, UserArc userArc);
 
-       void AddScanRecordForRemitProcess(ArcScanRecord reocrd, UserArc userArc,RemitRecord remitRecord);
+       void AddScanRecord(ArcScanRecord record);
+       //void AddScanRecordForRegiterProcess(ArcScanRecord reocrd, UserArc userArc);
+
+       //void AddScanRecordForRemitProcess(ArcScanRecord reocrd, UserArc userArc,RemitRecord remitRecord);
     }
 }
