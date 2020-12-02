@@ -26,6 +26,7 @@ namespace Richviet.IoC.Configuration.DI
             {
                 services.AddSingleton(new JwtHandler(configuration));
                 services.AddScoped<IUserService, UserService>();
+                services.AddScoped<IRemitRecordService, RemitRecordService>();
                 services.AddScoped<IAuthService, FacebookAuthService>();
                 services.AddScoped<IBankService, BankService>();
                 services.AddScoped<IPayeeRelationService, PayeeRalationService>();
@@ -37,7 +38,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddScoped<ICurrencyService,CurrencyService>();
                 services.AddScoped<IExchangeRateService, DBExchangeRateService>();
                 services.AddScoped<IRemitSettingService, RemitSettingService>();
-                services.AddScoped<IRemitRecordService,RemitRecordService>();
+                
                 services.AddScoped<IDiscountService,DiscountService>();
                 services.AddScoped<IUserAdminService, UserAdminService>();
                 services.AddScoped<IUserLoginLogService, UserLoginService>();

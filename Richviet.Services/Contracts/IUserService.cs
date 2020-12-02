@@ -30,8 +30,6 @@ namespace Richviet.Services.Contracts
 
         void UpdatePicFileNameOfUserInfo(UserArc userArc, PictureTypeEnum pictureType, String fileName);
 
-        void UpdatePicFileNameOfDraftRemit(RemitRecord remitRecord, PictureTypeEnum pictureType, String fileName);
-
         Task SystemVerifyArcForRegisterProcess(long userId);
 
     }

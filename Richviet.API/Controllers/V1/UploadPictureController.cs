@@ -102,7 +102,7 @@ namespace Richviet.API.Controllers.V1
                 }
 
                 fileName = await uploadPic.SavePic(userArc, file.ImageType, file.Image);
-                userService.UpdatePicFileNameOfDraftRemit(draftRemitRecord, (PictureTypeEnum)file.ImageType, fileName);
+                remitRecordService.UpdatePicFileNameOfDraftRemit(draftRemitRecord, (PictureTypeEnum)file.ImageType, fileName);
 
             }
             
