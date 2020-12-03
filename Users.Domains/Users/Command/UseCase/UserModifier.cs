@@ -36,12 +36,13 @@ namespace Users.Domains.Users.Command.UseCase
 
             user.Id = modifyRequest.Id;
             user.Phone = modifyRequest.Phone;
-            user.Email = modifyRequest.Email;
+            if(modifyRequest.Email!=null) user.Email = modifyRequest.Email;
             user.Gender = modifyRequest.Gender;
             user.Level = modifyRequest.Level;
             user.Birthday = modifyRequest.Birthday;
             user.UserArc.ArcNo = modifyRequest.ArcNo;
             user.UserArc.ArcIssueDate = modifyRequest.ArcIssueDate;
+            user.UserArc.ArcExpireDate = modifyRequest.ArcExpireDate;
             user.UserArc.ArcName = modifyRequest.ArcName;
             user.UserArc.BackSequence = modifyRequest.BackSequence;
             user.UserArc.Country = modifyRequest.Country;

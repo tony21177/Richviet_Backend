@@ -41,7 +41,9 @@ namespace Users.Domains.Users.Command.Request
 
       
         public DateTime? ArcIssueDate { get; set; }
-        
+
+        public DateTime? ArcExpireDate { get; set; }
+
         public sbyte? KycStatus { get; set; }
     }
 }
