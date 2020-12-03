@@ -5,6 +5,11 @@ namespace Frontend.DB.EF.Models
 {
     public partial class RemitRecord
     {
+        public RemitRecord()
+        {
+            RemitAdminReviewLog = new HashSet<RemitAdminReviewLog>();
+        }
+
         public long Id { get; set; }
         public long UserId { get; set; }
         public string ArcName { get; set; }
@@ -33,11 +38,11 @@ namespace Frontend.DB.EF.Models
         public long? ArcScanRecordId { get; set; }
         public long? AmlScanRecordId { get; set; }
         public DateTime? FormalApplyTime { get; set; }
-        public string AdminVerifyNote { get; set; }
 
         public virtual ArcScanRecord ArcScanRecord { get; set; }
         public virtual OftenBeneficiary Beneficiary { get; set; }
         public virtual CurrencyCode ToCurrency { get; set; }
         public virtual User User { get; set; }
+        public virtual ICollection<RemitAdminReviewLog> RemitAdminReviewLog { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using RemitRecords.Domains.RemitRecords.Command.Adapter.Repositories;
+using RemitRecords.Domains.RemitRecords.Constants;
 
 namespace RemitRecords.Domains.RemitRecords.Command.UseCase
 {
@@ -16,14 +17,13 @@ namespace RemitRecords.Domains.RemitRecords.Command.UseCase
 
         public void AmlReviewPass(long remitRecordId, string comment)
         {
-            //3 is AML pass
-            recordCommandRepository.UpdateTransactionStatus(remitRecordId, 3);
+            recordCommandRepository.UpdateTransactionStatus(remitRecordId, (short)RemitTransactionStatusEnum.OpConfirmedAndToBePaid, comment);
         }
 
         public void AmlReviewFail(long remitRecordId, string comment)
         {
-            //-8 Aml fail
-            recordCommandRepository.UpdateTransactionStatus(remitRecordId, -8);
+            
+            recordCommandRepository.UpdateTransactionStatus(remitRecordId, (short)RemitTransactionStatusEnum.FailedVerified, comment);
         }
     }
 }

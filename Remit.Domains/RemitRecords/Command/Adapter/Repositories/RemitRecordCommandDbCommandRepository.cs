@@ -12,13 +12,22 @@ namespace RemitRecords.Domains.RemitRecords.Command.Adapter.Repositories
             _context = context;
         }
 
-        public void UpdateTransactionStatus(long recordId, short transactionStatus)
+        public void UpdateTransactionStatus(long recordId, short transactionStatus,string comment)
         {
             var record =  _context.RemitRecord.SingleOrDefault(x => x.Id == recordId);
+            var originalTransactionStatus = record.TransactionStatus;
             if (record == null) return;
             record.TransactionStatus = transactionStatus;
+            RemitAdminReviewLog reviewLog = new RemitAdminReviewLog()
+            {
+                RemitRecordId = recordId,
+                FromTransactionStatus = originalTransactionStatus,
+                ToTransactionStatus = transactionStatus,
+                Note = comment
+            };
+            record.RemitAdminReviewLog.Add(reviewLog);
             _context.Update(record);
-
+            _context.SaveChanges();
         }
     }
 }

@@ -26,6 +26,7 @@ namespace Frontend.DB.EF.Models
         public virtual DbSet<PayeeType> PayeeType { get; set; }
         public virtual DbSet<PushNotificationSetting> PushNotificationSetting { get; set; }
         public virtual DbSet<ReceiveBank> ReceiveBank { get; set; }
+        public virtual DbSet<RemitAdminReviewLog> RemitAdminReviewLog { get; set; }
         public virtual DbSet<RemitRecord> RemitRecord { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserArc> UserArc { get; set; }
@@ -421,6 +422,37 @@ namespace Frontend.DB.EF.Models
                     .HasComment("名稱(越南)");
             });
 
+            modelBuilder.Entity<RemitAdminReviewLog>(entity =>
+            {
+                entity.ToTable("remit_admin_review_log");
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("create_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.FromTransactionStatus)
+                    .HasColumnName("from_transaction_status")
+                    .HasComment("原來的交易狀態");
+
+                entity.Property(e => e.Note)
+                    .IsRequired()
+                    .HasColumnName("note")
+                    .HasMaxLength(1000)
+                    .HasDefaultValueSql("('')")
+                    .HasComment("備註");
+
+                entity.Property(e => e.RemitRecordId).HasColumnName("remit_record_id");
+
+                entity.Property(e => e.ToTransactionStatus).HasColumnName("to_transaction_status");
+
+                entity.HasOne(d => d.RemitRecord)
+                    .WithMany(p => p.RemitAdminReviewLog)
+                    .HasForeignKey(d => d.RemitRecordId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_remit_admin_review_log_ToTable");
+            });
+
             modelBuilder.Entity<RemitRecord>(entity =>
             {
                 entity.ToTable("remit_record");
@@ -428,11 +460,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasComment("匯款紀錄");
 
                 entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.AdminVerifyNote)
-                    .HasColumnName("admin_verify_note")
-                    .HasMaxLength(1000)
-                    .HasComment("營運人員審核備註");
 
                 entity.Property(e => e.AmlScanRecordId)
                     .HasColumnName("aml_scan_record_id")
