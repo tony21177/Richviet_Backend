@@ -13,7 +13,7 @@ using Users.Domains.Users.Command.Request;
 namespace Richviet.Admin.API.Controllers.V1
 {
     [ApiVersion("1.0")]
-    [Route("remit/v{version:apiVersion}/review")]
+    [Route("admin/remit/v{version:apiVersion}/review")]
     [ApiController]
     public class RemitReviewController : ControllerBase
     {
@@ -47,7 +47,7 @@ namespace Richviet.Admin.API.Controllers.V1
             };
         }
 
-        [HttpPost("AmlReview")]
+        [HttpPost("Complete")]
         public MessageModel<string> TransSuccess(TransactionStatusModifyRequest request)
         {
 
