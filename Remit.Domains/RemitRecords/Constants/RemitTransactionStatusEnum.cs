@@ -8,6 +8,8 @@ namespace RemitRecords.Domains.RemitRecords.Constants
     {
         OtherError = -10,
         FailedVerified = -9,
+        FailedAml = -8,
+        OverTime = -7,
         Draft = 0,
         WaitingArcVerifying = 1,
         SuccessfulArcVerification = 2,

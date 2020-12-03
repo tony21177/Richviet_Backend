@@ -15,6 +15,8 @@ using Users.Domains.Users.Query;
 using RemitRecords.Domains.RemitRecords.Query;
 using Email.Notifier;
 using Microsoft.Extensions.Options;
+using RemitRecords.Domains.RemitRecords.Command.UseCase;
+using RemitRecords.Domains.RemitRecords.Command.Adapter.Repositories;
 
 namespace Richviet.IoC.Configuration.DI
 {
@@ -45,7 +47,10 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<IUserCommandRepository, UserCommandDbCommandRepository>();
                 services.AddTransient<IUserQueryRepositories, UserQueryRepositories>();
                 services.AddTransient<UserModifier>();
+                services.AddTransient<RemitRecordAmlReviewer>();
+                services.AddTransient<RemitTransactionStatusModifier>();
                 services.AddTransient<ArcValidationTask>();
+                services.AddTransient<IRemitRecordCommandRepository, RemitRecordCommandDbCommandRepository>();
                 services.AddScoped<IArcScanRecordService,ArcScanRecordService>();
                 services.AddTransient<IFirebaseService, FirebaseService>();
                 services.AddTransient<RemitValidationHelper>();

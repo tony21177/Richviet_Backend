@@ -7,6 +7,6 @@ namespace RemitRecords.Domains.RemitRecords.Command.Adapter.Repositories
 {
     public interface IRemitRecordCommandRepository
     {
-        void UpdateTransactionStatus(long recordId, short transactionStatus);
+        void UpdateTransactionStatus(long recordId, short transactionStatus, string comment);
     }
 }

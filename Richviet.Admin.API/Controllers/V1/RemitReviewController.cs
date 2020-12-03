@@ -50,8 +50,14 @@ namespace Richviet.Admin.API.Controllers.V1
         [HttpPost("Complete")]
         public MessageModel<string> TransSuccess(TransactionStatusModifyRequest request)
         {
-
-            statusModifier.RemitSuccess(request.RecordId, request.Comment);
+            if (request.IsComplete)
+            {
+                statusModifier.RemitSuccess(request.RecordId, request.Comment);
+            }
+            else
+            {
+                statusModifier.RemitFail(request.RecordId, request.Comment);
+            }
 
             return new MessageModel<string>()
             {
