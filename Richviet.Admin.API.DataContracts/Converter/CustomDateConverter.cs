@@ -14,7 +14,7 @@ namespace Richviet.Admin.API.DataContracts.Converter
 
         public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => DateTime.ParseExact(reader.GetString(),
-                    "yyyy/MM/dd", CultureInfo.InvariantCulture);
+                    "yyyy/M/d", CultureInfo.InvariantCulture);
 
         
         public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)

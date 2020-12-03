@@ -12,7 +12,7 @@ using Users.Domains.Users.Command.Request;
 namespace Richviet.Admin.API.Controllers.V1
 {
     [ApiVersion("1.0")]
-    [Route("user/v{version:apiVersion}/command")]
+    [Route("admin/user/v{version:apiVersion}/command")]
     [ApiController]
     public class UserCommandController : ControllerBase
     {
