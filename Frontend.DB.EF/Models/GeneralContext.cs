@@ -449,7 +449,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.RemitRecord)
                     .WithMany(p => p.RemitAdminReviewLog)
                     .HasForeignKey(d => d.RemitRecordId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_remit_admin_review_log_ToTable");
             });
 

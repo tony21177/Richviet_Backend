@@ -43,5 +43,18 @@ namespace Users.Domains.Users.Command.Adapter.Repositories
             _context.SaveChanges();
             return 0;
         }
+
+        public int DeleteUser(long userId)
+        {
+            List<RemitRecord> remitRecords = _context.RemitRecord.Include(recored => recored.RemitAdminReviewLog).Where(record => record.UserId == userId).ToList();
+            _context.RemitRecord.RemoveRange(remitRecords);
+            List<OftenBeneficiary> beneficiaries = _context.OftenBeneficiary.Where(beneficiary => beneficiary.UserId == userId).ToList();
+            _context.OftenBeneficiary.RemoveRange(beneficiaries);
+            List<User> userList = _context.User.Include(user => user.UserArc).ThenInclude(userArc => userArc.LastArcScanRecord)
+                                               .Include(user => user.UserRegisterType).ToList();
+            _context.User.RemoveRange(userList);
+            _context.SaveChanges();
+            return 0;
+        }
     }
 }
