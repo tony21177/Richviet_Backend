@@ -24,5 +24,10 @@ namespace RemitRecords.Domains.RemitRecords.Command.UseCase
         {
             this._recordCommandRepository.UpdateTransactionStatus(recordId, (short)RemitTransactionStatusEnum.OtherError,comment);
         }
+
+        public void SimulateingPaying(long recordId, string comment)
+        {
+            this._recordCommandRepository.UpdateTransactionStatus(recordId, (short)RemitTransactionStatusEnum.Paid, comment);
+        }
     }
 }
