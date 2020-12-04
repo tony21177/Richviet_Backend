@@ -73,6 +73,21 @@ namespace Richviet.Admin.API.Controllers.V1
             };
         }
 
+        /// <summary>
+        /// 此支API是模擬使用者繳款後(only for demo)
+        /// </summary>
+        [HttpPost("SimulatingUserPay")]
+        public MessageModel<string> SimulatingUserPay(TransactionStatusModifyRequest request)
+        {
+            
+            statusModifier.SimulateingPaying(request.RecordId, request.Comment);
+            
+            return new MessageModel<string>()
+            {
+                Msg = "simulating paying successful"
+            };
+        }
+
         [HttpGet("")]
         public ActionResult<MessageModel<List<RemitRecordAdminDTO>>> GetRemitList()
         {
