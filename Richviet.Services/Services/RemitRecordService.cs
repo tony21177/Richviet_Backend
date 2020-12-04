@@ -29,7 +29,7 @@ namespace Richviet.Services.Services
         private readonly IConfiguration configuration;
         private readonly IEmailSender emailSender;
         private readonly string REMIT_ARC_PASSED_SUBJECT = "匯款流程-通過arc自動審核";
-        private readonly string REMIT_ARC_PASSED_MESSAGE = "未通過arc自動審核";
+        private readonly string REMIT_ARC_PASSED_MESSAGE = "通過arc自動審核";
         private readonly string REMIT_ARC_NOT_PASSED_SUBJECT = "匯款流程-未通過arc自動審核";
         private readonly string REMIT_ARC_NOT_PASSED_MESSAGE = "未通過arc自動審核";
         private readonly string[] receivers;
