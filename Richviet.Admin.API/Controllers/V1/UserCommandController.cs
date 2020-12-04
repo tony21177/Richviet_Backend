@@ -8,6 +8,7 @@ using Richviet.Admin.API.DataContracts.Responses;
 using Users.Domains.Users.Command.UseCase;
 using AutoMapper;
 using Users.Domains.Users.Command.Request;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Richviet.Admin.API.Controllers.V1
 {
@@ -17,11 +18,13 @@ namespace Richviet.Admin.API.Controllers.V1
     public class UserCommandController : ControllerBase
     {
         private readonly UserModifier modifier;
+        private readonly UserRemoverForDevUse userRemoverForDev;
         private readonly IMapper mapper;
 
-        public UserCommandController(UserModifier modifier)
+        public UserCommandController(UserModifier modifier, UserRemoverForDevUse userRemoverForDev)
         {
             this.modifier = modifier;
+            this.userRemoverForDev = userRemoverForDev;
 
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -53,6 +56,19 @@ namespace Richviet.Admin.API.Controllers.V1
             return new MessageModel<string>()
             {
                 Data = "modify success"
+            };
+        }
+
+
+        [HttpDelete("{userId}")]
+        public MessageModel<string> DeleteUser([FromRoute, SwaggerParameter("會員id", Required = true)] long userId)
+        {
+            userRemoverForDev.removeUser(userId);
+
+            return new MessageModel<string>()
+            {
+     
+                Msg = "delete success"
             };
         }
     }

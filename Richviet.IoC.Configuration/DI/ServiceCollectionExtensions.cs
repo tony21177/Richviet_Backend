@@ -47,6 +47,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<IUserCommandRepository, UserCommandDbCommandRepository>();
                 services.AddTransient<IUserQueryRepositories, UserQueryRepositories>();
                 services.AddTransient<UserModifier>();
+                services.AddTransient<UserRemoverForDevUse>();
                 services.AddTransient<RemitRecordAmlReviewer>();
                 services.AddTransient<RemitTransactionStatusModifier>();
                 services.AddTransient<ArcValidationTask>();

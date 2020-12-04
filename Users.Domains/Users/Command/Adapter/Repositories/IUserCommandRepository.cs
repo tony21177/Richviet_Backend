@@ -11,5 +11,7 @@ namespace Users.Domains.Users.Command.Adapter.Repositories
         int DeleteDraftUser();
 
         int DeleteDraftUserAfterDays(int days);
+
+        int DeleteUser(long id);
     }
 }
