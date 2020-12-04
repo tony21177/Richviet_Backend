@@ -213,6 +213,12 @@ namespace Richviet.Services
 
 
                 userArc.KycStatus = (short)KycStatusEnum.ARC_PASS_VERIFY;
+                // for demo
+                if(configuration["IsDemo"] != null && bool.Parse(configuration["IsDemo"]) == true)
+                {
+                    userArc.KycStatus = (short)KycStatusEnum.AML_PASS_VERIFY;
+                }
+                //
                 userArc.KycStatusUpdateTime = DateTime.UtcNow;
                 AddScanRecordAndUpdateUserKycStatus(record, userArc);
                 // send mail
