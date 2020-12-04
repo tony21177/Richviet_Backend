@@ -24,17 +24,17 @@ namespace Richviet.Admin.API.Controllers.V1
         private readonly ILogger Logger;
         private readonly IMapper mapper;
         private readonly IUserAdminService userAdminService;
-        private readonly IUploadPic uploadPicToLocalService;
+        private readonly IUploadPic uploadPicService;
         private readonly IUserService userService;
 
         public UserAdminController(ILogger<UserAdminController> logger, 
             IMapper mapper, 
-            IUserAdminService userAdminService, IUploadPic uploadPicToLocalService, IUserService userService)
+            IUserAdminService userAdminService, IUploadPic uploadPicService, IUserService userService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper;
             this.userAdminService = userAdminService;
-            this.uploadPicToLocalService = uploadPicToLocalService;
+            this.uploadPicService = uploadPicService;
             this.userService = userService;
         }
 
@@ -93,7 +93,7 @@ namespace Richviet.Admin.API.Controllers.V1
                     break;
             }
 
-            var image = await uploadPicToLocalService.LoadImage(userArc,type, imageFileName);
+            var image = await uploadPicService.LoadImage(userArc,type, imageFileName);
             if (image == null) return NotFound();
             
             return File(image, "image/jpeg");

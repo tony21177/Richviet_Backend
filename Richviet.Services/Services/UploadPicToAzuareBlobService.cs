@@ -80,7 +80,7 @@ namespace Richviet.Services.Services
             }
         }
 
-        public async Task<Stream> LoadImage(UserArc userArc,byte imageType,string imageFileUri)
+        public async Task<Stream> LoadImage(UserArc userArc, byte imageType,string imageFileUri)
         {
             String [] imageUriArray = imageFileUri.Split('/');
             String imageFileName = WebUtility.UrlDecode(imageUriArray[imageUriArray.Length - 1]);
