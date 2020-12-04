@@ -594,7 +594,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RemitRecord)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_remit_record_user1");
             });
 
