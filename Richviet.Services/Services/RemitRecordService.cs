@@ -184,6 +184,12 @@ namespace Richviet.Services.Services
                 };
 
                 remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulArcVerification;
+                // for demo
+                if (configuration["IsDemo"] != null && bool.Parse(configuration["IsDemo"]) == true)
+                {
+                    remitRecord.TransactionStatus = (short)RemitTransactionStatusEnum.SuccessfulAmlVerification;
+                }
+                //
                 AddScanRecordAndUpdateUserKycStatus(record, userArc, remitRecord);
                 // send mail
                 await SendMailForRemitArc(true, receivers, userId);
