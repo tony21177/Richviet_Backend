@@ -13,6 +13,7 @@ using Richviet.Services.Contracts;
 using Frontend.DB.EF.Models;
 using Richviet.Admin.API.DataContracts.Dto;
 using Swashbuckle.AspNetCore.Annotations;
+using Richviet.Services.Constants;
 
 namespace Richviet.Admin.API.Controllers.V1
 {
@@ -26,13 +27,16 @@ namespace Richviet.Admin.API.Controllers.V1
         private readonly RemitTransactionStatusModifier statusModifier;
         private readonly IRemitRecordService remitRecordService;
         private readonly IMapper _mapper;
+        private readonly IUploadPic uploadPicService;
 
-        public RemitReviewController(RemitRecordAmlReviewer amlReviewer, RemitTransactionStatusModifier statusModifier, IRemitRecordService remitRecordService, IMapper mapper)
+        public RemitReviewController(RemitRecordAmlReviewer amlReviewer, RemitTransactionStatusModifier statusModifier, IRemitRecordService remitRecordService, IMapper mapper
+            , IUploadPic uploadPicService)
         {
             this.amlReviewer = amlReviewer;
             this.statusModifier = statusModifier;
             this.remitRecordService = remitRecordService;
             this._mapper = mapper;
+            this.uploadPicService = uploadPicService;
         }
 
 
@@ -106,6 +110,28 @@ namespace Richviet.Admin.API.Controllers.V1
             {
                 Data = _mapper.Map<RemitRecordAdminDTO>(record)
         });
+        }
+
+        [HttpGet("/image/remit/{remitId}/{type}")]
+        public async Task<IActionResult> GetUserImage([FromRoute, SwaggerParameter("匯款申請單id", Required = true)] long remitId,
+            [FromRoute, SwaggerParameter("0:及時照,1:簽名照", Required = true)] byte type)
+        {
+            RemitRecord record = remitRecordService.GetRemitRecordById(remitId);
+            string imageFileName = null;
+            switch (type)
+            {
+                case (byte)PictureTypeEnum.Instant:
+                    imageFileName = record.RealTimePic;
+                    break;
+                case (byte)PictureTypeEnum.Signature:
+                    imageFileName = record.ESignature;
+                    break;
+            }
+
+            var image = await uploadPicService.LoadImage(null, type, imageFileName);
+            if (image == null) return NotFound();
+
+            return File(image, "image/jpeg");
         }
     }
 }
