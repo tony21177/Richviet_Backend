@@ -37,6 +37,8 @@ namespace Richviet.Admin.API.DataContracts.Dto
         public double? DiscountAmount { get; set; }
         [SwaggerSchema("收款人名稱")]
         public string PayeeName { get; set; }
+        [SwaggerSchema("收款銀行")]
+        public string Bank { get; set; }
         [SwaggerSchema("收款人銀行帳號")]
         public string PayeeAddress { get; set; }
         [SwaggerSchema("收款人關係0:父母,1:兄弟,2:子女")]

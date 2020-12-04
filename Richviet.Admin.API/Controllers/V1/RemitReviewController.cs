@@ -28,15 +28,17 @@ namespace Richviet.Admin.API.Controllers.V1
         private readonly IRemitRecordService remitRecordService;
         private readonly IMapper _mapper;
         private readonly IUploadPic uploadPicService;
+        private readonly IBankService bankService;
 
         public RemitReviewController(RemitRecordAmlReviewer amlReviewer, RemitTransactionStatusModifier statusModifier, IRemitRecordService remitRecordService, IMapper mapper
-            , IUploadPic uploadPicService)
+            , IUploadPic uploadPicService, IBankService bankService)
         {
             this.amlReviewer = amlReviewer;
             this.statusModifier = statusModifier;
             this.remitRecordService = remitRecordService;
             this._mapper = mapper;
             this.uploadPicService = uploadPicService;
+            this.bankService = bankService;
         }
 
 
@@ -106,10 +108,13 @@ namespace Richviet.Admin.API.Controllers.V1
         public ActionResult<MessageModel<RemitRecordAdminDTO>> GetRemitListById([FromRoute, SwaggerParameter("交易紀錄id", Required = true)] long id)
         {
             RemitRecord record = remitRecordService.GetRemitRecordById(id);
+            ReceiveBank bank = bankService.GetReceiveBanks().Find(bank=>bank.Id==record.Beneficiary.ReceiveBankId);
+            RemitRecordAdminDTO remitRecordAdminDTO = _mapper.Map<RemitRecordAdminDTO>(record);
+            remitRecordAdminDTO.Bank = bank.TwName;
             return Ok(new MessageModel<RemitRecordAdminDTO>
             {
-                Data = _mapper.Map<RemitRecordAdminDTO>(record)
-        });
+                Data = remitRecordAdminDTO
+            });
         }
 
         [HttpGet("/image/remit/{remitId}/{type}")]
