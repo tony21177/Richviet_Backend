@@ -137,6 +137,11 @@ namespace Richviet.Services.Services
             return dbContext.RemitRecord.Include(record=>record.Beneficiary).ThenInclude(Beneficiary=>Beneficiary.PayeeRelation).Include("ToCurrency").Where(record => record.UserId == userId).ToList();
         }
 
+        public List<RemitRecord> GetAllRemitRecords()
+        {
+            return dbContext.RemitRecord.Include(record => record.Beneficiary).ThenInclude(Beneficiary => Beneficiary.PayeeRelation).Include("ToCurrency").ToList();
+        }
+
         public List<string> GeneratePaymentCode(RemitRecord modifiedRemitRecord)
         {
             List<string> codeList = new List<string>();

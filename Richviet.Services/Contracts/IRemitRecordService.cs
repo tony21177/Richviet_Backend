@@ -19,6 +19,8 @@ namespace Richviet.Services.Contracts
 
         List<RemitRecord> GetRemitRecordsByUserId(long userId);
 
+        List<RemitRecord> GetAllRemitRecords();
+
         RemitRecord CreateRemitRecordByUserArc(UserArc userArc, RemitRecord remitRecord, PayeeTypeEnum payeeTypeEnum);
 
         RemitRecord ModifyRemitRecord(RemitRecord modifiedRemitRecord, DateTime? applyTime);

@@ -70,6 +70,26 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             CreateMap<M.PayeeRelationType, A.EditRelationDTO>().ReverseMap();
             CreateMap<M.BussinessUnitRemitSetting, A.EditRemitSettingDTO>().ReverseMap();
             CreateMap<M.CurrencyCode, A.EditCurrencyInfoDTO>().ReverseMap();
+            CreateMap<M.RemitRecord, A.RemitRecordAdminDTO>().ReverseMap();
+            _ = CreateMap < M.RemitRecord, A.RemitRecordAdminDTO>().ForMember(
+              dest => dest.PayeeName
+              , opt => opt.MapFrom(src => src.Beneficiary.Name)
+            ).ForMember(
+              dest => dest.PayeeAddress
+              , opt => opt.MapFrom(src => src.Beneficiary.PayeeAddress)
+            ).ForMember(
+              dest => dest.PayeeRelationType
+              , opt => opt.MapFrom(src => src.Beneficiary.PayeeRelation.Type)
+            ).ForMember(
+              dest => dest.PayeeRelationTypeDescription
+              , opt => opt.MapFrom(src => src.Beneficiary.PayeeRelation.Description)
+            ).ForMember(
+              dest => dest.ToCurrency
+              , opt => opt.MapFrom(src => src.ToCurrency.CurrencyName)
+            ).ForMember(
+              dest => dest.PaymentCode
+              , opt => opt.MapFrom(src => src.PaymentCode.Split(',', StringSplitOptions.None))
+            ).ReverseMap();
         }
     }
 }
