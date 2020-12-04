@@ -294,7 +294,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.OftenBeneficiary)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_often_beneficiary_user");
             });
 
