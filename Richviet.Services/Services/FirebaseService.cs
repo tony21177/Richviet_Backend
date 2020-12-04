@@ -14,7 +14,7 @@ namespace Richviet.Services.Services
     {
 		//firebase
 		public static readonly string FIREBASE_URL = "https://fcm.googleapis.com/fcm/send";
-		public static readonly string FIREBASE_KEY_SERVER = "AAAA7lTRfrA:APA91bHtwPtbeSLyhcTyhq-w6tLiwcnPhLdyQ9TGerp7klSdpK3I-9KXGthCBkyPJ4DZwZnnj9tX3yCDMF7NY6Oe1r6iFRiZglEWnd-IWjS3XMzmP0tpVdB3go4EwLACaFCn4IySdeO89bkY3_c9HBHvTzS6i6hE8Q";
+		public static readonly string FIREBASE_KEY_SERVER = "AAAAtrOO6bM:APA91bErt9o3Akx3Sj7MSFCqJZkTf3GPObTcUiDZop_TtI4_0rffCENwZApJIgtmiOo700HjqquPJySCSghwHFMpzI7D0BCiqaboHKKzHKH59UztWLUTm3Sbe5DJ-8ep9yvOGLDo45-V";
 		private readonly GeneralContext dbContext;
 		private readonly ILogger logger;
 
