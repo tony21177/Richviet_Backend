@@ -15,9 +15,12 @@ namespace RemitRecords.Domains.RemitRecords.Command.Adapter.Repositories
         public void UpdateTransactionStatus(long recordId, short transactionStatus,string comment)
         {
             var record =  _context.RemitRecord.SingleOrDefault(x => x.Id == recordId);
+            _context.Entry(record).Reference(record => record.ToCurrency).Load();
+            var exchangeRate = _context.ExchangeRate.SingleOrDefault(x => x.CurrencyName.Equals(record.ToCurrency.CurrencyName));
             var originalTransactionStatus = record.TransactionStatus;
             if (record == null) return;
             record.TransactionStatus = transactionStatus;
+            record.TransactionExchangeRate = exchangeRate.Rate;
             RemitAdminReviewLog reviewLog = new RemitAdminReviewLog()
             {
                 RemitRecordId = recordId,
