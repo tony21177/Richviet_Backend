@@ -28,7 +28,7 @@ namespace Richviet.Services
         private readonly IConfiguration configuration;
         private readonly IEmailSender emailSender;
         private readonly string REGISTER_ARC_PASSED_SUBJECT = "註冊流程-通過arc自動審核";
-        private readonly string REGISTER_ARC_PASSED_MESSAGE = "未通過arc自動審核";
+        private readonly string REGISTER_ARC_PASSED_MESSAGE = "通過arc自動審核";
         private readonly string REGISTER_ARC_NOT_PASSED_SUBJECT = "註冊流程-未通過arc自動審核";
         private readonly string REGISTER_ARC_NOT_PASSED_MESSAGE = "未通過arc自動審核";
         private readonly string[] receivers;
