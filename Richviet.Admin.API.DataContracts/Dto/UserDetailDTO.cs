@@ -35,7 +35,7 @@ namespace Richviet.Admin.API.DataContracts.Dto
         [SwaggerSchema("電話")]
         public string Phone { get; set; }
         [SwaggerSchema("最後上線時間")]
-        public DateTimeOffset? LoginTime { get; set; }
+        public long LoginTime { get; set; }
         [SwaggerSchema("最近上線地點")]
         public string Address { get; set; }
         [SwaggerSchema("居留證正面")]
