@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Richviet.Services.Contracts
 {
-    public interface IFirebaseService
+    public interface INotificationService
     {
         void SendPush(string mobileToken, string title, string body);
 

@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Richviet.Services.Services
 {
-    public class FirebaseService : IFirebaseService
+    public class FirebaseMessageService : INotificationService
     {
 		//firebase
 		public static readonly string FIREBASE_URL = "https://fcm.googleapis.com/fcm/send";
@@ -18,7 +18,7 @@ namespace Richviet.Services.Services
 		private readonly GeneralContext dbContext;
 		private readonly ILogger logger;
 
-		public FirebaseService(ILogger<FirebaseService> logger, GeneralContext dbContext)
+		public FirebaseMessageService(ILogger<FirebaseMessageService> logger, GeneralContext dbContext)
 		{
 			this.logger = logger;
 			this.dbContext = dbContext;

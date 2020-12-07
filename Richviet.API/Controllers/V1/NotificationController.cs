@@ -24,13 +24,13 @@ namespace Richviet.API.Controllers.V1
     {
         private readonly IMapper mapper;
         private readonly ILogger logger;
-        private readonly IFirebaseService firebaseService;
+        private readonly INotificationService notificationService;
 
-        public NotificationController(IMapper mapper, ILogger<NotificationController> logger, IFirebaseService firebaseService)
+        public NotificationController(IMapper mapper, ILogger<NotificationController> logger, INotificationService firebaseService)
         {
             this.mapper = mapper;
             this.logger = logger;
-            this.firebaseService = firebaseService;
+            this.notificationService = firebaseService;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Richviet.API.Controllers.V1
         {
             var userId = int.Parse(User.FindFirstValue("id"));
             //int userId = 1;
-            PushNotificationSetting result = firebaseService.UpdateMobileToken(userId, request.MobileToken);
+            PushNotificationSetting result = notificationService.UpdateMobileToken(userId, request.MobileToken);
             NotificationDTO dto = mapper.Map<NotificationDTO>(result);
             return new MessageModel<NotificationDTO>
             {
@@ -59,7 +59,7 @@ namespace Richviet.API.Controllers.V1
         public MessageModel<NotificationDTO> SwitchNotification([FromBody] NotificationSettingRequest request)
         {
             var userId = int.Parse(User.FindFirstValue("id"));
-            PushNotificationSetting result = firebaseService.SwitchNotification(userId, request.IsTurnOn);
+            PushNotificationSetting result = notificationService.SwitchNotification(userId, request.IsTurnOn);
             NotificationDTO dto = mapper.Map<NotificationDTO>(result);
             return new MessageModel<NotificationDTO>
             {
@@ -76,7 +76,7 @@ namespace Richviet.API.Controllers.V1
         public MessageModel<NotificationDTO> GetNotificationState()
         {
             var userId = int.Parse(User.FindFirstValue("id"));
-            PushNotificationSetting result = firebaseService.GetNotificationState(userId);
+            PushNotificationSetting result = notificationService.GetNotificationState(userId);
             NotificationDTO dto = mapper.Map<NotificationDTO>(result);
             return new MessageModel<NotificationDTO>
             {
