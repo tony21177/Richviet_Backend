@@ -90,14 +90,15 @@ namespace Richviet.Services.Services
             var res = from u in dbContext.User where u.Id == userId
                       join a in dbContext.UserArc on u.Id equals a.UserId
                       join g in dbContext.UserLoginLog on u.Id equals g.UserId
-                      select new { u.Id, a.ArcName, a.ArcNo, a.KycStatus, u.Level, u.Gender, a.Country,
+                      orderby g.LoginTime descending
+                      select new { u.Id, Name = a.ArcName, a.ArcNo, a.KycStatus, u.Level, u.Gender, a.Country,
                           u.Birthday, a.PassportId, a.ArcIssueDate, a.ArcExpireDate, a.BackSequence,
                           u.Phone, g.LoginTime, g.Address, a.IdImageA, a.IdImageB };
             UserDetailDTO dto = new UserDetailDTO();
-            foreach (var r in res)
+            foreach (var r in res.Take(1))
             {
                 dto.Id = (int)r.Id;
-                dto.Name = r.ArcName;
+                dto.Name = r.Name;
                 dto.ArcNo = r.ArcNo;
                 dto.KycStatus = r.KycStatus;
                 dto.Level = r.Level;
@@ -109,7 +110,7 @@ namespace Richviet.Services.Services
                 dto.ArcExpireDate = r.ArcExpireDate;
                 dto.BackSequence = r.BackSequence;
                 dto.Phone = r.Phone;
-                dto.LoginTime = r.LoginTime;
+                dto.LoginTime = (long)((DateTime)r.LoginTime).Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
                 dto.Address = r.Address;
                 dto.IdImageA = r.IdImageA;
                 dto.IdImageB = r.IdImageB;
