@@ -31,6 +31,9 @@ namespace Richviet.Services.Services
 
 			[JsonProperty("to")]
 			public string Token { get; set; }
+
+			[JsonProperty("data")]
+			public dynamic Data { get; set; }
 		}
 
 		private dynamic Push(PushMessage message) {
@@ -64,7 +67,8 @@ namespace Richviet.Services.Services
 		public void SendPush(string mobileToken, string title, string body) {
 			if (mobileToken != null) Push(new PushMessage {
 				Token = mobileToken,
-				Notification = new { title,	body}
+				Notification = new { title, body },
+				Data = new { data_title = title, data_content = body }
 			});
 		}
 
