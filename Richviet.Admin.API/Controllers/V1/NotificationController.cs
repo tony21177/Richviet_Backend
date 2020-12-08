@@ -18,13 +18,13 @@ namespace Richviet.Admin.API.Controllers.V1
     {
         private readonly IMapper mapper;
         private readonly ILogger logger;
-        private readonly IFirebaseService firebaseService;
+        private readonly INotificationService notificationService;
 
-        public NotificationController(IMapper mapper, ILogger<NotificationController> logger, IFirebaseService firebaseService)
+        public NotificationController(IMapper mapper, ILogger<NotificationController> logger, INotificationService firebaseService)
         {
             this.mapper = mapper;
             this.logger = logger;
-            this.firebaseService = firebaseService;
+            this.notificationService = firebaseService;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Richviet.Admin.API.Controllers.V1
         [HttpPost("testpush")]
         public MessageModel<bool> TestPush()
         {
-            firebaseService.SendPush("fEXQFybSwzE:APA91bHpFgfrZ1A2URzz7zkxwAIFO99ABDHlcBQaBykLMRpB0voy4LXfycMpaWQ-co0GC5YOpVhgHY5wBfgMw-eStjhCApWpbm7oMJ8yrnJinshuI2-jHtInwXIjSdTdd_KYcfUOxlg9", "test", "20201105");
+            notificationService.SendPush("fEXQFybSwzE:APA91bFyMZWDnUTHrIFKrwrLD2SaFqA71fc-yIRZBQnFxy7ZQDeLNnlJNAeru4jetMZtpnZw_pvjQDG4f3xJk1FmJxs4GtvnYSB5_WQiymi9vXW4M9RHWludNKImxTyZPiXlf2ChHWmD", "test", "20201204");
             return new MessageModel<bool>
             {
                 Data = true

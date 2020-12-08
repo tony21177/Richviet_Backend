@@ -347,6 +347,7 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.OftenBeneficiary)
                     .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_often_beneficiary_user");
             });
 
@@ -500,6 +501,7 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.RemitRecord)
                     .WithMany(p => p.RemitAdminReviewLog)
                     .HasForeignKey(d => d.RemitRecordId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_remit_admin_review_log_ToTable");
             });
 
@@ -646,6 +648,7 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RemitRecord)
                     .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_remit_record_user1");
             });
 
