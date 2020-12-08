@@ -26,6 +26,7 @@ using Richviet.Admin.API.Swagger;
 using Richviet.IoC.Configuration.DI;
 using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Richviet.Admin.API
 {
@@ -86,23 +87,17 @@ namespace Richviet.Admin.API
                             options.JsonSerializerOptions.Converters.Add(new CustomDateConverter());
                         });
 
-                    //// authentication
-                    //services
-                    //// 檢查 HTTP Header 的 Authorization 是否有 JWT Bearer Token
-                    //.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    //// 設定 JWT Bearer Token 的檢查選項
-                    //.AddJwtBearer(options =>
-                    //{
-                    //    options.IncludeErrorDetails = true;
-                    //    options.TokenValidationParameters = new TokenValidationParameters
-                    //    {
-                    //        ValidateIssuer = false,
-                    //        ValidateAudience = false,
-                    //        ValidateLifetime = true,
-                    //        ValidateIssuerSigningKey = false,
-                    //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
-                    //    };
-                    //});
+                    services.AddAuthentication("Bearer")
+                    .AddJwtBearer("Bearer", options =>  
+                    {
+                        options.Authority = Configuration.GetSection("IdentityServer").GetValue<string>("host");
+                        options.RequireHttpsMetadata = false;
+                        options.Audience = "adminApi";
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateAudience = true
+                        };
+                    });
 
                     //API versioning
                     services.AddApiVersioning(
@@ -137,14 +132,14 @@ namespace Richviet.Admin.API
                         {
                             options.OperationFilter<SwaggerDefaultValues>();
                             options.IncludeXmlComments(XmlCommentsFilePath);
-                            //options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
-                            //{
-                            //    Type = SecuritySchemeType.Http,
-                            //    BearerFormat = "JWT",
-                            //    In = ParameterLocation.Header,
-                            //    Scheme = "bearer"
-                            //});
-                            //options.OperationFilter<AddRequiredHeaderParameter>();
+                            options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+                            {
+                                Type = SecuritySchemeType.Http,
+                                BearerFormat = "JWT",
+                                In = ParameterLocation.Header,
+                                Scheme = "bearer"
+                            });
+                            options.OperationFilter<AddRequiredHeaderParameter>();
                             options.EnableAnnotations();
                         });
                     }
@@ -178,12 +173,7 @@ namespace Richviet.Admin.API
                     app.UseDeveloperExceptionPage();
                 else
                 {
-                    //Both alternatives are usable for general error handling:
-                    // - middleware
-                    // - UseExceptionHandler()
-
-                    //app.UseMiddleware(typeof(ErrorHandlingMiddleware));
-
+                   
                     app.UseExceptionHandler(a => a.Run(async context =>
                     {
                         var feature = context.Features.Get<IExceptionHandlerPathFeature>();
@@ -195,9 +185,6 @@ namespace Richviet.Admin.API
                         else if (exception is UnauthorizedAccessException) code = HttpStatusCode.Unauthorized;
 
                         _logger.LogError($"GLOBAL ERROR HANDLER::HTTP:{code}::{exception.Message}");
-
-                        //Known issue for now in System.Text.Json
-                        //var result = JsonSerializer.Serialize<Exception>(exception, new JsonSerializerOptions { WriteIndented = true });
 
                         //Newtonsoft.Json serializer (should be replaced once the known issue in System.Text.Json will be solved)
                         var result = JsonConvert.SerializeObject(exception, Formatting.Indented);

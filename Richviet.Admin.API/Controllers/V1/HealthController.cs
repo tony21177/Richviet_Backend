@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Richviet.Admin.API.DataContracts.Responses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Richviet.Admin.API.Controllers.V1
 {
@@ -13,6 +14,7 @@ namespace Richviet.Admin.API.Controllers.V1
     public class HealthController : Controller
     {
         [HttpGet]
+        [AllowAnonymous]
         public MessageModel<string> Check()
         {
            

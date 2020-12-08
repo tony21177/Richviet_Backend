@@ -15,7 +15,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/v{version:apiVersion}/kyc")]
     [ApiController]
-
+    [Authorize(Roles = "adminManager")]
     public class KycController : Controller
     {
         private readonly IUserService userService;
@@ -31,7 +31,6 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 更改使用者kyc狀態
         /// </summary>
         [HttpPut("{userId}")]
-        [AllowAnonymous]
 
         public ActionResult<MessageModel<Object>> ChangeUserKyc([FromBody] KycRequest kycRequest,[FromRoute, SwaggerParameter("使用者ID", Required = true)] long userId)
         {
