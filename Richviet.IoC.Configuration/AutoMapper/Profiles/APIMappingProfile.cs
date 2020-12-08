@@ -63,7 +63,8 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             ).ReverseMap();
 
 
-            CreateMap<M.PushNotificationSetting, C.NotificationDTO>().ReverseMap();
+            CreateMap<M.PushNotificationSetting, C.NotificationSettingDTO>().ReverseMap();
+            CreateMap<M.NotificationMessage, C.NotificationMessageDTO>().ReverseMap();
 
             //Admin
             CreateMap<M.ReceiveBank, A.EditBankDTO>().ReverseMap();

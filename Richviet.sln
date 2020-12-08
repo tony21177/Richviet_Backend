@@ -64,7 +64,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Email.Notifier", "Email.Not
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{BCC2F1EC-5A64-4B1C-A8BA-360F791DFC94}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Richviet.Background.Service", "Richviet.Background.Service\Richviet.Background.Service.csproj", "{0CF4A239-DDB1-46E4-B725-C9487F3788E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Richviet.Background.Service", "Richviet.Background.Service\Richviet.Background.Service.csproj", "{45BC5837-C36B-40E1-B55C-9D554B575BC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -152,10 +152,10 @@ Global
 		{BCC2F1EC-5A64-4B1C-A8BA-360F791DFC94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCC2F1EC-5A64-4B1C-A8BA-360F791DFC94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCC2F1EC-5A64-4B1C-A8BA-360F791DFC94}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0CF4A239-DDB1-46E4-B725-C9487F3788E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CF4A239-DDB1-46E4-B725-C9487F3788E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0CF4A239-DDB1-46E4-B725-C9487F3788E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0CF4A239-DDB1-46E4-B725-C9487F3788E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45BC5837-C36B-40E1-B55C-9D554B575BC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45BC5837-C36B-40E1-B55C-9D554B575BC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45BC5837-C36B-40E1-B55C-9D554B575BC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45BC5837-C36B-40E1-B55C-9D554B575BC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -181,7 +181,7 @@ Global
 		{CC5BBB81-CEF5-4B13-87B3-7BCA5359EC39} = {D90897EE-4E15-486E-B17D-EFDEC5334CC6}
 		{A4AC7481-7DAE-4115-AEF5-522DA6043248} = {4F36A84F-48CC-44E5-BDD4-C51525E1CF00}
 		{BCC2F1EC-5A64-4B1C-A8BA-360F791DFC94} = {11D47A71-662E-4D11-824B-6A91A52F439E}
-		{0CF4A239-DDB1-46E4-B725-C9487F3788E4} = {09413445-3ECE-4D11-83DB-5E1CB1A4288B}
+		{45BC5837-C36B-40E1-B55C-9D554B575BC2} = {09413445-3ECE-4D11-83DB-5E1CB1A4288B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {756538D4-5347-479B-8083-19EF5CC5850C}

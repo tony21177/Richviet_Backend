@@ -181,13 +181,12 @@ namespace Richviet.Services.Services
 			return new List<NotificationMessage>();
 		}
 
-        public bool NotificationIsRead(int messageId)
+        public bool ReadNotification(int userId, int messageId)
         {
 			try
             {
-				NotificationMessage message = dbContext.NotificationMessage.SingleOrDefault(x => x.Id == messageId);
+				NotificationMessage message = dbContext.NotificationMessage.SingleOrDefault(x => x.Id == messageId && x.UserId == userId);
 				message.IsRead = true;
-				message.UpdateTime = DateTime.UtcNow;
 				dbContext.SaveChanges();
 				return true;
             }

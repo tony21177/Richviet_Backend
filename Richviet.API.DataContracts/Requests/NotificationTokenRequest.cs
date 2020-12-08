@@ -6,9 +6,9 @@ using System.Text;
 namespace Richviet.API.DataContracts.Requests
 {
     [SwaggerSchema(Required = new[] { "Description" })]
-    public class NotificationSettingRequest
+    public class NotificationTokenRequest
     {
-        [SwaggerSchema("開關通知，開啟 true = 1，關閉 false = 0")]
-        public bool IsTurnOn { get; set; }
+        [SwaggerSchema("用於Firebase message識別裝置的token")]
+        public string MobileToken { get; set; }
     }
 }

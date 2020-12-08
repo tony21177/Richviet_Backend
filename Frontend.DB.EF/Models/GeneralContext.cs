@@ -228,8 +228,6 @@ namespace Frontend.DB.EF.Models
                     .HasName("uq_notification_message_user_id")
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Content)
                     .HasColumnName("content")
                     .HasComment("推播通知內容");

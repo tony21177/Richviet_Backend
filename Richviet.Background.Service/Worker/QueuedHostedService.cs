@@ -24,7 +24,7 @@ namespace Richviet.Background.Service.Worker
             {
                 try
                 {
-
+                    logger.LogDebug("QueuedHostedService ExecuteAsync:" + "test " + DateTime.Now);
                     await Task.Delay(Config.SLEEP_TIME);
                 }
                 catch (Exception ex)

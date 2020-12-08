@@ -19,6 +19,6 @@ namespace Richviet.Services.Contracts
 
         List<NotificationMessage> GetNotificationList(int userId);
 
-        bool NotificationIsRead(int messageId);
+        bool ReadNotification(int userId, int messageId);
     }
 }

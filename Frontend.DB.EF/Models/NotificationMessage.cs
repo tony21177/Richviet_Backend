@@ -12,8 +12,8 @@ namespace Frontend.DB.EF.Models
         public string ImageUrl { get; set; }
         public bool IsRead { get; set; }
         public string Language { get; set; }
-        public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         public virtual User User { get; set; }
     }

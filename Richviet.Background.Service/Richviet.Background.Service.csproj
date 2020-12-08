@@ -5,9 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Frontend.DB.EF\Frontend.DB.EF.csproj" />
     <ProjectReference Include="..\Richviet.IoC.Configuration\Richviet.IoC.Configuration.csproj" />
     <ProjectReference Include="..\Richviet.Services\Richviet.Services.csproj" />
   </ItemGroup>
+
 
 </Project>

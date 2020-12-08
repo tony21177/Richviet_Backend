@@ -6,7 +6,7 @@ using System.Text;
 namespace Richviet.API.DataContracts.Dto
 {
     [SwaggerSchema(Required = new[] { "Description" })]
-    public class NotificationDTO
+    public class NotificationSettingDTO
     {
         [SwaggerSchema("使用者id")]
         public int UserId { get; set; }
