@@ -21,6 +21,7 @@ namespace Frontend.DB.EF.Models
         public virtual DbSet<CurrencyCode> CurrencyCode { get; set; }
         public virtual DbSet<Discount> Discount { get; set; }
         public virtual DbSet<ExchangeRate> ExchangeRate { get; set; }
+        public virtual DbSet<NotificationMessage> NotificationMessage { get; set; }
         public virtual DbSet<OftenBeneficiary> OftenBeneficiary { get; set; }
         public virtual DbSet<PayeeRelationType> PayeeRelationType { get; set; }
         public virtual DbSet<PayeeType> PayeeType { get; set; }
@@ -219,6 +220,58 @@ namespace Frontend.DB.EF.Models
                 entity.Property(e => e.Rate).HasColumnName("rate");
             });
 
+            modelBuilder.Entity<NotificationMessage>(entity =>
+            {
+                entity.ToTable("notification_message");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("uq_notification_message_user_id")
+                    .IsUnique();
+
+                entity.Property(e => e.Content)
+                    .HasColumnName("content")
+                    .HasComment("推播通知內容");
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("create_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.ImageUrl)
+                    .HasColumnName("image_url")
+                    .HasComment("推播通知圖片連結");
+
+                entity.Property(e => e.IsRead)
+                    .HasColumnName("is_read")
+                    .HasComment("推播通知是否已讀取\\\\ntrue:已讀\\\\nfalse:未讀\\\\n");
+
+                entity.Property(e => e.Language)
+                    .IsRequired()
+                    .HasColumnName("language")
+                    .HasMaxLength(50)
+                    .HasComment("推播通知語言碼");
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasColumnName("title")
+                    .HasComment("推播通知標題");
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnName("update_time")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasComment("對應user的pk");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.NotificationMessage)
+                    .HasForeignKey<NotificationMessage>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_notification_message");
+            });
+
             modelBuilder.Entity<OftenBeneficiary>(entity =>
             {
                 entity.ToTable("often_beneficiary");
@@ -351,8 +404,7 @@ namespace Frontend.DB.EF.Models
 
                 entity.Property(e => e.IsTurnOn)
                     .HasColumnName("is_turn_on")
-                    .HasDefaultValueSql("((1))")
-                    .HasComment("使用者通知開關\\\\n1:開啟\\\\n0:關閉\\\\n");
+                    .HasComment("使用者通知開關\\\\ntrue:開啟\\\\nfalse:關閉\\\\n");
 
                 entity.Property(e => e.MobileToken)
                     .HasColumnName("mobile_token")
