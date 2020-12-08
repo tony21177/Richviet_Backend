@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Richviet.Services.Contracts;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace Richviet.Services.Services
 {
-    public class FirebaseService : IFirebaseService
+    public class FirebaseMessageService : INotificationService
     {
 		//firebase
 		public static readonly string FIREBASE_URL = "https://fcm.googleapis.com/fcm/send";
@@ -18,7 +19,7 @@ namespace Richviet.Services.Services
 		private readonly GeneralContext dbContext;
 		private readonly ILogger logger;
 
-		public FirebaseService(ILogger<FirebaseService> logger, GeneralContext dbContext)
+		public FirebaseMessageService(ILogger<FirebaseMessageService> logger, GeneralContext dbContext)
 		{
 			this.logger = logger;
 			this.dbContext = dbContext;
@@ -31,6 +32,9 @@ namespace Richviet.Services.Services
 
 			[JsonProperty("to")]
 			public string Token { get; set; }
+
+			[JsonProperty("data")]
+			public dynamic Data { get; set; }
 		}
 
 		private dynamic Push(PushMessage message) {
@@ -64,7 +68,8 @@ namespace Richviet.Services.Services
 		public void SendPush(string mobileToken, string title, string body) {
 			if (mobileToken != null) Push(new PushMessage {
 				Token = mobileToken,
-				Notification = new { title,	body}
+				Notification = new { title, body },
+				Data = new { data_title = title, data_content = body }
 			});
 		}
 
@@ -105,7 +110,7 @@ namespace Richviet.Services.Services
 				PushNotificationSetting setting = dbContext.PushNotificationSetting.SingleOrDefault(x => x.UserId == userId);
 				if (setting != null)
 				{
-					setting.IsTurnOn = switchFlag ? (byte)1 : (byte)0;
+					setting.IsTurnOn = switchFlag;
 					dbContext.SaveChanges();
 					return setting;
 				}
@@ -114,7 +119,7 @@ namespace Richviet.Services.Services
 					PushNotificationSetting newSetting = new PushNotificationSetting
 					{
 						UserId = userId,
-						IsTurnOn = switchFlag ? (byte)1 : (byte)0
+						IsTurnOn = switchFlag
 					};
 					dbContext.PushNotificationSetting.Add(newSetting);
 					dbContext.SaveChanges();
@@ -140,5 +145,57 @@ namespace Richviet.Services.Services
 			}
 			return null;
 		}
+
+        public bool SaveNotificationMessage(int userId, string title, string body, string language)
+        {
+			try
+			{
+				NotificationMessage message = new NotificationMessage
+				{
+					UserId = userId,
+					Title = title,
+					Content = body,
+					Language = language
+				};
+				dbContext.NotificationMessage.Add(message);
+				dbContext.SaveChanges();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return false;
+		}
+
+        public List<NotificationMessage> GetNotificationList(int userId)
+        {
+			try
+			{
+				return dbContext.NotificationMessage.Where(x => x.UserId == userId).OrderByDescending(y => y.CreateTime).ToList();
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return new List<NotificationMessage>();
+		}
+
+        public bool NotificationIsRead(int messageId)
+        {
+			try
+            {
+				NotificationMessage message = dbContext.NotificationMessage.SingleOrDefault(x => x.Id == messageId);
+				message.IsRead = true;
+				message.UpdateTime = DateTime.UtcNow;
+				dbContext.SaveChanges();
+				return true;
+            }
+			catch(Exception ex)
+            {
+				logger.LogDebug(ex.Message);
+			}
+			return false;
+        }
     }
 }

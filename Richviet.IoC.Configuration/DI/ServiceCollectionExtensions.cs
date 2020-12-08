@@ -53,7 +53,7 @@ namespace Richviet.IoC.Configuration.DI
                 services.AddTransient<ArcValidationTask>();
                 services.AddTransient<IRemitRecordCommandRepository, RemitRecordCommandDbCommandRepository>();
                 services.AddScoped<IArcScanRecordService,ArcScanRecordService>();
-                services.AddTransient<IFirebaseService, FirebaseService>();
+                services.AddTransient<INotificationService, FirebaseMessageService>();
                 services.AddTransient<RemitValidationHelper>();
                 services.AddScoped<IBannerService,BannerService>();
                 services.AddTransient<IRemitRecordQueryRepositories, RemitRecordQueryRepositories>();
