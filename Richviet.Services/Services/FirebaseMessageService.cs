@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Richviet.Services.Contracts;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -109,7 +110,7 @@ namespace Richviet.Services.Services
 				PushNotificationSetting setting = dbContext.PushNotificationSetting.SingleOrDefault(x => x.UserId == userId);
 				if (setting != null)
 				{
-					setting.IsTurnOn = switchFlag ? (byte)1 : (byte)0;
+					setting.IsTurnOn = switchFlag;
 					dbContext.SaveChanges();
 					return setting;
 				}
@@ -118,7 +119,7 @@ namespace Richviet.Services.Services
 					PushNotificationSetting newSetting = new PushNotificationSetting
 					{
 						UserId = userId,
-						IsTurnOn = switchFlag ? (byte)1 : (byte)0
+						IsTurnOn = switchFlag
 					};
 					dbContext.PushNotificationSetting.Add(newSetting);
 					dbContext.SaveChanges();
@@ -144,5 +145,57 @@ namespace Richviet.Services.Services
 			}
 			return null;
 		}
+
+        public bool SaveNotificationMessage(int userId, string title, string body, string language)
+        {
+			try
+			{
+				NotificationMessage message = new NotificationMessage
+				{
+					UserId = userId,
+					Title = title,
+					Content = body,
+					Language = language
+				};
+				dbContext.NotificationMessage.Add(message);
+				dbContext.SaveChanges();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return false;
+		}
+
+        public List<NotificationMessage> GetNotificationList(int userId)
+        {
+			try
+			{
+				return dbContext.NotificationMessage.Where(x => x.UserId == userId).OrderByDescending(y => y.CreateTime).ToList();
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return new List<NotificationMessage>();
+		}
+
+        public bool NotificationIsRead(int messageId)
+        {
+			try
+            {
+				NotificationMessage message = dbContext.NotificationMessage.SingleOrDefault(x => x.Id == messageId);
+				message.IsRead = true;
+				message.UpdateTime = DateTime.UtcNow;
+				dbContext.SaveChanges();
+				return true;
+            }
+			catch(Exception ex)
+            {
+				logger.LogDebug(ex.Message);
+			}
+			return false;
+        }
     }
 }

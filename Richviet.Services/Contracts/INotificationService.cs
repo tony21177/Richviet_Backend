@@ -9,10 +9,16 @@ namespace Richviet.Services.Contracts
     {
         void SendPush(string mobileToken, string title, string body);
 
+        bool SaveNotificationMessage(int userId, string title, string content, string language);
+
         PushNotificationSetting UpdateMobileToken(int userId, string mobileToken);
 
         PushNotificationSetting SwitchNotification(int userId, bool switchFlag);
 
         PushNotificationSetting GetNotificationState(int userId);
+
+        List<NotificationMessage> GetNotificationList(int userId);
+
+        bool NotificationIsRead(int messageId);
     }
 }

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Richviet.Background.Service.Base;
+using Richviet.Background.Service.Worker;
 using Richviet.IoC.Configuration.DI;
 using System;
 using System.Collections.Generic;
@@ -29,10 +31,10 @@ namespace Richviet.Background.Service
             services.AddControllersWithViews();
             services.AddDbContext<GeneralContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(Config.DB_CONN);
             });
-
             services.ConfigureBusinessServices(Configuration);
+            services.AddHostedService<QueuedHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
