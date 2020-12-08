@@ -39,5 +39,18 @@ namespace Richviet.Admin.API.Controllers.V1
                 Data = true
             };
         }
+
+        /// <summary>
+        /// test push
+        /// </summary>
+        [HttpPost("testsave")]
+        public MessageModel<bool> SaveMessage()
+        {
+            bool result = notificationService.SaveNotificationMessage(1, "title " + DateTime.UtcNow, "content " + DateTime.UtcNow, "zh-TW");
+            return new MessageModel<bool>
+            {
+                Data = result
+            };
+        }
     }
 }

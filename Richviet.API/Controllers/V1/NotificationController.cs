@@ -108,7 +108,7 @@ namespace Richviet.API.Controllers.V1
         /// 取得使用者通知訊息列表
         /// </summary>
         [HttpGet]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public MessageModel<List<NotificationMessageDTO>> GetNotificationList()
         {
             var userId = int.Parse(User.FindFirstValue("id"));
