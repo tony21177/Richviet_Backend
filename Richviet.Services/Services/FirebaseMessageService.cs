@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Richviet.Services.Services
 {
@@ -37,7 +38,8 @@ namespace Richviet.Services.Services
 			public dynamic Data { get; set; }
 		}
 
-		private dynamic Push(PushMessage message) {
+		private async Task<bool> PostFirebaseApi(PushMessage message) 
+		{
 			try {
 				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(FIREBASE_URL);
 				request.Method = "POST";
@@ -49,28 +51,61 @@ namespace Richviet.Services.Services
 				Stream dataStream = request.GetRequestStream();
 				dataStream.Write(byteArray, 0, byteArray.Length);
 				dataStream.Close();
-				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+				HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync();
 				if (response.StatusCode == HttpStatusCode.Accepted || response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created) {
 					StreamReader read = new StreamReader(response.GetResponseStream());
 					string result = read.ReadToEnd();
 					read.Close();
 					response.Close();
 					dynamic stuff = JsonConvert.DeserializeObject(result);
-					return stuff;
+					return true;
 				}
-				return null;
-			} catch (Exception e) {
-				return e.Message;
-				//throw new Exception("An error has occurred when try to get server response: " + response.StatusCode);
+			} 
+			catch (Exception ex) 
+			{
+				logger.LogError(ex.Message);				
 			}
+			return false;
 		}
 
-		public void SendPush(string mobileToken, string title, string body) {
-			if (mobileToken != null) Push(new PushMessage {
-				Token = mobileToken,
-				Notification = new { title, body },
-				Data = new { data_title = title, data_content = body }
-			});
+		private string GetTokenByUserId(int userId)
+        {
+			try
+            {
+				PushNotificationSetting setting = dbContext.PushNotificationSetting.SingleOrDefault(x => x.UserId == userId);
+				if(setting!=null)
+                {
+					return setting.MobileToken;
+                }
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex.Message);
+			}
+			return null;
+		}
+
+		public async Task<bool> SendNotification(int userId, string title, string content) 
+		{
+            try
+            {
+				string mobileToken = GetTokenByUserId(userId);
+				if (mobileToken != null)
+				{
+					return await PostFirebaseApi(new PushMessage
+					{
+						Token = mobileToken,
+						Notification = new { title, content },
+						Data = new { data_title = title, data_content = content }
+					});
+				}
+				return false;
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex.Message);
+			}
+			return false;
 		}
 
         public PushNotificationSetting UpdateMobileToken(int userId, string mobileToken)
@@ -146,7 +181,7 @@ namespace Richviet.Services.Services
 			return null;
 		}
 
-        public bool SaveNotificationMessage(int userId, string title, string body, string language)
+        public bool SaveNotificationMessage(int userId, string title, string content, string language)
         {
 			try
 			{
@@ -154,7 +189,7 @@ namespace Richviet.Services.Services
 				{
 					UserId = userId,
 					Title = title,
-					Content = body,
+					Content = content,
 					Language = language
 				};
 				dbContext.NotificationMessage.Add(message);
@@ -196,5 +231,28 @@ namespace Richviet.Services.Services
 			}
 			return false;
         }
+
+        public async Task<bool> SaveAndSendNotification(int userId, string title, string content, string language)
+        {
+			try
+			{
+				NotificationMessage message = new NotificationMessage
+				{
+					UserId = userId,
+					Title = title,
+					Content = content,
+					Language = language,
+					IsRead = true
+				};
+				dbContext.NotificationMessage.Add(message);
+				dbContext.SaveChanges();
+				return await SendNotification(userId, title, content);
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return false;
+		}
     }
 }

@@ -224,10 +224,6 @@ namespace Frontend.DB.EF.Models
             {
                 entity.ToTable("notification_message");
 
-                entity.HasIndex(e => e.UserId)
-                    .HasName("uq_notification_message_user_id")
-                    .IsUnique();
-
                 entity.Property(e => e.Content)
                     .HasColumnName("content")
                     .HasComment("推播通知內容");
@@ -266,8 +262,8 @@ namespace Frontend.DB.EF.Models
                     .HasComment("對應user的pk");
 
                 entity.HasOne(d => d.User)
-                    .WithOne(p => p.NotificationMessage)
-                    .HasForeignKey<NotificationMessage>(d => d.UserId)
+                    .WithMany(p => p.NotificationMessage)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_notification_message");
             });
@@ -347,7 +343,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.OftenBeneficiary)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_often_beneficiary_user");
             });
 
@@ -501,7 +496,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.RemitRecord)
                     .WithMany(p => p.RemitAdminReviewLog)
                     .HasForeignKey(d => d.RemitRecordId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_remit_admin_review_log_ToTable");
             });
 
@@ -648,7 +642,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RemitRecord)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_remit_record_user1");
             });
 

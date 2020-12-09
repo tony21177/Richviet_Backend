@@ -8,6 +8,7 @@ namespace Frontend.DB.EF.Models
         public User()
         {
             Discount = new HashSet<Discount>();
+            NotificationMessage = new HashSet<NotificationMessage>();
             OftenBeneficiary = new HashSet<OftenBeneficiary>();
             RemitRecord = new HashSet<RemitRecord>();
             UserRegisterType = new HashSet<UserRegisterType>();
@@ -23,10 +24,10 @@ namespace Frontend.DB.EF.Models
         public DateTime? Birthday { get; set; }
         public byte Level { get; set; }
 
-        public virtual NotificationMessage NotificationMessage { get; set; }
         public virtual PushNotificationSetting PushNotificationSetting { get; set; }
         public virtual UserArc UserArc { get; set; }
         public virtual ICollection<Discount> Discount { get; set; }
+        public virtual ICollection<NotificationMessage> NotificationMessage { get; set; }
         public virtual ICollection<OftenBeneficiary> OftenBeneficiary { get; set; }
         public virtual ICollection<RemitRecord> RemitRecord { get; set; }
         public virtual ICollection<UserRegisterType> UserRegisterType { get; set; }

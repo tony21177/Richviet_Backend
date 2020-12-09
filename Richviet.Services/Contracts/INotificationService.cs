@@ -2,14 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Richviet.Services.Contracts
 {
     public interface INotificationService
     {
-        void SendPush(string mobileToken, string title, string body);
+        Task<bool> SendNotification(int userId, string title, string content);
 
         bool SaveNotificationMessage(int userId, string title, string content, string language);
+
+        Task<bool> SaveAndSendNotification(int userId, string title, string content, string language);
 
         PushNotificationSetting UpdateMobileToken(int userId, string mobileToken);
 
