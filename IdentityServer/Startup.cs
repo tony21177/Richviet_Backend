@@ -25,6 +25,7 @@ namespace IdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
@@ -50,8 +51,8 @@ namespace IdentityServer
                     options.EnableTokenCleanup = false;
                     options.TokenCleanupInterval = 300;
                 });
-            //.AddInMemoryClients(Config.GetClients());
-            
+            services.AddMvc();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,14 +67,8 @@ namespace IdentityServer
 
             app.UseIdentityServer();
 
-            //app.UseRouting();
+            app.UseStaticFiles();
 
-            //app.UseAuthorization();
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
         }
 
         private void InitializeDatabase(IApplicationBuilder app)

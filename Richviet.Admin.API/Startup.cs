@@ -1,4 +1,4 @@
-using System;
+嚜簑sing System;
 using System.Data;
 using System.IO;
 using System.Net;
@@ -26,6 +26,7 @@ using Richviet.Admin.API.Swagger;
 using Richviet.IoC.Configuration.DI;
 using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Richviet.Admin.API
 {
@@ -86,35 +87,59 @@ namespace Richviet.Admin.API
                             options.JsonSerializerOptions.Converters.Add(new CustomDateConverter());
                         });
 
-                    //// authentication
-                    //services
-                    //// 檢查 HTTP Header 的 Authorization 是否有 JWT Bearer Token
-                    //.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    //// 設定 JWT Bearer Token 的檢查選項
-                    //.AddJwtBearer(options =>
-                    //{
-                    //    options.IncludeErrorDetails = true;
-                    //    options.TokenValidationParameters = new TokenValidationParameters
-                    //    {
-                    //        ValidateIssuer = false,
-                    //        ValidateAudience = false,
-                    //        ValidateLifetime = true,
-                    //        ValidateIssuerSigningKey = false,
-                    //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
-                    //    };
-                    //});
+                    services.Configure<CookiePolicyOptions>(options =>
+                    {
+                        // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                        options.CheckConsentNeeded = context => true;
+                        options.MinimumSameSitePolicy = SameSiteMode.None;
+                    });
+
+
+                    services.AddMvc();
+
+                    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+                    services.AddAuthentication(options =>
+                    {
+                        options.DefaultScheme = "Cookies";
+                        options.DefaultChallengeScheme = "oidc";
+                    })
+                    .AddCookie("Cookies", options =>
+                    {
+
+                        options.AccessDeniedPath = "/Authorization/AccessDenied";
+                    })
+                    .AddOpenIdConnect("oidc", options =>
+                    {
+                        options.SignInScheme = "Cookies";
+
+                        options.Authority = "https://localhost:5001";
+                        options.RequireHttpsMetadata = false;
+
+                        options.ClientId = "mvc";
+                        options.ResponseType = "code id_token";
+                        options.Scope.Clear();
+                        options.Scope.Add("openid");
+                        options.Scope.Add("profile");
+                        
+
+                        options.SaveTokens = true;
+                        options.ClientSecret = "secret";
+                        options.GetClaimsFromUserInfoEndpoint = true;
+                     });
+
 
                     //API versioning
                     services.AddApiVersioning(
-                        o =>
-                        {
-                            //o.Conventions.Controller<UserController>().HasApiVersion(1, 0);
-                            o.ReportApiVersions = true;
-                            o.AssumeDefaultVersionWhenUnspecified = true;
-                            o.DefaultApiVersion = new ApiVersion(1, 0);
-                            o.ApiVersionReader = new UrlSegmentApiVersionReader();
-                        }
-                        );
+                    o =>
+                    {
+                        //o.Conventions.Controller<UserController>().HasApiVersion(1, 0);
+                        o.ReportApiVersions = true;
+                        o.AssumeDefaultVersionWhenUnspecified = true;
+                        o.DefaultApiVersion = new ApiVersion(1, 0);
+                        o.ApiVersionReader = new UrlSegmentApiVersionReader();
+                    }
+                    );
 
                     // note: the specified format code will format the version as "'v'major[.minor][-status]"
                     services.AddVersionedApiExplorer(
@@ -154,11 +179,7 @@ namespace Richviet.Admin.API
 
                     //Business settings            
                     services.ConfigureBusinessServices(Configuration);
-
-                    //_logger.LogDebug("Startup::ConfigureServices::ApiVersioning, Swagger and DI settings");
                 }
-                //else
-                    //_logger.LogDebug("Startup::ConfigureServices::invalid AppSettings");
             }
             catch (Exception ex)
             {
@@ -178,11 +199,6 @@ namespace Richviet.Admin.API
                     app.UseDeveloperExceptionPage();
                 else
                 {
-                    //Both alternatives are usable for general error handling:
-                    // - middleware
-                    // - UseExceptionHandler()
-
-                    //app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
                     app.UseExceptionHandler(a => a.Run(async context =>
                     {

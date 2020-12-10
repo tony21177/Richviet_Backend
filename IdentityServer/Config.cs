@@ -77,8 +77,8 @@ namespace IdentityServer
                         new Secret("secret".Sha256())
                     },
 
-                    RedirectUris = { "http://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    RedirectUris = { "http://localhost:10000/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:10000/signout-callback-oidc" },
 
                     AllowedScopes =
                     {
@@ -123,8 +123,7 @@ namespace IdentityServer
         {
             return new List<ApiResource>
             {
-                new ApiResource("user", "frontend user"),
-                new ApiResource("transaction", "frontend users' transactions"),
+                new ApiResource("adminApi", "cms Apis")
             };
         }
 
