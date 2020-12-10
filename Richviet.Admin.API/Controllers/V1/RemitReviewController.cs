@@ -14,12 +14,14 @@ using Frontend.DB.EF.Models;
 using Richviet.Admin.API.DataContracts.Dto;
 using Swashbuckle.AspNetCore.Annotations;
 using Richviet.Services.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Richviet.Admin.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("admin/remit/v{version:apiVersion}/review")]
     [ApiController]
+    [Authorize(Roles = "adminManager")]
     public class RemitReviewController : ControllerBase
     {
 

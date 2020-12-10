@@ -9,6 +9,10 @@ namespace IdentityServer
 {
     public class Config
     {
+        public const string ADMIN_CRUD_SCOPE = "admin_crud";
+        public const string RedirectUris = "http://localhost:10000/callback.html";
+        public const string PostLogoutRedirectUris =  "http://localhost:10000/index.html" ;
+        public const string AllowedCorsOrigins = "http://localhost:10000";
         public static List<TestUser> GetUsers()
         {
             return new List<TestUser>
@@ -19,7 +23,7 @@ namespace IdentityServer
                     Username = "brightasia",
                     Password = "richviet",
 
-                  Claims = new List<Claim>(){new Claim(JwtClaimTypes.Role,"superadmin") }
+                    Claims = new List<Claim>(){new Claim(JwtClaimTypes.Role,"adminManager") }
                 },
                 new TestUser
                 {
@@ -27,11 +31,8 @@ namespace IdentityServer
                     Username = "bob",
                     Password = "password",
 
-                    Claims = new List<Claim>
-                    {
-                        new Claim("name", "Bob"),
-                        new Claim("website", "https://bob.com")
-                    },
+                    Claims = new List<Claim>(){new Claim(JwtClaimTypes.Role,"adminEmployee") }
+
                 }
             };
         }
@@ -49,7 +50,7 @@ namespace IdentityServer
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = {ADMIN_CRUD_SCOPE }
                 },
 
                 // resource owner password grant client
@@ -62,7 +63,7 @@ namespace IdentityServer
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = {ADMIN_CRUD_SCOPE }
                 },
 
                 // OpenID Connect hybrid flow and client credentials client (MVC)
@@ -84,7 +85,7 @@ namespace IdentityServer
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "api1"
+                        {ADMIN_CRUD_SCOPE }
                     },
                     AllowOfflineAccess = true
                 },
@@ -97,15 +98,15 @@ namespace IdentityServer
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
 
-                    RedirectUris = { "http://localhost:20000/callback.html" },
-                    PostLogoutRedirectUris = { "http://localhost:20000/index.html" },
-                    AllowedCorsOrigins = { "http://localhost:20000" },
+                    RedirectUris = { RedirectUris },
+                    PostLogoutRedirectUris = { PostLogoutRedirectUris },
+                    AllowedCorsOrigins = { AllowedCorsOrigins },
 
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "api1"
+                        {ADMIN_CRUD_SCOPE }
                     },
                 }
             };
@@ -123,7 +124,10 @@ namespace IdentityServer
         {
             return new List<ApiResource>
             {
-                new ApiResource("adminApi", "cms Apis")
+
+                new ApiResource("adminApi", "Admin APIs"){
+                    Scopes = { ADMIN_CRUD_SCOPE }
+                }
             };
         }
 

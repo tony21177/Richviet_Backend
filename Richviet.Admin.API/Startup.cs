@@ -26,7 +26,11 @@ using Richviet.Admin.API.Swagger;
 using Richviet.IoC.Configuration.DI;
 using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+<<<<<<< HEAD
 using System.IdentityModel.Tokens.Jwt;
+=======
+using Microsoft.IdentityModel.Tokens;
+>>>>>>> identity
 
 namespace Richviet.Admin.API
 {
@@ -87,47 +91,46 @@ namespace Richviet.Admin.API
                             options.JsonSerializerOptions.Converters.Add(new CustomDateConverter());
                         });
 
-                    services.Configure<CookiePolicyOptions>(options =>
-                    {
-                        // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                        options.CheckConsentNeeded = context => true;
-                        options.MinimumSameSitePolicy = SameSiteMode.None;
-                    });
+                    //services.Configure<CookiePolicyOptions>(options =>
+                    //{
+                    //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                    //    options.CheckConsentNeeded = context => true;
+                    //    options.MinimumSameSitePolicy = SameSiteMode.None;
+                    //});
 
 
-                    services.AddMvc();
+                    //services.AddMvc();
 
-                    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+                    //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-                    services.AddAuthentication(options =>
-                    {
-                        options.DefaultScheme = "Cookies";
-                        options.DefaultChallengeScheme = "oidc";
-                    })
-                    .AddCookie("Cookies", options =>
-                    {
+                    //services.AddAuthentication(options =>
+                    //{
+                    //    options.DefaultScheme = "Cookies";
+                    //    options.DefaultChallengeScheme = "oidc";
+                    //})
+                    //.AddCookie("Cookies", options =>
+                    //{
 
-                        options.AccessDeniedPath = "/Authorization/AccessDenied";
-                    })
-                    .AddOpenIdConnect("oidc", options =>
-                    {
-                        options.SignInScheme = "Cookies";
+                    //    options.AccessDeniedPath = "/Authorization/AccessDenied";
+                    //})
+                    //.AddOpenIdConnect("oidc", options =>
+                    //{
+                    //    options.SignInScheme = "Cookies";
 
-                        options.Authority = "https://localhost:5001";
-                        options.RequireHttpsMetadata = false;
+                    //    options.Authority = "https://localhost:5001";
+                    //    options.RequireHttpsMetadata = false;
 
-                        options.ClientId = "mvc";
-                        options.ResponseType = "code id_token";
-                        options.Scope.Clear();
-                        options.Scope.Add("openid");
-                        options.Scope.Add("profile");
+                    //    options.ClientId = "mvc";
+                    //    options.ResponseType = "code id_token";
+                    //    options.Scope.Clear();
+                    //    options.Scope.Add("openid");
+                    //    options.Scope.Add("profile");
                         
 
-                        options.SaveTokens = true;
-                        options.ClientSecret = "secret";
-                        options.GetClaimsFromUserInfoEndpoint = true;
-                     });
-
+                    //    options.SaveTokens = true;
+                    //    options.ClientSecret = "secret";
+                    //    options.GetClaimsFromUserInfoEndpoint = true;
+                    // });
 
                     //API versioning
                     services.AddApiVersioning(
@@ -162,14 +165,14 @@ namespace Richviet.Admin.API
                         {
                             options.OperationFilter<SwaggerDefaultValues>();
                             options.IncludeXmlComments(XmlCommentsFilePath);
-                            //options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
-                            //{
-                            //    Type = SecuritySchemeType.Http,
-                            //    BearerFormat = "JWT",
-                            //    In = ParameterLocation.Header,
-                            //    Scheme = "bearer"
-                            //});
-                            //options.OperationFilter<AddRequiredHeaderParameter>();
+                            options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+                            {
+                                Type = SecuritySchemeType.Http,
+                                BearerFormat = "JWT",
+                                In = ParameterLocation.Header,
+                                Scheme = "bearer"
+                            });
+                            options.OperationFilter<AddRequiredHeaderParameter>();
                             options.EnableAnnotations();
                         });
                     }
@@ -199,7 +202,6 @@ namespace Richviet.Admin.API
                     app.UseDeveloperExceptionPage();
                 else
                 {
-
                     app.UseExceptionHandler(a => a.Run(async context =>
                     {
                         var feature = context.Features.Get<IExceptionHandlerPathFeature>();
@@ -211,9 +213,6 @@ namespace Richviet.Admin.API
                         else if (exception is UnauthorizedAccessException) code = HttpStatusCode.Unauthorized;
 
                         _logger.LogError($"GLOBAL ERROR HANDLER::HTTP:{code}::{exception.Message}");
-
-                        //Known issue for now in System.Text.Json
-                        //var result = JsonSerializer.Serialize<Exception>(exception, new JsonSerializerOptions { WriteIndented = true });
 
                         //Newtonsoft.Json serializer (should be replaced once the known issue in System.Text.Json will be solved)
                         var result = JsonConvert.SerializeObject(exception, Formatting.Indented);

@@ -12,12 +12,14 @@ using Richviet.Admin.API.DataContracts.Responses;
 using Richviet.Services.Contracts;
 using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Richviet.Admin.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("admin/v{version:apiVersion}/remitsetting")]
     [ApiController]
+    [Authorize(Roles = "adminManager")]
     public class RemitSettingController : ControllerBase
     {
         private readonly ILogger Logger;
