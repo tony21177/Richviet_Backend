@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,14 +18,16 @@ namespace Richviet.Services.Services
     {
 		//firebase
 		public static readonly string FIREBASE_URL = "https://fcm.googleapis.com/fcm/send";
-		public static readonly string FIREBASE_KEY_SERVER = "AAAAtrOO6bM:APA91bErt9o3Akx3Sj7MSFCqJZkTf3GPObTcUiDZop_TtI4_0rffCENwZApJIgtmiOo700HjqquPJySCSghwHFMpzI7D0BCiqaboHKKzHKH59UztWLUTm3Sbe5DJ-8ep9yvOGLDo45-V";
+		public static readonly string FIREBASE_SERVER_KEY = "AAAAtrOO6bM:APA91bErt9o3Akx3Sj7MSFCqJZkTf3GPObTcUiDZop_TtI4_0rffCENwZApJIgtmiOo700HjqquPJySCSghwHFMpzI7D0BCiqaboHKKzHKH59UztWLUTm3Sbe5DJ-8ep9yvOGLDo45-V";
 		private readonly GeneralContext dbContext;
 		private readonly ILogger logger;
+		private readonly HttpClient httpClient;
 
 		public FirebaseMessageService(ILogger<FirebaseMessageService> logger, GeneralContext dbContext)
 		{
 			this.logger = logger;
 			this.dbContext = dbContext;
+			httpClient = new HttpClient();
 		}
 
 		private class PushMessage
@@ -38,12 +42,12 @@ namespace Richviet.Services.Services
 			public dynamic Data { get; set; }
 		}
 
-		private async Task<bool> PostFirebaseApi(PushMessage message) 
+		/*private async Task<bool> PostFirebaseApiOld(PushMessage message) 
 		{
 			try {
 				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(FIREBASE_URL);
 				request.Method = "POST";
-				request.Headers.Add("Authorization", "key=" + FIREBASE_KEY_SERVER);
+				request.Headers.Add("Authorization", "key=" + FIREBASE_SERVER_KEY);
 				request.ContentType = "application/json";
 				string json = JsonConvert.SerializeObject(message);
 				byte[] byteArray = Encoding.UTF8.GetBytes(json);
@@ -64,6 +68,31 @@ namespace Richviet.Services.Services
 			catch (Exception ex) 
 			{
 				logger.LogError(ex.Message);				
+			}
+			return false;
+		}*/
+
+		private async Task<bool> PostFirebaseApi(PushMessage message)
+		{
+			try
+			{
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("key", "=" + FIREBASE_SERVER_KEY);
+				httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				StringContent jsonStr = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
+				HttpResponseMessage response = await httpClient.PostAsync(FIREBASE_URL, jsonStr);				
+				string result = await response.Content.ReadAsStringAsync();
+				if(response.IsSuccessStatusCode)
+                {
+					return true;
+                }
+				else
+                {
+					logger.LogError(result);
+                }
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex.Message);
 			}
 			return false;
 		}
