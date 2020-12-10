@@ -34,12 +34,39 @@ namespace Richviet.Admin.API.Controllers.V1
         /// </summary>
         [HttpPost("testpush")]
         [AllowAnonymous]
-        public MessageModel<bool> TestPush()
+        public async Task<MessageModel<bool>> TestPush()
+
         {
-            notificationService.SendPush("fEXQFybSwzE:APA91bFyMZWDnUTHrIFKrwrLD2SaFqA71fc-yIRZBQnFxy7ZQDeLNnlJNAeru4jetMZtpnZw_pvjQDG4f3xJk1FmJxs4GtvnYSB5_WQiymi9vXW4M9RHWludNKImxTyZPiXlf2ChHWmD", "test", "20201204");
+            await notificationService.SendNotification(1, "title " + DateTime.UtcNow, "content " + DateTime.UtcNow);
             return new MessageModel<bool>
             {
                 Data = true
+            };
+        }
+
+        /// <summary>
+        /// test push
+        /// </summary>
+        [HttpPost("testsave")]
+        public MessageModel<bool> SaveMessage()
+        {
+            bool result = notificationService.SaveNotificationMessage(1, "title " + DateTime.UtcNow, "content " + DateTime.UtcNow, "zh-TW");
+            return new MessageModel<bool>
+            {
+                Data = result
+            };
+        }
+
+        /// <summary>
+        /// test push
+        /// </summary>
+        [HttpPost("testsavepush")]
+        public async Task<MessageModel<bool>> SaveAndPush()
+        {
+            bool result = await notificationService.SaveAndSendNotification(1, "title " + DateTime.UtcNow, "content " + DateTime.UtcNow, "zh-TW");
+            return new MessageModel<bool>
+            {
+                Data = result
             };
         }
     }

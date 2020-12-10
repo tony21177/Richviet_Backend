@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Richviet.Services.Services
 {
@@ -15,14 +18,16 @@ namespace Richviet.Services.Services
     {
 		//firebase
 		public static readonly string FIREBASE_URL = "https://fcm.googleapis.com/fcm/send";
-		public static readonly string FIREBASE_KEY_SERVER = "AAAAtrOO6bM:APA91bErt9o3Akx3Sj7MSFCqJZkTf3GPObTcUiDZop_TtI4_0rffCENwZApJIgtmiOo700HjqquPJySCSghwHFMpzI7D0BCiqaboHKKzHKH59UztWLUTm3Sbe5DJ-8ep9yvOGLDo45-V";
+		public static readonly string FIREBASE_SERVER_KEY = "AAAAtrOO6bM:APA91bErt9o3Akx3Sj7MSFCqJZkTf3GPObTcUiDZop_TtI4_0rffCENwZApJIgtmiOo700HjqquPJySCSghwHFMpzI7D0BCiqaboHKKzHKH59UztWLUTm3Sbe5DJ-8ep9yvOGLDo45-V";
 		private readonly GeneralContext dbContext;
 		private readonly ILogger logger;
+		private readonly HttpClient httpClient;
 
 		public FirebaseMessageService(ILogger<FirebaseMessageService> logger, GeneralContext dbContext)
 		{
 			this.logger = logger;
 			this.dbContext = dbContext;
+			httpClient = new HttpClient();
 		}
 
 		private class PushMessage
@@ -37,11 +42,12 @@ namespace Richviet.Services.Services
 			public dynamic Data { get; set; }
 		}
 
-		private dynamic Push(PushMessage message) {
+		/*private async Task<bool> PostFirebaseApiOld(PushMessage message) 
+		{
 			try {
 				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(FIREBASE_URL);
 				request.Method = "POST";
-				request.Headers.Add("Authorization", "key=" + FIREBASE_KEY_SERVER);
+				request.Headers.Add("Authorization", "key=" + FIREBASE_SERVER_KEY);
 				request.ContentType = "application/json";
 				string json = JsonConvert.SerializeObject(message);
 				byte[] byteArray = Encoding.UTF8.GetBytes(json);
@@ -49,28 +55,86 @@ namespace Richviet.Services.Services
 				Stream dataStream = request.GetRequestStream();
 				dataStream.Write(byteArray, 0, byteArray.Length);
 				dataStream.Close();
-				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+				HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync();
 				if (response.StatusCode == HttpStatusCode.Accepted || response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created) {
 					StreamReader read = new StreamReader(response.GetResponseStream());
 					string result = read.ReadToEnd();
 					read.Close();
 					response.Close();
 					dynamic stuff = JsonConvert.DeserializeObject(result);
-					return stuff;
+					return true;
 				}
-				return null;
-			} catch (Exception e) {
-				return e.Message;
-				//throw new Exception("An error has occurred when try to get server response: " + response.StatusCode);
+			} 
+			catch (Exception ex) 
+			{
+				logger.LogError(ex.Message);				
 			}
+			return false;
+		}*/
+
+		private async Task<bool> PostFirebaseApi(PushMessage message)
+		{
+			try
+			{
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("key", "=" + FIREBASE_SERVER_KEY);
+				httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				StringContent jsonStr = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
+				HttpResponseMessage response = await httpClient.PostAsync(FIREBASE_URL, jsonStr);				
+				string result = await response.Content.ReadAsStringAsync();
+				if(response.IsSuccessStatusCode)
+                {
+					return true;
+                }
+				else
+                {
+					logger.LogError(result);
+                }
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex.Message);
+			}
+			return false;
 		}
 
-		public void SendPush(string mobileToken, string title, string body) {
-			if (mobileToken != null) Push(new PushMessage {
-				Token = mobileToken,
-				Notification = new { title, body },
-				Data = new { data_title = title, data_content = body }
-			});
+		private string GetTokenByUserId(int userId)
+        {
+			try
+            {
+				PushNotificationSetting setting = dbContext.PushNotificationSetting.SingleOrDefault(x => x.UserId == userId);
+				if(setting!=null)
+                {
+					return setting.MobileToken;
+                }
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex.Message);
+			}
+			return null;
+		}
+
+		public async Task<bool> SendNotification(int userId, string title, string content) 
+		{
+            try
+            {
+				string mobileToken = GetTokenByUserId(userId);
+				if (mobileToken != null)
+				{
+					return await PostFirebaseApi(new PushMessage
+					{
+						Token = mobileToken,
+						Notification = new { title, content },
+						Data = new { data_title = title, data_content = content }
+					});
+				}
+				return false;
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex.Message);
+			}
+			return false;
 		}
 
         public PushNotificationSetting UpdateMobileToken(int userId, string mobileToken)
@@ -146,7 +210,7 @@ namespace Richviet.Services.Services
 			return null;
 		}
 
-        public bool SaveNotificationMessage(int userId, string title, string body, string language)
+        public bool SaveNotificationMessage(int userId, string title, string content, string language)
         {
 			try
 			{
@@ -154,7 +218,7 @@ namespace Richviet.Services.Services
 				{
 					UserId = userId,
 					Title = title,
-					Content = body,
+					Content = content,
 					Language = language
 				};
 				dbContext.NotificationMessage.Add(message);
@@ -196,5 +260,28 @@ namespace Richviet.Services.Services
 			}
 			return false;
         }
+
+        public async Task<bool> SaveAndSendNotification(int userId, string title, string content, string language)
+        {
+			try
+			{
+				NotificationMessage message = new NotificationMessage
+				{
+					UserId = userId,
+					Title = title,
+					Content = content,
+					Language = language,
+					IsRead = true
+				};
+				dbContext.NotificationMessage.Add(message);
+				dbContext.SaveChanges();
+				return await SendNotification(userId, title, content);
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return false;
+		}
     }
 }
