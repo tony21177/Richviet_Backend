@@ -15,23 +15,24 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/v{version:apiVersion}/kyc")]
     [ApiController]
-
+    //[Authorize(Roles = "adminManager")]
     public class KycController : Controller
     {
         private readonly IUserService userService;
         private IMapper mapper;
+        private readonly INotificationService notificationService;
 
-        public KycController(IUserService userService, IMapper mapper)
+        public KycController(IUserService userService, IMapper mapper, INotificationService firebaseService)
         {
             this.userService = userService;
             this.mapper = mapper;
+            this.notificationService = firebaseService;
         }
 
         /// <summary>
         /// 更改使用者kyc狀態
         /// </summary>
         [HttpPut("{userId}")]
-        [AllowAnonymous]
 
         public ActionResult<MessageModel<Object>> ChangeUserKyc([FromBody] KycRequest kycRequest,[FromRoute, SwaggerParameter("使用者ID", Required = true)] long userId)
         {
@@ -47,16 +48,6 @@ namespace Richviet.Admin.API.Controllers.V1
                 }); ;
             }
 
-            //if (userArc.KycStatus != (short)KycStatusEnum.ARC_PASS_VERIFY)
-            //{
-            //    return BadRequest(new MessageModel<Object>
-            //    {
-            //        Status = (int)HttpStatusCode.BadRequest,
-            //        Success = false,
-            //        Msg = "Invalid Operation"
-            //    });
-
-            //}
             var result = new MessageModel<Object>
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -66,6 +57,16 @@ namespace Richviet.Admin.API.Controllers.V1
 
             if (userService.ChangeKycStatusByUserId((KycStatusEnum)kycRequest.KycStatus, userId))
             {
+                if((KycStatusEnum)kycRequest.KycStatus == KycStatusEnum.PASSED_KYC_FORMAL_MEMBER)
+                {
+                    notificationService.SaveAndSendNotification((int)userId, "Successful Registration", "Your registration have been confirmed", "en-US");
+                }
+                if ((KycStatusEnum)kycRequest.KycStatus == KycStatusEnum.FAILED_KYC)
+                {
+                    notificationService.SaveAndSendNotification((int)userId, "Unsuccessful Registration", "You do not pass The KYC procedure", "en-US");
+                }
+
+
                 result.Status = (int)HttpStatusCode.OK;
                 result.Success = true;
                 result.Msg = "Successful Operation";

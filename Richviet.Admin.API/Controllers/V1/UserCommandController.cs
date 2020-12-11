@@ -9,12 +9,14 @@ using Users.Domains.Users.Command.UseCase;
 using AutoMapper;
 using Users.Domains.Users.Command.Request;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Richviet.Admin.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("admin/user/v{version:apiVersion}/command")]
     [ApiController]
+    //[Authorize(Roles = "adminManager")]
     public class UserCommandController : ControllerBase
     {
         private readonly UserModifier modifier;

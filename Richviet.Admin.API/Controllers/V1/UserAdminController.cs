@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Frontend.DB.EF.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,6 +20,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/v{version:apiVersion}/useradmin")]
     [ApiController]
+    //[Authorize(Roles = "adminManager")]
     public class UserAdminController : ControllerBase
     {
         private readonly ILogger Logger;

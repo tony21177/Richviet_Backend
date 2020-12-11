@@ -19,6 +19,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/v{version:apiVersion}/relation")]
     [ApiController]
+    //[Authorize(Roles = "adminManager")]
     public class RelationController : ControllerBase
     {
         private readonly ILogger Logger;
@@ -36,7 +37,6 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 取得與收款人所有可選擇關係列表
         /// </summary>
         [HttpGet]
-        [AllowAnonymous]
         public MessageModel<List<EditRelationDTO>> GetRelations()
         {
             List<PayeeRelationType> payeeRelationTypes = payeeRelationService.GetPayeeRelations();
@@ -52,7 +52,6 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 新增收款人關係
         /// </summary>
         [HttpPost]
-        [AllowAnonymous]
         public MessageModel<EditRelationDTO> AddRelation(AddPayeeRelationTypeRequest request)
         {
             PayeeRelationType payeeRelationType = new PayeeRelationType
@@ -74,7 +73,6 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 刪除收款人關係
         /// </summary>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
         public MessageModel<EditRelationDTO> DeleteRelation([FromRoute, SwaggerParameter("id,可從/relation取得", Required = true)] int id)
         {
             bool result = payeeRelationService.DeletePayeeRelation(id);
@@ -89,7 +87,6 @@ namespace Richviet.Admin.API.Controllers.V1
         /// 修改收款人關係
         /// </summary>
         [HttpPut("{id}")]
-        [AllowAnonymous]
         public MessageModel<EditRelationDTO> ModifyRelation([FromRoute, SwaggerParameter("id,可從/relation取得", Required = true)] int id, [FromBody] ModifyPayeeRelationTypeRequest request)
         {
             PayeeRelationType payeeRelationType = new PayeeRelationType

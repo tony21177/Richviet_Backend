@@ -53,6 +53,8 @@ namespace Users.Domains.Users.Command.Adapter.Repositories
             List<User> userList = _context.User.Include(user=>user.RemitRecord)
                                             .Include(user=>user.OftenBeneficiary)
                                             .Include(user => user.UserArc).ThenInclude(userArc => userArc.LastArcScanRecord)
+                                            .Include(user => user.PushNotificationSetting)
+                                            .Include(user => user.NotificationMessage)
                                                .Include(user => user.UserRegisterType).Where(user=>user.Id == userId).ToList();
             _context.User.RemoveRange(userList);
             _context.SaveChanges();

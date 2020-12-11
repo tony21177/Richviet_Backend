@@ -264,7 +264,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.NotificationMessage)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_notification_message");
             });
 
