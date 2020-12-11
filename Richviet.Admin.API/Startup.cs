@@ -26,11 +26,6 @@ using Richviet.Admin.API.Swagger;
 using Richviet.IoC.Configuration.DI;
 using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-<<<<<<< HEAD
-using System.IdentityModel.Tokens.Jwt;
-=======
-using Microsoft.IdentityModel.Tokens;
->>>>>>> identity
 
 namespace Richviet.Admin.API
 {
