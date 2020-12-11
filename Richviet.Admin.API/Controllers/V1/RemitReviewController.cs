@@ -104,6 +104,18 @@ namespace Richviet.Admin.API.Controllers.V1
                 Data = remitRecordDTOs
             });
         }
+
+        [HttpGet("filter")]
+        public ActionResult<MessageModel<List<RemitRecordAdminDTO>>> GetRemitFilterList(RemitFilterListRequest request)
+        {
+            List<RemitRecord> records = remitRecordService.GetRemitFilterRecords(request);
+            List<RemitRecordAdminDTO> remitRecordDTOs = _mapper.Map<List<RemitRecordAdminDTO>>(records);
+            return Ok(new MessageModel<List<RemitRecordAdminDTO>>
+            {
+                Data = remitRecordDTOs
+            });
+        }
+
         [HttpGet("{id}")]
         public ActionResult<MessageModel<RemitRecordAdminDTO>> GetRemitListById([FromRoute, SwaggerParameter("交易紀錄id", Required = true)] long id)
         {

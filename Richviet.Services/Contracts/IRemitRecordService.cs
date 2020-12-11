@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Richviet.Admin.API.DataContracts.Requests;
 
 namespace Richviet.Services.Contracts
 {
@@ -29,5 +30,7 @@ namespace Richviet.Services.Contracts
         List<string> GeneratePaymentCode(RemitRecord modifiedRemitRecord);
 
         Task SystemVerifyArcForRemitProcess(RemitRecord remitRecord, long userId);
+
+        List<RemitRecord> GetRemitFilterRecords(RemitFilterListRequest request);
     }
 }

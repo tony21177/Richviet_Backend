@@ -13,6 +13,8 @@ using Richviet.BackgroudTask.Arc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Email.Notifier;
+using Richviet.Admin.API.DataContracts.Requests;
+using Richviet.Tools.Utility;
 
 namespace Richviet.Services.Services
 {
@@ -267,6 +269,36 @@ namespace Richviet.Services.Services
                 emailVo.Email = mail;
                 await emailSender.SendEmailAsync(emailVo);
             }
+        }
+
+        public List<RemitRecord> GetRemitFilterRecords(RemitFilterListRequest request)
+        {     
+            var resList = dbContext.RemitRecord.Include(record => record.Beneficiary).ThenInclude(Beneficiary => Beneficiary.PayeeRelation).Include("ToCurrency");
+            if (request.Id!=null)
+            {
+                resList = resList.Where(x => x.Id.ToString().Contains(request.Id.ToString()));
+            }
+            resList = resList.Where(x => x.ArcName.Contains(request.ArcName) &&
+                                            x.ArcNo.Contains(request.ArcNo) && 
+                                            x.Beneficiary.ReceiveBankId.ToString().Contains(request.Bank) &&
+                                            (request.StartAmount <= x.FromAmount) && (request.EndAmount >= x.FromAmount) &&
+                                            (TimeUtil.LongSpanToUtcDateTime(request.CreateStartTime) <= x.CreateTime) &&
+                                            (TimeUtil.LongSpanToUtcDateTime(request.CreateEndTime) >= x.CreateTime) );
+            if(request.KycReviewStatus || request.AmlReviewStatus || request.StaffReviewStatus || request.PendingPayStatus || 
+                request.PendingRemitStatus || request.FinishStatus || request.OverdueStatus || request.FailStatus)
+            {
+                resList = resList.Where(x => (request.KycReviewStatus && (x.TransactionStatus == (short)TransStatusEnum.KYC_REVIEW)) ||
+                                         (request.AmlReviewStatus && (x.TransactionStatus == (short)TransStatusEnum.AML_REVIEW)) ||
+                                         (request.StaffReviewStatus && (x.TransactionStatus == (short)TransStatusEnum.STAFF_REVIEW)) ||
+                                         (request.PendingPayStatus && (x.TransactionStatus == (short)TransStatusEnum.PENDING_PAY)) ||
+                                         (request.PendingRemitStatus && (x.TransactionStatus == (short)TransStatusEnum.PENDING_REMIT)) ||
+                                         (request.FinishStatus && (x.TransactionStatus == (short)TransStatusEnum.FINISH)) ||
+                                         (request.OverdueStatus && (x.TransactionStatus == (short)TransStatusEnum.Overdue)) ||
+                                         (request.FailStatus && ((x.TransactionStatus == (short)TransStatusEnum.AML_REVIEW_FAIL) ||
+                                                                    (x.TransactionStatus == (short)TransStatusEnum.REVIEW_FAIL) ||
+                                                                    (x.TransactionStatus == (short)TransStatusEnum.OTHER_ERROR))));
+            }  
+            return resList.ToList();
         }
     }
 }
