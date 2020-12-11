@@ -429,9 +429,16 @@ namespace Richviet.API.Controllers.V1
             }
 
 
+            List<ReceiveBank> banks = bankService.GetReceiveBanks();
+            ReceiveBank bank = banks.Find(bank => bank.Id == record.Beneficiary.ReceiveBankId);
+            RemitRecordDTO remitRecordDTO = _mapper.Map<RemitRecordDTO>(record);
+            remitRecordDTO.BankEnName = bank.EnName;
+            remitRecordDTO.BankTwName = bank.TwName;
+            remitRecordDTO.BankVietName = bank.VietName;
+
             return Ok(new MessageModel<RemitRecordDTO>()
             {
-                Data = _mapper.Map<RemitRecordDTO>(record)
+                Data = remitRecordDTO
             });
         }
 
