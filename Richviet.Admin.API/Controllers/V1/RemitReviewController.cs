@@ -21,7 +21,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/remit/v{version:apiVersion}/review")]
     [ApiController]
-    [Authorize(Roles = "adminManager")]
+    //[Authorize(Roles = "adminManager")]
     public class RemitReviewController : ControllerBase
     {
 

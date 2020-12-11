@@ -20,7 +20,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/v{version:apiVersion}/useradmin")]
     [ApiController]
-    [Authorize(Roles = "adminManager")]
+    //[Authorize(Roles = "adminManager")]
     public class UserAdminController : ControllerBase
     {
         private readonly ILogger Logger;
