@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Richviet.Services
 {
@@ -40,12 +41,13 @@ namespace Richviet.Services
 
         public List<OftenBeneficiary> GetAllBeneficiars(long userId)
         {
-            List<OftenBeneficiary> beneficiars = dbContext.OftenBeneficiary.Where(Beneficiary => Beneficiary.UserId == userId).ToList<OftenBeneficiary>();
-            beneficiars.ForEach(Beneficiary => {
-                dbContext.Entry(Beneficiary).Reference(Beneficiary => Beneficiary.PayeeRelation).Load();
-                dbContext.Entry(Beneficiary).Reference(Beneficiary => Beneficiary.PayeeType).Load();
-            });
-            return beneficiars;
+            return dbContext.OftenBeneficiary.Include(beneficiary=> beneficiary.PayeeRelation).Include(beneficiary => beneficiary.PayeeType).Where(Beneficiary => Beneficiary.UserId == userId).ToList<OftenBeneficiary>();
+
+            //List<OftenBeneficiary> beneficiars = dbContext.OftenBeneficiary.Where(Beneficiary => Beneficiary.UserId == userId).ToList<OftenBeneficiary>();
+            //beneficiars.ForEach(Beneficiary => {
+            //    dbContext.Entry(Beneficiary).Reference(Beneficiary => Beneficiary.PayeeRelation).Load();
+            //    dbContext.Entry(Beneficiary).Reference(Beneficiary => Beneficiary.PayeeType).Load();
+            //});
         }
 
         public OftenBeneficiary GetBeneficiarById(long id)

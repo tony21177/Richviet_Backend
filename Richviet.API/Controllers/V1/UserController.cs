@@ -32,13 +32,16 @@ namespace Richviet.API.Controllers.V1
         private readonly IPayeeTypeService payeeTypeService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
+        private readonly IBankService bankService;
 
-        public UserController(IUserService userService, IBeneficiaryService beneficiaryService, IPayeeTypeService payeeTypeService, IMapper mapper, ILogger<UserController> logger)
+        public UserController(IUserService userService, IBeneficiaryService beneficiaryService, IPayeeTypeService payeeTypeService, IMapper mapper, ILogger<UserController> logger
+            , IBankService bankService)
         {
             this.userService = userService;
             this.beneficiaryService = beneficiaryService;
             this.payeeTypeService = payeeTypeService;
             this.mapper = mapper;
+            this.bankService = bankService;
         }
 
         /// <summary>
@@ -174,12 +177,21 @@ namespace Richviet.API.Controllers.V1
         {
             var userId = long.Parse(User.FindFirstValue("id"));
             List<OftenBeneficiary> oftenBeneficiars = beneficiaryService.GetAllBeneficiars(userId);
-            List<UserBeneficiaryDTO> userBeneficiarDTOs = mapper.Map<List<UserBeneficiaryDTO>>(oftenBeneficiars);
-
+            List<ReceiveBank> banks = bankService.GetReceiveBanks();
+            List<UserBeneficiaryDTO> userBeneficiaryDTOs = new List<UserBeneficiaryDTO>();
+            foreach (OftenBeneficiary beneficiary in oftenBeneficiars)
+            {
+                ReceiveBank bank = banks.Find(bank => bank.Id == beneficiary.ReceiveBankId);
+                UserBeneficiaryDTO userBeneficiaryDTO = mapper.Map<UserBeneficiaryDTO>(beneficiary);
+                userBeneficiaryDTO.EnName = bank.EnName;
+                userBeneficiaryDTO.TwName = bank.TwName;
+                userBeneficiaryDTO.VietName = bank.VietName;
+                userBeneficiaryDTOs.Add(userBeneficiaryDTO);
+            }
 
             return new MessageModel<List<UserBeneficiaryDTO>>
             {
-                Data = userBeneficiarDTOs
+                Data = userBeneficiaryDTOs
             };
         }
 

@@ -27,6 +27,9 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             ).ForMember(
               dest => dest.PayeeRelationType
               , opt => opt.MapFrom(src => src.PayeeRelation.Type)
+            ).ForMember(
+              dest => dest.PayeeRelationDescription
+              , opt => opt.MapFrom(src => src.PayeeRelation.Description)
             ).ReverseMap();
 
             CreateMap<M.OftenBeneficiary, M.OftenBeneficiary>()
