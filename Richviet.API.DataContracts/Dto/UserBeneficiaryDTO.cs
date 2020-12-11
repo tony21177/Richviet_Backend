@@ -33,6 +33,8 @@ namespace Richviet.API.DataContracts.Dto
 
         [SwaggerSchema("收款人關係0:父母,1:兄弟,2:子女")]
         public byte PayeeRelationType { get; set; }
+        [SwaggerSchema("收款人關係描述")]
+        public string PayeeRelationDescription { get; set; }
         [SwaggerSchema("收款方式,0:銀行")]
         public byte PayeeType { get; set; }
 

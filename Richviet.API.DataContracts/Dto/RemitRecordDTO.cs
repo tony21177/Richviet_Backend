@@ -33,6 +33,12 @@ namespace Richviet.API.DataContracts.Dto
         public string PayeeName { get; set; }
         [SwaggerSchema("收款人銀行帳號")]
         public string PayeeAddress { get; set; }
+        [SwaggerSchema("收款銀行-越南")]
+        public string BankTwName { get; set; }
+        [SwaggerSchema("收款銀行-台灣")]
+        public string BankEnName { get; set; }
+        [SwaggerSchema("收款銀行-英文")]
+        public string BankVietName { get; set; }
         [SwaggerSchema("收款人關係0:父母,1:兄弟,2:子女")]
         public byte PayeeRelationType { get; set; }
         [SwaggerSchema("收款人關係0:父母,1:兄弟,2:子女")]

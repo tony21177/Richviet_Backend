@@ -54,9 +54,12 @@ namespace Richviet.API.Controllers.V1
 
         private readonly IRemitRecordQueryRepositories remitRecordQueryRepositories;
 
+        private readonly IBankService bankService;
+
 
         public RemitController(ILogger<RemitController> logger, IMapper mapper, IRemitSettingService remitSettingService, IRemitRecordService remitRecordService, IBeneficiaryService beneficiaryService
-            , IUserService userService, IDiscountService discountService, IRemitRecordQueryRepositories remitRecordQueryRepositories, RemitValidationHelper helper)
+            , IUserService userService, IDiscountService discountService, IRemitRecordQueryRepositories remitRecordQueryRepositories, RemitValidationHelper helper
+            , IBankService bankService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this._mapper = mapper;
@@ -66,6 +69,7 @@ namespace Richviet.API.Controllers.V1
             this.remitRecordService = remitRecordService;
             this.helper = helper;
             this.remitRecordQueryRepositories = remitRecordQueryRepositories;
+            this.bankService = bankService;
         }
 
         /// <summary>
@@ -441,7 +445,19 @@ namespace Richviet.API.Controllers.V1
         {
             var userId = long.Parse(User.FindFirstValue("id"));
             List<RemitRecord> remitRecords = remitRecordService.GetRemitRecordsByUserId(userId);
-            List<RemitRecordDTO> remitRecordDTOs = _mapper.Map<List<RemitRecordDTO>>(remitRecords);
+
+            List<ReceiveBank> banks = bankService.GetReceiveBanks();
+
+            List<RemitRecordDTO> remitRecordDTOs = new List<RemitRecordDTO>();
+            foreach (RemitRecord record in  remitRecords)
+            {
+                ReceiveBank bank = banks.Find(bank => bank.Id == record.Beneficiary.ReceiveBankId);
+                RemitRecordDTO remitRecordDTO = _mapper.Map<RemitRecordDTO>(record);
+                remitRecordDTO.BankEnName = bank.EnName;
+                remitRecordDTO.BankTwName = bank.TwName;
+                remitRecordDTO.BankVietName = bank.VietName;
+                remitRecordDTOs.Add(remitRecordDTO);
+            }
 
             return Ok(new MessageModel<List<RemitRecordDTO>>
             {
