@@ -224,6 +224,10 @@ namespace Frontend.DB.EF.Models
             {
                 entity.ToTable("notification_message");
 
+                entity.HasIndex(e => e.UserId)
+                    .HasName("uq_notification_message_user_id")
+                    .IsUnique();
+
                 entity.Property(e => e.Content)
                     .HasColumnName("content")
                     .HasComment("推播通知內容");
@@ -262,8 +266,8 @@ namespace Frontend.DB.EF.Models
                     .HasComment("對應user的pk");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.NotificationMessage)
-                    .HasForeignKey(d => d.UserId)
+                    .WithOne(p => p.NotificationMessage)
+                    .HasForeignKey<NotificationMessage>(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_notification_message");
             });

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/v{version:apiVersion}/notification")]
     [ApiController]
+    
     public class NotificationController : Controller
     {
         private readonly IMapper mapper;
@@ -31,7 +33,9 @@ namespace Richviet.Admin.API.Controllers.V1
         /// test push
         /// </summary>
         [HttpPost("testpush")]
+        [AllowAnonymous]
         public async Task<MessageModel<bool>> TestPush()
+
         {
             await notificationService.SendNotification(1, "title " + DateTime.UtcNow, "content " + DateTime.UtcNow);
             return new MessageModel<bool>
