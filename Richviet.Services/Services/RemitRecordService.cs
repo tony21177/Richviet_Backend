@@ -36,7 +36,7 @@ namespace Richviet.Services.Services
         private readonly INotificationService notificationService;
 
         public RemitRecordService(ILogger<RemitRecordService> logger, IArcScanRecordService arcScanRecordService, IUserService userService, GeneralContext dbContext,
-            IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEmailSender emailSender,ArcValidationTask arcValidationTask,
+            IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEmailSender emailSender,ArcValidationTask arcValidationTask
             , INotificationService firebaseService)
         {
             this.logger = logger;
