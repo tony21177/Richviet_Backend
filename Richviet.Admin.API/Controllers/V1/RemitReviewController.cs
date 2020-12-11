@@ -31,9 +31,10 @@ namespace Richviet.Admin.API.Controllers.V1
         private readonly IMapper _mapper;
         private readonly IUploadPic uploadPicService;
         private readonly IBankService bankService;
+        private readonly INotificationService notificationService;
 
         public RemitReviewController(RemitRecordAmlReviewer amlReviewer, RemitTransactionStatusModifier statusModifier, IRemitRecordService remitRecordService, IMapper mapper
-            , IUploadPic uploadPicService, IBankService bankService)
+            , IUploadPic uploadPicService, IBankService bankService, INotificationService firebaseService)
         {
             this.amlReviewer = amlReviewer;
             this.statusModifier = statusModifier;
@@ -41,20 +42,24 @@ namespace Richviet.Admin.API.Controllers.V1
             this._mapper = mapper;
             this.uploadPicService = uploadPicService;
             this.bankService = bankService;
+            this.notificationService = firebaseService;
         }
 
 
         [HttpPost("AmlReview")]
         public MessageModel<string> AmlReview(AmlReviewModifyRequest request)
         {
+            RemitRecord record = remitRecordService.GetRemitRecordById(request.RecordId);
 
             if (request.IsAmlPass)
             {
                 amlReviewer.AmlReviewPass(request.RecordId, request.Comment);
+                notificationService.SaveAndSendNotification((int)record.UserId, "To be Paid", "Your remit application is waiting for payment", "en-US");
             }
             else
             {
                 amlReviewer.AmlReviewFail(request.RecordId, request.Comment);
+                notificationService.SaveAndSendNotification((int)record.UserId, "Remit had been rejected", "Your remit application was rejected", "en-US");
             }
 
             return new MessageModel<string>()
@@ -66,13 +71,16 @@ namespace Richviet.Admin.API.Controllers.V1
         [HttpPost("Complete")]
         public MessageModel<string> TransSuccess(TransactionStatusModifyRequest request)
         {
+            RemitRecord record = remitRecordService.GetRemitRecordById(request.RecordId);
             if (request.IsComplete)
             {
                 statusModifier.RemitSuccess(request.RecordId, request.Comment);
+                notificationService.SaveAndSendNotification((int)record.UserId, "Remit Complete", "Your remit application completes", "en-US");
             }
             else
             {
                 statusModifier.RemitFail(request.RecordId, request.Comment);
+                notificationService.SaveAndSendNotification((int)record.UserId, "Unsuccessful Remit", "Your remit application was rejected", "en-US");
             }
 
             return new MessageModel<string>()

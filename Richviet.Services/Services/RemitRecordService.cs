@@ -33,9 +33,11 @@ namespace Richviet.Services.Services
         private readonly string REMIT_ARC_NOT_PASSED_SUBJECT = "匯款流程-未通過arc自動審核";
         private readonly string REMIT_ARC_NOT_PASSED_MESSAGE = "未通過arc自動審核";
         private readonly string[] receivers;
+        private readonly INotificationService notificationService;
 
         public RemitRecordService(ILogger<RemitRecordService> logger, IArcScanRecordService arcScanRecordService, IUserService userService, GeneralContext dbContext,
-            IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEmailSender emailSender,ArcValidationTask arcValidationTask)
+            IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEmailSender emailSender,ArcValidationTask arcValidationTask,
+            , INotificationService firebaseService)
         {
             this.logger = logger;
             this.dbContext = dbContext;
@@ -47,7 +49,7 @@ namespace Richviet.Services.Services
             this.emailSender = emailSender;
             receivers = configuration.GetSection("ArcResultNotify").Get<string[]>();
             this.userService = userService;
-
+            this.notificationService = firebaseService;
         }
 
 
@@ -209,6 +211,8 @@ namespace Richviet.Services.Services
                 AddScanRecordAndUpdateUserKycStatus(record, userArc, remitRecord);
                 // send mail
                 await SendMailForRemitArc(false, receivers, userId);
+                // push notification
+                await notificationService.SaveAndSendNotification((int)userId, "Unsuccessful Remit", "You do not pass The KYC procedure", "en-US");
             }
         }
 
