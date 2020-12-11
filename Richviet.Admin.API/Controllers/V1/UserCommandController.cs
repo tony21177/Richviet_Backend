@@ -16,7 +16,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/user/v{version:apiVersion}/command")]
     [ApiController]
-    [Authorize(Roles = "adminManager")]
+    //[Authorize(Roles = "adminManager")]
     public class UserCommandController : ControllerBase
     {
         private readonly UserModifier modifier;

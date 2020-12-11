@@ -19,7 +19,7 @@ namespace Richviet.Admin.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("admin/v{version:apiVersion}/bank")]
     [ApiController]
-    [Authorize(Roles = "adminManager")]
+    //[Authorize(Roles = "adminManager")]
     public class BankController : ControllerBase
     {
         private readonly ILogger Logger;
