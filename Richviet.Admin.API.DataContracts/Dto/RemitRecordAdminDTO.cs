@@ -9,6 +9,8 @@ namespace Richviet.Admin.API.DataContracts.Dto
     {
         [SwaggerSchema("交易紀錄主鍵")]
         public int Id { get; set; }
+        [SwaggerSchema("交易單號")]
+        public string OrderNo { get; set; }
         [SwaggerSchema("會員Id")]
         public int UserId { get; set; }
         [SwaggerSchema("提出草稿匯款申請時間")]

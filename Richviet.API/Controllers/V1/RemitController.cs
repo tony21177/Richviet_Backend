@@ -443,7 +443,7 @@ namespace Richviet.API.Controllers.V1
         }
 
         /// <summary>
-        /// 該會員的交易紀錄
+        /// 該會員的交易紀錄,不包括草稿
         /// </summary>
         /// 
         [HttpGet("remitRecords")]
@@ -452,6 +452,7 @@ namespace Richviet.API.Controllers.V1
         {
             var userId = long.Parse(User.FindFirstValue("id"));
             List<RemitRecord> remitRecords = remitRecordService.GetRemitRecordsByUserId(userId);
+            remitRecords.RemoveAll(remitRecord=>remitRecord.TransactionStatus==(short)RemitTransactionStatusEnum.Draft);
 
             List<ReceiveBank> banks = bankService.GetReceiveBanks();
 
