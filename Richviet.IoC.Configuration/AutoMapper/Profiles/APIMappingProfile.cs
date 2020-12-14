@@ -43,7 +43,10 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
 
             CreateMap<BussinessUnitRemitSetting,RemitSettingDTO>().ReverseMap();
 
-            CreateMap<RemitRecord,RemitRecordDTO>().ReverseMap();
+            CreateMap<RemitRecord,RemitRecordDTO>().ForMember(
+              dest => dest.OrderNo
+              , opt => opt.MapFrom(src => ((DateTime)src.FormalApplyTime).ToString("yyyyMMdd")+src.Id.ToString().PadLeft(7,'0'))
+            ).ReverseMap();
 
             _ = CreateMap<RemitRecord, RemitRecordDTO>().ForMember(
               dest => dest.PayeeName
@@ -93,6 +96,9 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
             ).ForMember(
               dest => dest.PaymentCode
               , opt => opt.MapFrom(src => src.PaymentCode.Split(',', StringSplitOptions.None))
+            ).ForMember(
+              dest => dest.OrderNo
+              , opt => opt.MapFrom(src => ((DateTime)src.FormalApplyTime).ToString("yyyyMMdd") + src.Id.ToString().PadLeft(7, '0'))
             ).ReverseMap();
         }
     }
