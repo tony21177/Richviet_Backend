@@ -82,7 +82,8 @@ namespace Richviet.IdentityServerAspNetIdentity
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                // https://github.com/dotnet/efcore/issues/22687s
+                //app.UseDatabaseErrorPage();
             }
 
             // this will do the initial DB population

@@ -22,7 +22,7 @@ namespace Richviet.IdentityServerAspNetIdentity
             var services = new ServiceCollection();
             services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlite(connectionString));
+                 options.UseSqlServer(connectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -36,36 +36,36 @@ namespace Richviet.IdentityServerAspNetIdentity
                     context.Database.Migrate();
 
                     var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var alice = userMgr.FindByNameAsync("alice").Result;
-                    if (alice == null)
+                    var brightasia = userMgr.FindByNameAsync("brightasia").Result;
+                    if (brightasia == null)
                     {
-                        alice = new ApplicationUser
+                        brightasia = new ApplicationUser
                         {
-                            UserName = "alice",
-                            Email = "AliceSmith@email.com",
+                            UserName = "brightasia",
+                            Email = "rd@brightasia.net",
                             EmailConfirmed = true,
                         };
-                        var result = userMgr.CreateAsync(alice, "Pass123$").Result;
+                        var result = userMgr.CreateAsync(brightasia, "richviet").Result;
                         if (!result.Succeeded)
                         {
                             throw new Exception(result.Errors.First().Description);
                         }
 
-                        result = userMgr.AddClaimsAsync(alice, new Claim[]{
-                            new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Alice"),
-                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
+                        result = userMgr.AddClaimsAsync(brightasia, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, "brightasia"),
+                            new Claim(JwtClaimTypes.GivenName, "brightasia"),
+                            new Claim(JwtClaimTypes.FamilyName, "brightasia"),
+                            new Claim(JwtClaimTypes.WebSite, "https://brightasia.net"),
                         }).Result;
                         if (!result.Succeeded)
                         {
                             throw new Exception(result.Errors.First().Description);
                         }
-                        Log.Debug("alice created");
+                        Log.Debug("brightasia created");
                     }
                     else
                     {
-                        Log.Debug("alice already exists");
+                        Log.Debug("brightasia already exists");
                     }
 
                     var bob = userMgr.FindByNameAsync("bob").Result;
