@@ -36,6 +36,25 @@ namespace Richviet.IdentityServerAspNetIdentity
                 // scopes that client has access to
                 AllowedScopes = { "api1" }
             },
+            // JavaScript Client
+            new Client
+            {
+                ClientId = "js",
+                ClientName = "JavaScript Client",
+                AllowedGrantTypes = GrantTypes.Implicit,
+                AllowAccessTokensViaBrowser = true,
+
+                RedirectUris =           { "https://localhost:10001/callback.html" },
+                PostLogoutRedirectUris = { "https://localhost:10001/index.html" },
+                AllowedCorsOrigins =     { "https://localhost:10001" },
+
+                AllowedScopes =
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "adminApi"
+                }
+            },
 
             // interactive ASP.NET Core MVC client
             new Client
