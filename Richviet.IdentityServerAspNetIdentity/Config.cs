@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Richviet.IdentityServerAspNetIdentity
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
+            new IdentityResource{Name = "roles", UserClaims={JwtClaimTypes.Role}}
         };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -34,7 +36,7 @@ namespace Richviet.IdentityServerAspNetIdentity
 
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
                 // scopes that client has access to
-                AllowedScopes = { "api1" }
+                AllowedScopes = { "adminApi" }
             },
             // JavaScript Client
             new Client
@@ -43,16 +45,17 @@ namespace Richviet.IdentityServerAspNetIdentity
                 ClientName = "JavaScript Client",
                 AllowedGrantTypes = GrantTypes.Implicit,
                 AllowAccessTokensViaBrowser = true,
+                
 
-                RedirectUris =           { "https://localhost:10001/callback.html" },
-                PostLogoutRedirectUris = { "https://localhost:10001/index.html" },
-                AllowedCorsOrigins =     { "https://localhost:10001" },
+                RedirectUris =           { "http://localhost:10000/callback", "https://localhost:10001/callback" },
+                PostLogoutRedirectUris = { "http://localhost:10000/callback", "https://localhost:10001/callback" },
+                AllowedCorsOrigins =     { "http://localhost:10000","https://localhost:10001" },
 
                 AllowedScopes =
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    "adminApi"
+                    "adminApi","roles"
                 }
             },
 

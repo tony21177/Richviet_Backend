@@ -27,6 +27,26 @@ namespace Richviet.IdentityServerAspNetIdentity
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            });
 
             using (var serviceProvider = services.BuildServiceProvider())
             {
@@ -35,7 +55,47 @@ namespace Richviet.IdentityServerAspNetIdentity
                     var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
                     context.Database.Migrate();
 
+                    // Role
+                    var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                    var adminManager = roleMgr.FindByNameAsync("adminManager").Result;
+                    if (adminManager == null)
+                    {
+                        adminManager = new IdentityRole
+                        {
+                            Name = "adminManager"
+                        };
+                        var result = roleMgr.CreateAsync(adminManager).Result;
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception(result.Errors.First().Description);
+                        }
+                    }
+                    else
+                    {
+                        Log.Debug("Role:adminManager already exists");
+                    }
+
+                    var adminEmployee = roleMgr.FindByNameAsync("adminEmployee").Result;
+                    if (adminEmployee == null)
+                    {
+                        adminEmployee = new IdentityRole
+                        {
+                            Name = "adminEmployee"
+                        };
+                        var result = roleMgr.CreateAsync(adminEmployee).Result;
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception(result.Errors.First().Description);
+                        }
+                    }
+                    else
+                    {
+                        Log.Debug("Role:adminEmployee already exists");
+                    }
+
+                    // User and UserRole
                     var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                    
                     var brightasia = userMgr.FindByNameAsync("brightasia").Result;
                     if (brightasia == null)
                     {
@@ -44,6 +104,7 @@ namespace Richviet.IdentityServerAspNetIdentity
                             UserName = "brightasia",
                             Email = "rd@brightasia.net",
                             EmailConfirmed = true,
+                           
                         };
                         var result = userMgr.CreateAsync(brightasia, "richviet").Result;
                         if (!result.Succeeded)
@@ -61,6 +122,8 @@ namespace Richviet.IdentityServerAspNetIdentity
                         {
                             throw new Exception(result.Errors.First().Description);
                         }
+                        userMgr.AddToRoleAsync(brightasia, "adminManager").Wait();
+                        userMgr.AddToRoleAsync(brightasia, "adminEmployee").Wait();
                         Log.Debug("brightasia created");
                     }
                     else
@@ -68,38 +131,7 @@ namespace Richviet.IdentityServerAspNetIdentity
                         Log.Debug("brightasia already exists");
                     }
 
-                    var bob = userMgr.FindByNameAsync("bob").Result;
-                    if (bob == null)
-                    {
-                        bob = new ApplicationUser
-                        {
-                            UserName = "bob",
-                            Email = "BobSmith@email.com",
-                            EmailConfirmed = true
-                        };
-                        var result = userMgr.CreateAsync(bob, "Pass123$").Result;
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
-
-                        result = userMgr.AddClaimsAsync(bob, new Claim[]{
-                            new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Bob"),
-                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                            new Claim("location", "somewhere")
-                        }).Result;
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
-                        Log.Debug("bob created");
-                    }
-                    else
-                    {
-                        Log.Debug("bob already exists");
-                    }
+                    
                 }
             }
         }

@@ -26,6 +26,7 @@ using Richviet.Admin.API.Swagger;
 using Richviet.IoC.Configuration.DI;
 using Frontend.DB.EF.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Richviet.Admin.API
 {
@@ -86,46 +87,17 @@ namespace Richviet.Admin.API
                             options.JsonSerializerOptions.Converters.Add(new CustomDateConverter());
                         });
 
-                    //services.Configure<CookiePolicyOptions>(options =>
-                    //{
-                    //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                    //    options.CheckConsentNeeded = context => true;
-                    //    options.MinimumSameSitePolicy = SameSiteMode.None;
-                    //});
+                    // Bear JWT authentication
+                    services.AddAuthentication("Bearer")
+                    .AddJwtBearer("Bearer", options =>
+                    {
+                        options.Authority = "https://localhost:9001";
 
-
-                    //services.AddMvc();
-
-                    //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-                    //services.AddAuthentication(options =>
-                    //{
-                    //    options.DefaultScheme = "Cookies";
-                    //    options.DefaultChallengeScheme = "oidc";
-                    //})
-                    //.AddCookie("Cookies", options =>
-                    //{
-
-                    //    options.AccessDeniedPath = "/Authorization/AccessDenied";
-                    //})
-                    //.AddOpenIdConnect("oidc", options =>
-                    //{
-                    //    options.SignInScheme = "Cookies";
-
-                    //    options.Authority = "https://localhost:5001";
-                    //    options.RequireHttpsMetadata = false;
-
-                    //    options.ClientId = "mvc";
-                    //    options.ResponseType = "code id_token";
-                    //    options.Scope.Clear();
-                    //    options.Scope.Add("openid");
-                    //    options.Scope.Add("profile");
-                        
-
-                    //    options.SaveTokens = true;
-                    //    options.ClientSecret = "secret";
-                    //    options.GetClaimsFromUserInfoEndpoint = true;
-                    // });
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateAudience = false
+                        };
+                    });
 
                     //API versioning
                     services.AddApiVersioning(
@@ -177,6 +149,18 @@ namespace Richviet.Admin.API
 
                     //Business settings            
                     services.ConfigureBusinessServices(Configuration);
+
+                    //Cors
+                    services.AddCors(options =>
+                    {
+                        //this defines a CORS policy called "default"
+                        options.AddPolicy("default", policy =>
+                        {
+                            policy.WithOrigins("http://localhost:10000")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                        });
+                    });
                 }
             }
             catch (Exception ex)
@@ -229,6 +213,8 @@ namespace Richviet.Admin.API
                     endpoints.MapControllers();
                 });
                 app.UseRequestLocalization();
+                // CORS
+                app.UseCors("default");
 
                 //SWAGGER
                 if (_appSettings.IsValid())
