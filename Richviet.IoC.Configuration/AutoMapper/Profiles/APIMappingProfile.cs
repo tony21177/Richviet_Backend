@@ -96,7 +96,7 @@ namespace Richviet.IoC.Configuration.AutoMapper.Profiles
               , opt => opt.MapFrom(src => src.PaymentCode.Split(',', StringSplitOptions.None))
             ).ForMember(
               dest => dest.OrderNo
-              , opt => opt.MapFrom(src => ((DateTime)src.FormalApplyTime).ToString("yyyyMMdd") + src.Id.ToString().PadLeft(7, '0'))
+              , opt => opt.MapFrom(src => ((DateTime)(src.FormalApplyTime ?? DateTime.UtcNow)).ToString("yyyyMMdd") + src.Id.ToString().PadLeft(7, '0'))
             ).ReverseMap();
         }
     }
