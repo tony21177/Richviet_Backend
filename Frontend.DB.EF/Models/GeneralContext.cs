@@ -418,7 +418,6 @@ namespace Frontend.DB.EF.Models
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.PushNotificationSetting)
                     .HasForeignKey<PushNotificationSetting>(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_push_notification_setting");
             });
 
