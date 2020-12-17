@@ -125,7 +125,7 @@ namespace Richviet.Services.Services
 					{
 						Token = mobileToken,
 						Notification = new { title, content },
-						Data = new { data_title = title, data_content = content }
+						Data = new { data_title = title, data_content = content, data_key = "TEST_FOR_IOS" }
 					});
 				}
 				return false;
