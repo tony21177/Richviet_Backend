@@ -30,16 +30,21 @@ namespace Richviet.Services.Services
 			httpClient = new HttpClient();
 		}
 
-		private class PushMessage
+		private string GetTokenByUserId(int userId)
 		{
-			[JsonProperty("notification")]
-			public dynamic Notification { get; set; }
-
-			[JsonProperty("to")]
-			public string Token { get; set; }
-
-			/*[JsonProperty("data")]
-			public dynamic Data { get; set; }*/
+			try
+			{
+				PushNotificationSetting setting = dbContext.PushNotificationSetting.SingleOrDefault(x => x.UserId == userId);
+				if (setting != null)
+				{
+					return setting.MobileToken;
+				}
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex.Message);
+			}
+			return null;
 		}
 
 		private async Task<bool> PostFirebaseApi(PushMessage message)
@@ -67,27 +72,10 @@ namespace Richviet.Services.Services
 			return false;
 		}
 
-		private string GetTokenByUserId(int userId)
-        {
-			try
-            {
-				PushNotificationSetting setting = dbContext.PushNotificationSetting.SingleOrDefault(x => x.UserId == userId);
-				if(setting!=null)
-                {
-					return setting.MobileToken;
-                }
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex.Message);
-			}
-			return null;
-		}
-
-		public async Task<bool> SendNotification(int userId, string title, string body) 
+		public async Task<bool> SendNotification(int userId, string title, string body)
 		{
-            try
-            {
+			try
+			{
 				string mobileToken = GetTokenByUserId(userId);
 				if (mobileToken != null)
 				{
@@ -96,7 +84,13 @@ namespace Richviet.Services.Services
 					return await PostFirebaseApi(new PushMessage
 					{
 						Token = mobileToken,
-						Notification = new { title, body, body_loc_key, title_loc_key },
+						Notification = new NotificationData
+						{ 
+							Title = title,
+							Body = body,
+							TitleLocKey = title_loc_key,
+							BodyLocKey = body_loc_key
+						}
 						//Data = new { data_title = title, data_content = body, data_key = "TEST_FOR_IOS"}
 					});
 				}
@@ -109,7 +103,35 @@ namespace Richviet.Services.Services
 			return false;
 		}
 
-        public PushNotificationSetting UpdateMobileToken(int userId, string mobileToken)
+		public async Task<bool> SendNotification(int userId, string title, string body, string titleLocKey, string bodyLocKey)
+		{
+			try
+			{
+				string mobileToken = GetTokenByUserId(userId);
+				if (mobileToken != null)
+				{
+					return await PostFirebaseApi(new PushMessage
+					{
+						Token = mobileToken,
+						Notification = new NotificationData
+						{
+							Title = title,
+							Body = body,
+							TitleLocKey = titleLocKey,
+							BodyLocKey = bodyLocKey
+						}
+					});
+				}
+				return false;
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex.Message);
+			}
+			return false;
+		}
+
+		public PushNotificationSetting UpdateMobileToken(int userId, string mobileToken)
         {
 			try
 			{
@@ -233,7 +255,8 @@ namespace Richviet.Services.Services
 			return false;
         }
 
-        public async Task<bool> SaveAndSendNotification(int userId, string title, string body, string language)
+		[Obsolete]
+		public async Task<bool> SaveAndSendNotification(int userId, string title, string body, string language)
         {
 			try
 			{
@@ -255,5 +278,55 @@ namespace Richviet.Services.Services
 			}
 			return false;
 		}
-    }
+
+		public async Task<bool> SaveAndSendNotification(int userId, string title, string body, string titleLocKey, string bodyLocKey)
+		{
+			try
+			{
+				NotificationMessage message = new NotificationMessage
+				{
+					UserId = userId,
+					Title = title,
+					Content = body,
+					Language = "en-US",
+					IsRead = true
+				};
+				dbContext.NotificationMessage.Add(message);
+				dbContext.SaveChanges();
+				return await SendNotification(userId, title, body, titleLocKey, bodyLocKey);
+			}
+			catch (Exception ex)
+			{
+				logger.LogDebug(ex.Message);
+			}
+			return false;
+		}
+
+		private class PushMessage
+		{
+			[JsonProperty("notification")]
+			public NotificationData Notification { get; set; }
+
+			[JsonProperty("to")]
+			public string Token { get; set; }
+
+			/*[JsonProperty("data")]
+			public dynamic Data { get; set; }*/
+		}
+
+		private class NotificationData
+        {
+			[JsonProperty("title")]
+			public string Title { get; set; }
+
+			[JsonProperty("body")]
+			public string Body { get; set; }
+
+			[JsonProperty("title_loc_key")]
+			public string TitleLocKey { get; set; }
+
+			[JsonProperty("body_loc_key")]
+			public string BodyLocKey { get; set; }
+		}
+	}
 }

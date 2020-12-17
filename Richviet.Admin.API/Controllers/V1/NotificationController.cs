@@ -63,7 +63,7 @@ namespace Richviet.Admin.API.Controllers.V1
         [HttpPost("testsavepush")]
         public async Task<MessageModel<bool>> SaveAndPush()
         {
-            bool result = await notificationService.SaveAndSendNotification(1, "title " + DateTime.UtcNow, "content " + DateTime.UtcNow, "zh-TW");
+            bool result = await notificationService.SaveAndSendNotification(1, "title " + DateTime.UtcNow, "content " + DateTime.UtcNow, "TEST_TITLE_LOC_KEY", "TEST_BODY_LOC_KEY");
             return new MessageModel<bool>
             {
                 Data = result
