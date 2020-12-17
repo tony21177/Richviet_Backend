@@ -8,11 +8,11 @@ namespace Richviet.Services.Contracts
 {
     public interface INotificationService
     {
-        Task<bool> SendNotification(int userId, string title, string content);
+        Task<bool> SendNotification(int userId, string title, string body);
 
         bool SaveNotificationMessage(int userId, string title, string content, string language);
 
-        Task<bool> SaveAndSendNotification(int userId, string title, string content, string language);
+        Task<bool> SaveAndSendNotification(int userId, string title, string body, string language);
 
         PushNotificationSetting UpdateMobileToken(int userId, string mobileToken);
 

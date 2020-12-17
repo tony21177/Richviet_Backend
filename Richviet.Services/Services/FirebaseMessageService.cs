@@ -38,39 +38,9 @@ namespace Richviet.Services.Services
 			[JsonProperty("to")]
 			public string Token { get; set; }
 
-			[JsonProperty("data")]
-			public dynamic Data { get; set; }
+			/*[JsonProperty("data")]
+			public dynamic Data { get; set; }*/
 		}
-
-		/*private async Task<bool> PostFirebaseApiOld(PushMessage message) 
-		{
-			try {
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(FIREBASE_URL);
-				request.Method = "POST";
-				request.Headers.Add("Authorization", "key=" + FIREBASE_SERVER_KEY);
-				request.ContentType = "application/json";
-				string json = JsonConvert.SerializeObject(message);
-				byte[] byteArray = Encoding.UTF8.GetBytes(json);
-				request.ContentLength = byteArray.Length;
-				Stream dataStream = request.GetRequestStream();
-				dataStream.Write(byteArray, 0, byteArray.Length);
-				dataStream.Close();
-				HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync();
-				if (response.StatusCode == HttpStatusCode.Accepted || response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created) {
-					StreamReader read = new StreamReader(response.GetResponseStream());
-					string result = read.ReadToEnd();
-					read.Close();
-					response.Close();
-					dynamic stuff = JsonConvert.DeserializeObject(result);
-					return true;
-				}
-			} 
-			catch (Exception ex) 
-			{
-				logger.LogError(ex.Message);				
-			}
-			return false;
-		}*/
 
 		private async Task<bool> PostFirebaseApi(PushMessage message)
 		{
@@ -114,18 +84,20 @@ namespace Richviet.Services.Services
 			return null;
 		}
 
-		public async Task<bool> SendNotification(int userId, string title, string content) 
+		public async Task<bool> SendNotification(int userId, string title, string body) 
 		{
             try
             {
 				string mobileToken = GetTokenByUserId(userId);
 				if (mobileToken != null)
 				{
+					string title_loc_key = "TEST_TITLE_LOC_KEY";
+					string body_loc_key = "TEST_BODY_LOC_KEY";
 					return await PostFirebaseApi(new PushMessage
 					{
 						Token = mobileToken,
-						Notification = new { title, content },
-						Data = new { data_title = title, data_content = content, data_key = "TEST_FOR_IOS" }
+						Notification = new { title, body, body_loc_key, title_loc_key },
+						//Data = new { data_title = title, data_content = body, data_key = "TEST_FOR_IOS"}
 					});
 				}
 				return false;
@@ -261,7 +233,7 @@ namespace Richviet.Services.Services
 			return false;
         }
 
-        public async Task<bool> SaveAndSendNotification(int userId, string title, string content, string language)
+        public async Task<bool> SaveAndSendNotification(int userId, string title, string body, string language)
         {
 			try
 			{
@@ -269,13 +241,13 @@ namespace Richviet.Services.Services
 				{
 					UserId = userId,
 					Title = title,
-					Content = content,
+					Content = body,
 					Language = language,
 					IsRead = true
 				};
 				dbContext.NotificationMessage.Add(message);
 				dbContext.SaveChanges();
-				return await SendNotification(userId, title, content);
+				return await SendNotification(userId, title, body);
 			}
 			catch (Exception ex)
 			{
